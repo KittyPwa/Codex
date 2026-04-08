@@ -1,10 +1,60 @@
 ﻿$ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent (Split-Path -Parent $MyInvocation.MyCommand.Path)
-$preferredPorts = @(4173, 4174, 4175, 4176, 4177, 4178, 4179, 4180)
-$lexiconPath = Join-Path $root "data\\lexicon.json"
-$rulesPath = Join-Path $root "data\\rules-notes.md"
-$rulesConfigPath = Join-Path $root "data\\rules.json"
+function Resolve-ProjectDataPath($configuredPath, $defaultRelativePath) {
+  $candidate = if ([string]::IsNullOrWhiteSpace($configuredPath)) {
+    if ([System.IO.Path]::IsPathRooted($defaultRelativePath)) {
+      $defaultRelativePath
+    } else {
+      Join-Path $root $defaultRelativePath
+    }
+  } elseif ([System.IO.Path]::IsPathRooted($configuredPath)) {
+    $configuredPath
+  } else {
+    Join-Path $root $configuredPath
+  }
+
+  return [System.IO.Path]::GetFullPath($candidate)
+}
+
+function Get-PreferredPorts() {
+  $configured = if (-not [string]::IsNullOrWhiteSpace($env:TRANSLATOR_PORTS)) {
+    [string]$env:TRANSLATOR_PORTS
+  } elseif (-not [string]::IsNullOrWhiteSpace($env:TRANSLATOR_PORT)) {
+    [string]$env:TRANSLATOR_PORT
+  } else {
+    ""
+  }
+
+  if (-not $configured) {
+    return @(4173, 4174, 4175, 4176, 4177, 4178, 4179, 4180)
+  }
+
+  $ports = New-Object System.Collections.Generic.List[int]
+  foreach ($segment in ($configured -split "[,\s;]+")) {
+    if (-not $segment) {
+      continue
+    }
+
+    $parsed = 0
+    if ([int]::TryParse($segment, [ref]$parsed) -and $parsed -gt 0) {
+      [void]$ports.Add($parsed)
+    }
+  }
+
+  if (-not $ports.Count) {
+    throw "No valid ports were provided in TRANSLATOR_PORT or TRANSLATOR_PORTS."
+  }
+
+  return @($ports.ToArray())
+}
+
+$preferredPorts = Get-PreferredPorts
+
+$languagePackRoot = Resolve-ProjectDataPath $env:TRANSLATOR_LANGUAGE_DIR "data"
+$lexiconPath = Resolve-ProjectDataPath $env:TRANSLATOR_LEXICON_PATH (Join-Path $languagePackRoot "lexicon.json")
+$rulesPath = Resolve-ProjectDataPath $env:TRANSLATOR_RULES_NOTES_PATH (Join-Path $languagePackRoot "rules-notes.md")
+$rulesConfigPath = Resolve-ProjectDataPath $env:TRANSLATOR_RULES_CONFIG_PATH (Join-Path $languagePackRoot "rules.json")
 
 $markdownSectionOrder = @(
   "Grammar Markers",
@@ -180,6 +230,134 @@ function Get-ConfigValue($Object, $Path, $Default = $null) {
   return $current
 }
 
+function Get-LanguageMetadata($rulesConfig) {
+  $language = Get-ConfigValue $rulesConfig "language" ([pscustomobject]@{})
+  $name = [string](Get-ConfigValue $language "name" "Translator language")
+  $version = [string](Get-ConfigValue $language "version" "0.0.0")
+  $description = [string](Get-ConfigValue $language "description" "")
+
+  return [ordered]@{
+    name = $name
+    version = $version
+    description = $description
+  }
+}
+
+function Add-ValidationIssue($bucket, $severity, $message) {
+  $bucket += ,([ordered]@{
+    severity = $severity
+    message = $message
+  })
+
+  return ,$bucket
+}
+
+function Test-ConfigHasValue($rulesConfig, $path) {
+  $sentinel = [guid]::NewGuid().ToString()
+  $value = Get-ConfigValue $rulesConfig $path $sentinel
+  return $value -ne $sentinel -and $null -ne $value
+}
+
+function Get-LanguagePackValidation($lexiconPayload, $rulesConfig) {
+  $issues = @()
+  $confirmed = Normalize-LexiconEntries $lexiconPayload.confirmed
+  $inferred = Normalize-LexiconEntries $lexiconPayload.inferred
+  $entries = @($confirmed)
+  if ($inferred.Count) {
+    $entries += @($inferred)
+  }
+  $language = Get-LanguageMetadata $rulesConfig
+
+  if (-not $confirmed.Count) {
+    $issues = Add-ValidationIssue $issues "error" "The language pack must contain at least one confirmed lexicon entry."
+  }
+
+  $seenAncient = @{}
+  foreach ($entry in $entries) {
+    $ancient = Normalize-AncientKey $entry.ancient
+    if (-not $ancient) {
+      $issues = Add-ValidationIssue $issues "error" "Each lexicon entry must define a non-empty 'ancient' form."
+      continue
+    }
+
+    if ($seenAncient.ContainsKey($ancient)) {
+      $issues = Add-ValidationIssue $issues "warning" "Duplicate lexicon entry detected for '$ancient'. Later entries overwrite earlier ones."
+    } else {
+      $seenAncient[$ancient] = $true
+    }
+
+    if (-not (ConvertTo-ArrayValue $entry.meanings).Count) {
+      $issues = Add-ValidationIssue $issues "warning" "Lexicon entry '$ancient' has no meanings."
+    }
+  }
+
+  if (-not $language.name -or $language.name -eq "Translator language") {
+    $issues = Add-ValidationIssue $issues "warning" "rules.json should define language.name for clearer pack identification."
+  }
+
+  $requiredRulePaths = @(
+    "english.fillers",
+    "normalization",
+    "morphology.productiveSuffixes",
+    "morphology.affixMeanings",
+    "composition.lexicalCompounds",
+    "composition.phraseRenderings",
+    "translation.narrativeRenderings"
+  )
+
+  foreach ($path in $requiredRulePaths) {
+    if (-not (Test-ConfigHasValue $rulesConfig $path)) {
+      $issues = Add-ValidationIssue $issues "error" "rules.json is missing required section '$path'."
+    }
+  }
+
+  $recommendedRulePaths = @(
+    "language.version",
+    "english.aliases",
+    "composition.contextualRenderings",
+    "translation.englishToAncientOverrides",
+    "translation.syntaxPatterns",
+    "translation.nounArticles",
+    "translation.objectArticles"
+  )
+
+  foreach ($path in $recommendedRulePaths) {
+    if (-not (Test-ConfigHasValue $rulesConfig $path)) {
+      $issues = Add-ValidationIssue $issues "warning" "rules.json is missing recommended section '$path'. The backend will fall back where possible."
+    }
+  }
+
+  $renderings = Get-MapFromConfig $rulesConfig "translation.narrativeRenderings"
+  foreach ($key in @($renderings.Keys)) {
+    $rendering = $renderings[$key]
+    $narrative = Get-ConfigValue $rendering "narrative" $null
+    $literal = Get-ConfigValue $rendering "literal" $null
+    if (-not $narrative -or -not $literal) {
+      $issues = Add-ValidationIssue $issues "warning" "Narrative rendering '$key' should define both 'narrative' and 'literal'."
+    }
+  }
+
+  $syntaxPatterns = ConvertTo-ArrayValue (Get-ConfigValue $rulesConfig "translation.syntaxPatterns" @())
+  foreach ($pattern in $syntaxPatterns) {
+    $template = [string](Get-ConfigValue $pattern "template" "")
+    if (-not $template) {
+      $issues = Add-ValidationIssue $issues "warning" "Each syntax pattern should define a non-empty template."
+    }
+
+    $match = Get-ConfigValue $pattern "match" $null
+    if ($null -eq $match) {
+      $issues = Add-ValidationIssue $issues "warning" "Each syntax pattern should define a match block."
+    }
+  }
+
+  return [ordered]@{
+    valid = (@($issues | Where-Object { $_.severity -eq "error" }).Count -eq 0)
+    errors = @($issues | Where-Object { $_.severity -eq "error" })
+    warnings = @($issues | Where-Object { $_.severity -eq "warning" })
+    issues = @($issues)
+  }
+}
+
 function ConvertTo-ArrayValue($value) {
   if ($null -eq $value) {
     return ,@()
@@ -274,6 +452,12 @@ function Join-TranslatorLines($values, $lines) {
 function New-TranslationContext($includeInferred) {
   $lexiconPayload = Read-LexiconPayload
   $rulesConfig = Read-RulesConfig
+  $language = Get-LanguageMetadata $rulesConfig
+  $validation = Get-LanguagePackValidation $lexiconPayload $rulesConfig
+  if (-not $validation.valid) {
+    $messages = @($validation.errors | ForEach-Object { $_.message })
+    throw ("Invalid language pack: {0}" -f ($messages -join " "))
+  }
   $confirmed = Normalize-LexiconEntries $lexiconPayload.confirmed
   $inferred = Normalize-LexiconEntries $lexiconPayload.inferred
   $entries = @($confirmed)
@@ -316,11 +500,18 @@ function New-TranslationContext($includeInferred) {
   }
 
   return [ordered]@{
+    Language = $language
     Lexicon = $lexiconPayload
     Rules = $rulesConfig
+    Validation = $validation
     Entries = $entries
     EntryMap = $entryMap
     EnglishMap = $englishMap
+    Paths = [ordered]@{
+      lexicon = $lexiconPath
+      rulesConfig = $rulesConfigPath
+      rulesNotes = $rulesPath
+    }
   }
 }
 
@@ -374,6 +565,37 @@ function Get-MapFromConfig($rules, $path) {
   return $map
 }
 
+function Get-NormalizedMapFromConfig($rules, $path, $keyNormalizer) {
+  $map = @{}
+  foreach ($property in (Get-ConfigValue $rules $path ([pscustomobject]@{})).PSObject.Properties) {
+    $normalizedKey = & $keyNormalizer $property.Name
+    if ($normalizedKey) {
+      $map[$normalizedKey] = $property.Value
+    }
+  }
+  return $map
+}
+
+function Test-ConfiguredSequence($actual, $expected) {
+  $expectedValues = ConvertTo-ArrayValue $expected
+  if (-not $expectedValues.Count -or $actual.Count -lt $expectedValues.Count) {
+    return $false
+  }
+
+  for ($index = 0; $index -lt $expectedValues.Count; $index += 1) {
+    $expectedValue = Normalize-AncientKey $expectedValues[$index]
+    if ($expectedValue -eq "*") {
+      continue
+    }
+
+    if ($actual[$index] -ne $expectedValue) {
+      return $false
+    }
+  }
+
+  return $true
+}
+
 function Find-LongestEnglishMatch($context, $tokens, $startIndex) {
   $bestMatch = $null
   $phraseParts = @()
@@ -407,22 +629,11 @@ function Find-LongestEnglishMatch($context, $tokens, $startIndex) {
   return $bestMatch
 }
 
-function Find-PoeticEnglishOverride($text) {
-  $map = @{
-    "bring ruin, bring ruin" = "Tso'koa, Tso'koa"
-    "our lives are yours" = "Neali micht tealeh"
-    "we give you our future" = "Neali tso nach tealeh"
-    "your winds blind all" = "Teeleh sesh vata kol"
-    "do not harm our flesh" = "Val rel kesheh"
-    "bring to new lands" = "Tso teal's tsol nali"
-    "ruin, harm, peace" = "Koa's - rel's - tsecht's"
-    "we are your children" = "Neali yeketeh"
-    "give us peace" = "Tso neali tsacht"
-  }
-
+function Find-PoeticEnglishOverride($context, $text) {
+  $map = Get-NormalizedMapFromConfig $context.Rules "translation.englishToAncientOverrides" ${function:Normalize-EnglishKey}
   $normalized = Normalize-EnglishKey $text
   if ($map.ContainsKey($normalized)) {
-    return $map[$normalized]
+    return [string]$map[$normalized]
   }
 
   return $null
@@ -439,7 +650,7 @@ function Translate-EnglishToAncientApi($context, $text) {
       continue
     }
 
-    $override = Find-PoeticEnglishOverride $line.text
+    $override = Find-PoeticEnglishOverride $context $line.text
     if ($override) {
       $translated += $override
       continue
@@ -747,13 +958,13 @@ function Get-NarrativeOverride($context, $lineText, $heads, $components) {
   }
 
   foreach ($pattern in (ConvertTo-ArrayValue (Get-ConfigValue $context.Rules "translation.headSequenceOverrides" @()))) {
-    if ((ConvertTo-ArrayValue $pattern.heads) -join "|" -eq ($heads -join "|")) {
+    if (Test-ConfiguredSequence $heads (ConvertTo-ArrayValue $pattern.heads) -and (ConvertTo-ArrayValue $pattern.heads).Count -eq $heads.Count) {
       return [string]$pattern.output
     }
   }
 
   foreach ($pattern in (ConvertTo-ArrayValue (Get-ConfigValue $context.Rules "translation.componentSequenceOverrides" @()))) {
-    if ((ConvertTo-ArrayValue $pattern.components) -join "|" -eq ($components -join "|")) {
+    if (Test-ConfiguredSequence $components (ConvertTo-ArrayValue $pattern.components) -and (ConvertTo-ArrayValue $pattern.components).Count -eq $components.Count) {
       return [string]$pattern.output
     }
   }
@@ -842,6 +1053,132 @@ function Resolve-LocationText($context, $heads, $tailWords) {
   return (@($tailWords) -join " ")
 }
 
+function Test-SyntaxPattern($pattern, $heads, $components) {
+  $match = Get-ConfigValue $pattern "match" ([pscustomobject]@{})
+  $minHeads = [int](Get-ConfigValue $match "minHeads" 0)
+  if ($heads.Count -lt $minHeads) {
+    return $false
+  }
+
+  $headSequence = ConvertTo-ArrayValue (Get-ConfigValue $match "headSequence" @())
+  if ($headSequence.Count -and -not (Test-ConfiguredSequence $heads $headSequence)) {
+    return $false
+  }
+
+  $componentSequence = ConvertTo-ArrayValue (Get-ConfigValue $match "componentSequence" @())
+  if ($componentSequence.Count -and -not (Test-ConfiguredSequence $components $componentSequence)) {
+    return $false
+  }
+
+  foreach ($headMatcher in (ConvertTo-ArrayValue (Get-ConfigValue $match "heads" @()))) {
+    $index = [int](Get-ConfigValue $headMatcher "index" -1)
+    if ($index -lt 0 -or $index -ge $heads.Count) {
+      return $false
+    }
+
+    $expected = Normalize-AncientKey (Get-ConfigValue $headMatcher "equals" "")
+    if ($expected -and $heads[$index] -ne $expected) {
+      return $false
+    }
+  }
+
+  return $true
+}
+
+function Resolve-SyntaxPatternSegment($context, $resolvedWords, $heads, $segment) {
+  if ($null -eq $segment) {
+    return ""
+  }
+
+  $mode = [string](Get-ConfigValue $segment "mode" "raw")
+  $index = [int](Get-ConfigValue $segment "index" -1)
+  $start = [int](Get-ConfigValue $segment "start" -1)
+
+  if ($mode -eq "verb") {
+    $verbIndex = if ($index -ge 0) { $index } else { 0 }
+    if ($verbIndex -lt 0 -or $verbIndex -ge $heads.Count) {
+      return ""
+    }
+
+    $explicitValue = Get-ConfigValue $segment "value" $null
+    if ($explicitValue) {
+      return [string]$explicitValue
+    }
+
+    return [string](Get-NarrativeRendering $context $heads[$verbIndex] "narrative")
+  }
+
+  $words = @()
+  if ($index -ge 0) {
+    if ($index -lt $resolvedWords.Count) {
+      $words = @($resolvedWords[$index])
+    }
+  } elseif ($start -ge 0) {
+    if ($start -lt $resolvedWords.Count) {
+      $words = @($resolvedWords | Select-Object -Skip $start)
+    }
+  }
+
+  $text = switch ($mode) {
+    "subject" { Resolve-SubjectText $context ($(if ($words.Count) { $words[0] } else { "" })) }
+    "object" { Resolve-ObjectText $context $words }
+    "location" { Resolve-LocationText $context (@($heads | Select-Object -Skip $start)) $words }
+    "continuation" {
+      if ($words.Count -le 1) {
+        Resolve-ObjectText $context $words
+      } else {
+        Resolve-LocationText $context (@($heads | Select-Object -Skip $start)) $words
+      }
+    }
+    default { (@($words | Where-Object { $_ }) -join " ").Trim() }
+  }
+
+  if ([string]::IsNullOrWhiteSpace($text)) {
+    return ""
+  }
+
+  $prefix = [string](Get-ConfigValue $segment "prefix" "")
+  $suffix = [string](Get-ConfigValue $segment "suffix" "")
+  return "$prefix$text$suffix"
+}
+
+function Invoke-SyntaxPattern($context, $resolvedWords, $heads, $components) {
+  foreach ($pattern in (ConvertTo-ArrayValue (Get-ConfigValue $context.Rules "translation.syntaxPatterns" @()))) {
+    if (-not (Test-SyntaxPattern $pattern $heads $components)) {
+      continue
+    }
+
+    $template = [string](Get-ConfigValue $pattern "template" "")
+    if (-not $template) {
+      continue
+    }
+
+    $replacements = @{
+      "{subject}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "subject" $null)
+      "{object}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "object" $null)
+      "{tail}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "tail" $null)
+      "{firstObject}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "firstObject" $null)
+      "{secondObject}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "secondObject" $null)
+      "{verb}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "verb" ([pscustomobject]@{ mode = "verb"; index = 0 }))
+      "{secondVerb}" = Resolve-SyntaxPatternSegment $context $resolvedWords $heads (Get-ConfigValue $pattern "secondVerb" $null)
+    }
+
+    foreach ($placeholder in $replacements.Keys) {
+      $template = $template.Replace($placeholder, [string]$replacements[$placeholder])
+    }
+
+    $sentence = $template -replace "\s+", " "
+    $sentence = $sentence -replace "\s+([,.;!?])", '$1'
+    $sentence = $sentence.Trim()
+    if ([bool](Get-ConfigValue $pattern "capitalize" $true)) {
+      $sentence = Capitalize-Text $sentence
+    }
+    return $sentence
+  }
+
+  return $null
+}
+
 function Analyze-AncientLineApi($context, $lineText) {
   $tokens = Tokenize-TranslatorText $lineText
   $wordAnalyses = @()
@@ -876,61 +1213,8 @@ function Analyze-AncientLineApi($context, $lineText) {
   })
   $literal = if ($components.Count) { Build-LiteralLineApi $context $wordAnalyses } else { "" }
   $idiomatic = Get-NarrativeOverride $context $lineText $heads $components
-  if (-not $idiomatic -and $heads.Count -ge 2 -and $heads[0] -eq "lan") {
-    $subject = Resolve-SubjectText $context $resolvedWords[1]
-    $tail = if ($resolvedWords.Count -gt 2) { Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) (@($resolvedWords | Select-Object -Skip 2)) } else { "" }
-    $idiomatic = ("{0} appeared{1}" -f (Capitalize-Text $subject), $(if ($tail) { " $tail." } else { "." }))
-  }
-  if (-not $idiomatic -and $heads.Count -eq 2 -and $heads[1] -eq "licht") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) remained."
-  }
-  if (-not $idiomatic -and $heads.Count -eq 2 -and $heads[1] -eq "lin") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) vanished."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 2 -and $heads[1] -eq "sal") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $tail = if ($resolvedWords.Count -gt 2) { Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) (@($resolvedWords | Select-Object -Skip 2)) } else { "" }
-    $idiomatic = ("{0} came{1}" -f (Capitalize-Text $subject), $(if ($tail) { " $tail." } else { "." }))
-  }
-  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "sacht") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $tailWords = @($resolvedWords | Select-Object -Skip 2)
-    $tail = if ($tailWords.Count -le 1) {
-      Resolve-ObjectText $context $tailWords
-    } else {
-      Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) $tailWords
-    }
-    $idiomatic = "$(Capitalize-Text $subject) continued $tail."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "ru") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) knew $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "rutacht") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) remembered $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "tsach") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) gave $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "tsocht") {
-    $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$(Capitalize-Text $subject) kept $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 4 -and $heads[1] -eq "kecht" -and $heads[3] -eq "rutacht") {
-    $subject = Capitalize-Text (Resolve-SubjectText $context $resolvedWords[0])
-    $firstObject = Resolve-ObjectText $context @($resolvedWords[2])
-    $secondObject = Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 4))
-    $idiomatic = "$subject heard $firstObject and remembered $secondObject."
-  }
-  if (-not $idiomatic -and $heads.Count -ge 4 -and $heads[1] -eq "tsach" -and $heads[3] -eq "tsocht") {
-    $subject = Capitalize-Text (Resolve-SubjectText $context $resolvedWords[0])
-    $firstObject = Resolve-ObjectText $context @($resolvedWords[2])
-    $secondObject = Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 4))
-    $idiomatic = "$subject gave $firstObject and kept $secondObject."
+  if (-not $idiomatic) {
+    $idiomatic = Invoke-SyntaxPattern $context $resolvedWords $heads $components
   }
   if (-not $idiomatic) {
     $idiomatic = ((@($resolvedWords | Where-Object { $_ }) -join " ").Trim())
@@ -997,6 +1281,54 @@ function Handle-TranslationRequest($context) {
   }
 
   Write-Response $context 400 "Unsupported translation action."
+}
+
+function Get-LanguagePackStatus() {
+  try {
+    $lexiconPayload = Read-LexiconPayload
+    $rulesConfig = Read-RulesConfig
+    $language = Get-LanguageMetadata $rulesConfig
+    $validation = Get-LanguagePackValidation $lexiconPayload $rulesConfig
+
+    return [ordered]@{
+      language = $language
+      validation = $validation
+      activePaths = [ordered]@{
+        lexicon = $lexiconPath
+        rulesConfig = $rulesConfigPath
+        rulesNotes = $rulesPath
+      }
+    }
+  } catch {
+    return [ordered]@{
+      language = [ordered]@{
+        name = "Translator language"
+        version = "0.0.0"
+        description = ""
+      }
+      validation = [ordered]@{
+        valid = $false
+        errors = @(
+          [ordered]@{
+            severity = "error"
+            message = $_.Exception.Message
+          }
+        )
+        warnings = @()
+        issues = @(
+          [ordered]@{
+            severity = "error"
+            message = $_.Exception.Message
+          }
+        )
+      }
+      activePaths = [ordered]@{
+        lexicon = $lexiconPath
+        rulesConfig = $rulesConfigPath
+        rulesNotes = $rulesPath
+      }
+    }
+  }
 }
 
 function Get-LexiconCategoriesForMarkdown($entry) {
@@ -1081,7 +1413,7 @@ function Classify-EntryForMarkdown($entry) {
   return "Additional Entries"
 }
 
-function Build-LexiconMarkdownServer($entries, $rulesMarkdown, $includeInferred) {
+function Build-LexiconMarkdownServer($entries, $rulesMarkdown, $includeInferred, $language) {
   $grouped = @{}
   foreach ($section in $markdownSectionOrder) {
     $grouped[$section] = New-Object System.Collections.Generic.List[object]
@@ -1105,11 +1437,13 @@ function Build-LexiconMarkdownServer($entries, $rulesMarkdown, $includeInferred)
   $inferredCount = @($entries | Where-Object { $_.status -eq "inferred" }).Count
   $confirmedCount = $entries.Count - $inferredCount
 
-  [void]$lines.Add("# Ancient Tongue")
+  $languageName = if ($language.name) { [string]$language.name } else { "Translator language" }
+
+  [void]$lines.Add("# $languageName")
   [void]$lines.Add("")
   [void]$lines.Add("## Overview")
   [void]$lines.Add("")
-  [void]$lines.Add("This lexicon document was generated directly from the backend-managed Ancient Tongue vocabulary.")
+  [void]$lines.Add("This lexicon document was generated directly from the backend-managed $languageName vocabulary.")
   [void]$lines.Add("")
   [void]$lines.Add("- confirmed entries included: $confirmedCount")
   [void]$lines.Add("- inferred entries included: $inferredCount")
@@ -1163,6 +1497,8 @@ function Handle-MarkdownExportRequest($context) {
   $request = if ([string]::IsNullOrWhiteSpace($body)) { [pscustomobject]@{} } else { $body | ConvertFrom-Json }
   $includeInferred = [bool]$request.includeInferred
   $lexiconPayload = Read-LexiconPayload
+  $rulesConfig = Read-RulesConfig
+  $language = Get-LanguageMetadata $rulesConfig
   $entries = @(
     Normalize-LexiconEntries $lexiconPayload.confirmed
   )
@@ -1176,7 +1512,7 @@ function Handle-MarkdownExportRequest($context) {
     ""
   }
 
-  $markdown = Build-LexiconMarkdownServer $entries $rulesMarkdown $includeInferred
+  $markdown = Build-LexiconMarkdownServer $entries $rulesMarkdown $includeInferred $language
   Write-Response $context 200 $markdown "text/markdown; charset=utf-8"
 }
 
@@ -1187,14 +1523,28 @@ function Handle-ApiRequest($context) {
   }
 
   if ($path -eq "/api/health") {
+    $packStatus = Get-LanguagePackStatus
     Write-JsonResponse $context 200 ([ordered]@{
-      status = "ok"
-      translationApi = $true
+      status = $(if ($packStatus.validation.valid) { "ok" } else { "degraded" })
+      language = $packStatus.language
+      activePaths = $packStatus.activePaths
+      validation = $packStatus.validation
+      translationApi = [bool]$packStatus.validation.valid
       lexiconApi = $true
       rulesConfigApi = $true
       rulesNotesApi = $true
       markdownExportApi = $true
     })
+    return $true
+  }
+
+  if ($path -eq "/api/language-pack") {
+    if ($context.Request.HttpMethod -eq "GET") {
+      Write-JsonResponse $context 200 (Get-LanguagePackStatus)
+      return $true
+    }
+
+    Write-Response $context 405 "Method Not Allowed"
     return $true
   }
 
@@ -1295,8 +1645,12 @@ if (-not $listener) {
   throw "No available localhost port found for the translator server."
 }
 
-Start-Process $indexUrl | Out-Null
-Write-Host "Ancient Tongue translator is running at $indexUrl" -ForegroundColor Green
+$autoOpenBrowser = $env:TRANSLATOR_NO_OPEN -notin @("1", "true", "TRUE", "yes", "YES")
+if ($autoOpenBrowser) {
+  Start-Process $indexUrl | Out-Null
+}
+$activeLanguage = Get-LanguageMetadata (Read-RulesConfig)
+Write-Host "$($activeLanguage.name) translator is running at $indexUrl" -ForegroundColor Green
 Write-Host "Press Ctrl+C to stop the server." -ForegroundColor Yellow
 
 try {

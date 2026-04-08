@@ -41,21 +41,44 @@ function normalizeTranslationAnalysis(analysis) {
 
 async function probeTranslationApi() {
   if (window.location.protocol === "file:") {
+    translationApiHealth = null;
     return false;
   }
 
   try {
     const response = await fetch("./api/health", { cache: "no-store" });
     if (!response.ok) {
+      translationApiHealth = null;
       return false;
     }
 
     const payload = await response.json();
+    translationApiHealth = payload;
     return Boolean(payload?.translationApi);
   } catch (error) {
     console.warn("Translation API health check failed.", error);
+    translationApiHealth = null;
     return false;
   }
+}
+
+function getTranslationApiStatusMessage() {
+  const validationErrors = Array.isArray(translationApiHealth?.validation?.errors)
+    ? translationApiHealth.validation.errors
+    : [];
+
+  if (validationErrors.length) {
+    const firstError = validationErrors[0]?.message;
+    if (firstError) {
+      return `The backend language pack is invalid: ${firstError}`;
+    }
+  }
+
+  if (translationApiHealth?.status === "degraded") {
+    return "The backend translation API is degraded. Check the active language pack and restart the local server.";
+  }
+
+  return "The backend translation API is unavailable. Restart the local server and try again.";
 }
 
 function requireTranslationApi() {
@@ -64,7 +87,7 @@ function requireTranslationApi() {
   }
 
   if (!serverTranslationApiAvailable) {
-    throw new Error("The backend translation API is unavailable. Restart the local server and try again.");
+    throw new Error(getTranslationApiStatusMessage());
   }
 }
 

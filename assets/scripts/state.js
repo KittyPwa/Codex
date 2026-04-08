@@ -2,6 +2,7 @@
 
 let confirmedLexicon = [];
 let inferredLexicon = [];
+let translationApiHealth = null;
 
 const englishInput = document.querySelector("#english-input");
 const ancientInput = document.querySelector("#ancient-input");

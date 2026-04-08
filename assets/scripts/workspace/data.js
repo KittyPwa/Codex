@@ -28,7 +28,7 @@ async function initializeApp() {
     }
     serverTranslationApiAvailable = await probeTranslationApi();
     if (window.location.protocol !== "file:" && !serverTranslationApiAvailable) {
-      throw new Error("The backend translation API is unavailable.");
+      throw new Error(getTranslationApiStatusMessage());
     }
     appReady = true;
     setLexiconStatus(describeActiveLexiconSource());
@@ -46,7 +46,7 @@ async function initializeApp() {
     translatorNote.textContent =
       window.location.protocol === "file:"
         ? "Open the app through the local server launcher to use translation, editing, and export features."
-        : "Restart the local server or import a lexicon JSON file to recover the workspace.";
+        : error.message || "Restart the local server or import a lexicon JSON file to recover the workspace.";
   }
 }
 

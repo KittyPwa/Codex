@@ -245,6 +245,17 @@
       "path": "the",
       "breath": "the"
     },
+    "englishToAncientOverrides": {
+      "bring ruin, bring ruin": "Tso'koa, Tso'koa",
+      "our lives are yours": "Neali micht tealeh",
+      "we give you our future": "Neali tso nach tealeh",
+      "your winds blind all": "Teeleh sesh vata kol",
+      "do not harm our flesh": "Val rel kesheh",
+      "bring to new lands": "Tso teal's tsol nali",
+      "ruin, harm, peace": "Koa's - rel's - tsecht's",
+      "we are your children": "Neali yeketeh",
+      "give us peace": "Tso neali tsacht"
+    },
     "headSequenceOverrides": [
       {
         "heads": ["sitacht", "valkecht", "licht"],
@@ -345,6 +356,121 @@
       "kecht": { "narrative": "heard", "literal": "hear" },
       "la": { "narrative": "was", "literal": "be" }
     },
+    "syntaxPatterns": [
+      {
+        "match": {
+          "minHeads": 2,
+          "heads": [{ "index": 0, "equals": "lan" }]
+        },
+        "subject": { "index": 1, "mode": "subject" },
+        "verb": { "index": 0, "mode": "verb" },
+        "tail": { "start": 2, "mode": "location", "prefix": " " },
+        "template": "{subject} {verb}{tail}."
+      },
+      {
+        "match": {
+          "minHeads": 2,
+          "heads": [{ "index": 1, "equals": "licht" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "verb": { "index": 1, "mode": "verb" },
+        "template": "{subject} {verb}."
+      },
+      {
+        "match": {
+          "minHeads": 2,
+          "heads": [{ "index": 1, "equals": "lin" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "verb": { "index": 1, "mode": "verb" },
+        "template": "{subject} {verb}."
+      },
+      {
+        "match": {
+          "minHeads": 2,
+          "heads": [{ "index": 1, "equals": "sal" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "verb": { "index": 1, "mode": "verb" },
+        "tail": { "start": 2, "mode": "location", "prefix": " " },
+        "template": "{subject} {verb}{tail}."
+      },
+      {
+        "match": {
+          "minHeads": 3,
+          "heads": [{ "index": 1, "equals": "sacht" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "tail": { "start": 2, "mode": "continuation", "prefix": " " },
+        "template": "{subject} continued{tail}."
+      },
+      {
+        "match": {
+          "minHeads": 3,
+          "heads": [{ "index": 1, "equals": "ru" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "object": { "start": 2, "mode": "object" },
+        "template": "{subject} knew {object}."
+      },
+      {
+        "match": {
+          "minHeads": 3,
+          "heads": [{ "index": 1, "equals": "rutacht" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "object": { "start": 2, "mode": "object" },
+        "template": "{subject} remembered {object}."
+      },
+      {
+        "match": {
+          "minHeads": 3,
+          "heads": [{ "index": 1, "equals": "tsach" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "object": { "start": 2, "mode": "object" },
+        "template": "{subject} gave {object}."
+      },
+      {
+        "match": {
+          "minHeads": 3,
+          "heads": [{ "index": 1, "equals": "tsocht" }]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "object": { "start": 2, "mode": "object" },
+        "template": "{subject} kept {object}."
+      },
+      {
+        "match": {
+          "minHeads": 4,
+          "heads": [
+            { "index": 1, "equals": "kecht" },
+            { "index": 3, "equals": "rutacht" }
+          ]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "verb": { "index": 1, "mode": "verb" },
+        "firstObject": { "index": 2, "mode": "object" },
+        "secondVerb": { "index": 3, "mode": "verb" },
+        "secondObject": { "start": 4, "mode": "object" },
+        "template": "{subject} {verb} {firstObject} and {secondVerb} {secondObject}."
+      },
+      {
+        "match": {
+          "minHeads": 4,
+          "heads": [
+            { "index": 1, "equals": "tsach" },
+            { "index": 3, "equals": "tsocht" }
+          ]
+        },
+        "subject": { "index": 0, "mode": "subject" },
+        "verb": { "index": 1, "mode": "verb" },
+        "firstObject": { "index": 2, "mode": "object" },
+        "secondVerb": { "index": 3, "mode": "verb" },
+        "secondObject": { "start": 4, "mode": "object" },
+        "template": "{subject} {verb} {firstObject} and {secondVerb} {secondObject}."
+      }
+    ],
     "clauseTypes": {
       "lan": "appearance",
       "licht": "state",
