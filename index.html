@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ancient Tongue Translator</title>
+  <link rel="stylesheet" href="./assets/styles/app.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <p class="eyebrow">Ancient Tongue Lexicon</p>
+      <h1>Bidirectional translator for your living language.</h1>
+      <p class="intro">
+        Type in English or in the Ancient Tongue. The translator still works both ways, but Ancient Tongue input is
+        treated as an interpretive glossing system: meanings, compound parts, pronunciation notes, and ambiguity stay visible.
+      </p>
+      <label class="mode-toggle">
+        <input id="include-inferred" type="checkbox">
+        <span>Show inferred / experimental entries</span>
+      </label>
+      <label class="mode-toggle">
+        <span>Output mode</span>
+        <select id="output-mode" class="mode-select">
+          <option value="gloss">Gloss</option>
+          <option value="resolved">Resolved</option>
+          <option value="idiomatic" selected>Idiomatic</option>
+        </select>
+      </label>
+      <div class="mode-toggle">
+        <span>Lexicon source</span>
+        <p id="lexicon-status" class="helper-line">Loading `data/lexicon.json`...</p>
+        <label class="ghost-button" for="lexicon-file">Import JSON lexicon</label>
+        <input id="lexicon-file" type="file" accept=".json,application/json" hidden>
+      </div>
+      <button id="download-lexicon-md" class="ghost-button hero-download" type="button">Download .md</button>
+    </section>
+
+    <nav class="tab-bar" aria-label="Workspace tabs">
+      <button class="tab-button is-active" type="button" data-tab-target="translator-tab">Translator</button>
+      <button class="tab-button" type="button" data-tab-target="lexicon-tab">Lexicon Table</button>
+      <button class="tab-button" type="button" data-tab-target="rules-tab">Rules & Notes</button>
+    </nav>
+
+    <section id="translator-tab" class="tab-panel is-active">
+      <section class="workspace">
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Source</p>
+              <h2>English</h2>
+            </div>
+            <button id="fill-english" class="ghost-button" type="button">Load sample</button>
+          </div>
+          <label class="sr-only" for="english-input">English input</label>
+          <textarea
+            id="english-input"
+            class="translator-input"
+            placeholder="Write in English here..."
+            spellcheck="false"
+          ></textarea>
+        </article>
+
+        <article class="panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Source</p>
+              <h2>Ancient Tongue</h2>
+            </div>
+            <button id="fill-ancient" class="ghost-button" type="button">Load sample</button>
+          </div>
+          <label class="sr-only" for="ancient-input">Ancient Tongue input</label>
+          <textarea
+            id="ancient-input"
+            class="translator-input"
+            placeholder="Write in the Ancient Tongue here..."
+            spellcheck="false"
+          ></textarea>
+        </article>
+      </section>
+
+      <section class="analysis-grid">
+        <article class="panel analysis-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Ancient Tongue Analysis</p>
+              <h2>Gloss Output</h2>
+            </div>
+          </div>
+          <div class="analysis-meta">
+            <p id="gloss-summary" class="summary-line">Type Ancient Tongue to see structured glossing.</p>
+            <p id="translator-note" class="helper-line">The app prefers interpretation over overconfident sentence translation.</p>
+          </div>
+          <div class="line-outputs">
+            <article class="line-output-card">
+              <p class="panel-label">Morpheme Gloss</p>
+              <pre id="morpheme-output" class="line-output">Type Ancient Tongue to see line glosses.</pre>
+            </article>
+            <article class="line-output-card">
+              <p class="panel-label">Resolved Gloss</p>
+              <pre id="literal-output" class="line-output">Type Ancient Tongue to see resolved lexical gloss.</pre>
+            </article>
+            <article class="line-output-card">
+              <p class="panel-label">Idiomatic Translation</p>
+              <pre id="idiomatic-output" class="line-output">Type Ancient Tongue to see idiomatic line translations.</pre>
+            </article>
+          </div>
+          <div id="analysis-list" class="analysis-list"></div>
+        </article>
+      </section>
+    </section>
+
+    <section id="lexicon-tab" class="tab-panel">
+      <section class="analysis-grid">
+        <article class="panel analysis-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Lexicon Explorer</p>
+              <h2>Organized Vocabulary Table</h2>
+            </div>
+            <button id="lexicon-new-entry" class="ghost-button" type="button">New Entry</button>
+          </div>
+          <div class="analysis-meta">
+            <p id="lexicon-table-summary" class="summary-line">The active lexicon will appear here once it loads.</p>
+            <p id="lexicon-editor-status" class="helper-line">Search, sort, edit, and save the active vocabulary without leaving the translator.</p>
+          </div>
+          <div class="lexicon-controls">
+            <label class="control-group">
+              <span>Search</span>
+              <input id="lexicon-search" class="control-input" type="search" placeholder="Search words, meanings, notes...">
+            </label>
+            <label class="control-group">
+              <span>Status</span>
+              <select id="lexicon-status-filter" class="control-input">
+                <option value="all">All</option>
+              </select>
+            </label>
+            <label class="control-group">
+              <span>Register</span>
+              <select id="lexicon-register-filter" class="control-input">
+                <option value="all">All</option>
+              </select>
+            </label>
+            <label class="control-group">
+              <span>Category</span>
+              <select id="lexicon-category-filter" class="control-input">
+                <option value="all">All</option>
+              </select>
+            </label>
+          </div>
+          <div class="lexicon-table-wrap">
+            <table class="lexicon-table">
+              <thead>
+                <tr>
+                  <th><button class="table-sort-button is-active" type="button" data-lexicon-sort="ancient">Ancient</button></th>
+                  <th><button class="table-sort-button" type="button" data-lexicon-sort="meaning">Meanings</button></th>
+                  <th><button class="table-sort-button" type="button" data-lexicon-sort="status">Status</button></th>
+                  <th><button class="table-sort-button" type="button" data-lexicon-sort="register">Register</button></th>
+                  <th><button class="table-sort-button" type="button" data-lexicon-sort="category">Categories</button></th>
+                  <th><button class="table-sort-button" type="button" data-lexicon-sort="components">Components</button></th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="lexicon-table-body">
+                <tr>
+                  <td colspan="7">Loading lexicon...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+    </section>
+
+    <section id="rules-tab" class="tab-panel">
+      <section class="analysis-grid">
+        <article class="panel analysis-panel">
+          <div class="panel-header">
+            <div>
+              <p class="panel-label">Rules & Notes</p>
+              <h2>Structure Reference</h2>
+            </div>
+            <div class="panel-actions">
+              <button id="rules-edit-button" class="ghost-button" type="button">Edit</button>
+              <button id="rules-save-button" class="ghost-button" type="button" hidden>Save</button>
+              <button id="rules-cancel-button" class="ghost-button" type="button" hidden>Cancel</button>
+            </div>
+          </div>
+          <div class="analysis-meta">
+            <p id="rules-summary" class="summary-line">Loading rules and notes...</p>
+            <p id="rules-editor-status" class="helper-line">This tab is rendered directly from the secondary rules file used by the markdown export.</p>
+          </div>
+          <article id="rules-content" class="markdown-doc">
+            <p>Loading rules and notes...</p>
+          </article>
+          <label id="rules-editor-wrap" class="sr-only" for="rules-editor">Rules editor</label>
+          <textarea id="rules-editor" class="document-editor" hidden spellcheck="false"></textarea>
+        </article>
+      </section>
+    </section>
+
+    <section class="notes">
+      <div class="note-card">
+        <h3>How it behaves</h3>
+        <p>English to Ancient Tongue remains a best-effort generator based on the active lexicon.</p>
+        <p>Ancient Tongue parsing now tries normalization, affix splitting, compound recovery, drift rescue, glossing, and idiomatic line reading.</p>
+        <p>Poetic overrides preserve ritual lines without flattening the underlying morpheme analysis.</p>
+      </div>
+
+      <div class="note-card">
+        <h3>Lexicon File</h3>
+        <p>The translator now reads vocabulary from <code>data/lexicon.json</code>.</p>
+        <p>Rules and notes are loaded from <code>data/rules-notes.md</code> and included in the markdown export.</p>
+        <p>You can also import any compatible JSON lexicon file with the control above when you want to swap datasets without editing the code.</p>
+        <p>Use <code>{ "confirmed": [...], "inferred": [...] }</code> or a plain array for confirmed entries only.</p>
+        <p>If you open the page directly from disk and the browser blocks JSON loading, run <code>start-translator.bat</code> to serve it locally without cross-origin issues.</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="lexicon-graph-modal" class="modal-shell" hidden>
+    <div id="lexicon-graph-backdrop" class="modal-backdrop"></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="lexicon-graph-title">
+      <div class="panel-header">
+        <div>
+          <p class="panel-label">Word Family Graph</p>
+          <h2 id="lexicon-graph-title">Compound Descendants</h2>
+        </div>
+        <button id="lexicon-graph-close" class="ghost-button" type="button">Close</button>
+      </div>
+      <div class="analysis-meta">
+        <p id="lexicon-graph-summary" class="summary-line">Select a word from the lexicon table to see its lineage.</p>
+        <p class="helper-line">The graph shows direct ascendants above and descendant compounds below, using `components` and `etymology` links.</p>
+      </div>
+      <div id="lexicon-graph-root" class="lexicon-graph-root"></div>
+    </section>
+  </div>
+
+  <div id="lexicon-entry-modal" class="modal-shell" hidden>
+    <div id="lexicon-entry-backdrop" class="modal-backdrop"></div>
+    <section class="modal-panel" role="dialog" aria-modal="true" aria-labelledby="lexicon-entry-title">
+      <form id="lexicon-entry-form" class="entry-editor-form">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">Lexicon Entry Editor</p>
+            <h2 id="lexicon-entry-title">Edit Entry</h2>
+          </div>
+          <div class="panel-actions">
+            <button id="lexicon-entry-delete" class="ghost-button" type="button">Delete</button>
+            <button id="lexicon-entry-cancel" class="ghost-button" type="button">Cancel</button>
+            <button id="lexicon-entry-save" class="ghost-button" type="submit">Save</button>
+          </div>
+        </div>
+        <p id="lexicon-entry-status" class="helper-line">Changes save back to the external lexicon file.</p>
+        <input id="lexicon-entry-original" type="hidden">
+        <input id="lexicon-entry-original-group" type="hidden">
+        <div class="entry-editor-grid">
+          <label class="control-group">
+            <span>Ancient</span>
+            <input id="entry-ancient" class="control-input" type="text" required>
+          </label>
+          <label class="control-group">
+            <span>Group</span>
+            <select id="entry-group" class="control-input">
+              <option value="confirmed">Confirmed</option>
+              <option value="inferred">Inferred</option>
+            </select>
+          </label>
+          <label class="control-group">
+            <span>Status</span>
+            <input id="entry-status" class="control-input" type="text" placeholder="confirmed">
+          </label>
+          <label class="control-group">
+            <span>Register</span>
+            <input id="entry-register" class="control-input" type="text" placeholder="both">
+          </label>
+          <label class="control-group control-group-wide">
+            <span>Meanings</span>
+            <textarea id="entry-meanings" class="control-input control-textarea" rows="4" placeholder="One meaning per line" required></textarea>
+          </label>
+          <label class="control-group">
+            <span>Categories / Part of Speech</span>
+            <textarea id="entry-part-of-speech" class="control-input control-textarea" rows="4" placeholder="One category per line"></textarea>
+          </label>
+          <label class="control-group">
+            <span>Components</span>
+            <textarea id="entry-components" class="control-input control-textarea" rows="4" placeholder="One component per line"></textarea>
+          </label>
+          <label class="control-group">
+            <span>Etymology</span>
+            <textarea id="entry-etymology" class="control-input control-textarea" rows="4" placeholder="One etymology part per line"></textarea>
+          </label>
+          <label class="control-group control-group-wide">
+            <span>Notes</span>
+            <textarea id="entry-notes" class="control-input control-textarea" rows="5" placeholder="One note per line"></textarea>
+          </label>
+          <label class="control-group">
+            <span>Pronunciation</span>
+            <input id="entry-pronunciation" class="control-input" type="text">
+          </label>
+          <div class="entry-checkboxes control-group control-group-wide">
+            <span>Flags</span>
+            <label class="checkbox-row"><input id="entry-lexicalized" type="checkbox"> Lexicalized</label>
+            <label class="checkbox-row"><input id="entry-can-decompose" type="checkbox"> Can decompose</label>
+            <label class="checkbox-row"><input id="entry-allow-nominal-reading" type="checkbox"> Allow nominal reading</label>
+            <label class="checkbox-row"><input id="entry-optional" type="checkbox"> Optional</label>
+          </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <script src="./assets/scripts/state.js"></script>
+  <script src="./assets/scripts/translation-engine.js"></script>
+  <script src="./assets/scripts/workspace.js"></script>
+  <script src="./assets/scripts/bootstrap.js"></script>
+</body>
+</html>
