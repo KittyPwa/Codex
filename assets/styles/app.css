@@ -1,18 +1,24 @@
 :root {
-  --bg: #0f1117;
-  --panel: rgba(18, 23, 34, 0.82);
-  --panel-border: rgba(213, 184, 129, 0.24);
-  --panel-shadow: rgba(0, 0, 0, 0.32);
+  --bg: #0e1116;
+  --panel: rgba(15, 21, 31, 0.84);
+  --panel-strong: rgba(12, 17, 26, 0.94);
+  --panel-border: rgba(196, 168, 116, 0.2);
+  --panel-shadow: rgba(0, 0, 0, 0.34);
   --text: #edf1ea;
-  --muted: #b8c0b0;
-  --accent: #d5b881;
-  --accent-strong: #f0d59a;
-  --field: rgba(7, 10, 17, 0.72);
-  --field-border: rgba(213, 184, 129, 0.2);
+  --muted: #aab4a8;
+  --accent: #c4a874;
+  --accent-strong: #eed6a4;
+  --field: rgba(6, 11, 19, 0.78);
+  --field-border: rgba(196, 168, 116, 0.16);
+  --line: rgba(196, 168, 116, 0.12);
 }
 
 * {
   box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 body {
@@ -21,9 +27,9 @@ body {
   font-family: "Segoe UI Variable", "Trebuchet MS", sans-serif;
   color: var(--text);
   background:
-    radial-gradient(circle at top, rgba(213, 184, 129, 0.18), transparent 34%),
-    radial-gradient(circle at 20% 80%, rgba(85, 111, 149, 0.22), transparent 30%),
-    linear-gradient(155deg, #0b0d12 0%, #121723 45%, #1b1d24 100%);
+    radial-gradient(circle at top, rgba(196, 168, 116, 0.18), transparent 30%),
+    radial-gradient(circle at 16% 82%, rgba(77, 101, 136, 0.22), transparent 28%),
+    linear-gradient(155deg, #090c11 0%, #10151e 44%, #181d26 100%);
 }
 
 body.modal-open {
@@ -35,7 +41,7 @@ body::before {
   position: fixed;
   inset: 0;
   pointer-events: none;
-  opacity: 0.08;
+  opacity: 0.06;
   background-image:
     linear-gradient(rgba(255, 255, 255, 0.9) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255, 255, 255, 0.9) 1px, transparent 1px);
@@ -44,30 +50,66 @@ body::before {
 }
 
 .app-shell {
-  width: min(1180px, calc(100% - 32px));
+  width: min(1280px, calc(100% - 40px));
   margin: 0 auto;
-  padding: 48px 0 56px;
+  padding: 36px 0 64px;
 }
 
 .hero {
-  margin-bottom: 28px;
+  display: none;
+}
+
+.control-dock {
+  border: 1px solid var(--panel-border);
+  border-radius: 28px;
+  background: linear-gradient(180deg, rgba(18, 24, 35, 0.92), rgba(12, 17, 26, 0.8));
+  box-shadow: 0 22px 60px var(--panel-shadow);
+  backdrop-filter: blur(14px);
+}
+
+.control-dock {
+  padding: 24px;
+  position: relative;
+}
+
+.control-dock-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.control-dock-compact {
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: rgba(15, 21, 31, 0.88);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .hero-download {
-  margin-top: 20px;
+  width: auto;
+  justify-content: center;
 }
 
 .tab-bar {
-  display: flex;
-  gap: 12px;
-  margin: 0 0 18px;
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--panel-border);
+  border-radius: 999px;
+  background: rgba(10, 14, 22, 0.7);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.24);
+  justify-self: start;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .tab-button {
-  border: 1px solid rgba(213, 184, 129, 0.18);
+  border: 1px solid transparent;
   border-radius: 999px;
   padding: 12px 18px;
-  background: rgba(10, 14, 22, 0.5);
+  background: transparent;
   color: var(--accent-strong);
   font: inherit;
   cursor: pointer;
@@ -76,13 +118,13 @@ body::before {
 
 .tab-button:hover {
   transform: translateY(-1px);
-  background: rgba(240, 213, 154, 0.12);
-  border-color: rgba(240, 213, 154, 0.36);
+  background: rgba(238, 214, 164, 0.08);
+  border-color: rgba(238, 214, 164, 0.16);
 }
 
 .tab-button.is-active {
-  background: rgba(240, 213, 154, 0.18);
-  border-color: rgba(240, 213, 154, 0.44);
+  background: rgba(238, 214, 164, 0.16);
+  border-color: rgba(238, 214, 164, 0.28);
   color: var(--text);
 }
 
@@ -130,7 +172,7 @@ body::before {
 .eyebrow,
 .panel-label {
   margin: 0 0 8px;
-  font-size: 0.8rem;
+  font-size: 0.78rem;
   letter-spacing: 0.24em;
   text-transform: uppercase;
   color: var(--accent);
@@ -144,52 +186,154 @@ h3 {
   font-weight: 600;
 }
 
-h1 {
-  max-width: 12ch;
-  font-size: clamp(2.4rem, 5vw, 4.9rem);
-  line-height: 0.98;
-}
-
-.intro {
-  max-width: 66ch;
-  margin: 16px 0 0;
-  color: var(--muted);
-  font-size: 1.03rem;
-  line-height: 1.7;
-}
-
 .mode-toggle {
   display: inline-flex;
   align-items: center;
   gap: 12px;
-  margin-top: 20px;
-  padding: 12px 16px;
-  border: 1px solid rgba(213, 184, 129, 0.18);
-  border-radius: 999px;
-  background: rgba(10, 14, 22, 0.5);
+  padding: 8px 10px;
+  border: 1px solid rgba(196, 168, 116, 0.1);
+  border-radius: 12px;
+  background: rgba(10, 14, 22, 0.28);
   color: var(--accent-strong);
-  cursor: pointer;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.mode-toggle-block {
+  width: 100%;
+}
+
+.mode-toggle-inline {
+  width: auto;
+}
+
+.mode-toggle-stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.control-dock-grid-compact {
+  grid-template-columns: minmax(220px, 1.15fr) minmax(150px, 0.72fr) minmax(220px, 1fr) 140px;
+  align-items: stretch;
+}
+
+.control-dock-grid-rail {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 6px;
+  align-items: center;
 }
 
 .mode-toggle input {
-  inline-size: 18px;
-  block-size: 18px;
+  inline-size: 15px;
+  block-size: 15px;
   accent-color: var(--accent);
 }
 
 .mode-select {
-  border: 1px solid rgba(213, 184, 129, 0.22);
-  border-radius: 999px;
-  padding: 8px 12px;
+  min-width: 132px;
+  border: 1px solid rgba(196, 168, 116, 0.18);
+  border-radius: 10px;
+  padding: 6px 10px;
   background: rgba(7, 10, 17, 0.82);
   color: var(--text);
   font: inherit;
 }
 
+.mode-toggle > span {
+  font-size: 0.92rem;
+}
+
+.mode-toggle .helper-line {
+  margin-top: 0;
+  font-size: 0.84rem;
+  line-height: 1.45;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.mode-toggle .ghost-button,
+.hero-download {
+  min-height: 34px;
+  padding: 8px 12px;
+  font-size: 0.92rem;
+}
+
+.mode-toggle-compact {
+  gap: 8px;
+  padding: 7px 8px;
+  border-radius: 10px;
+}
+
+.mode-toggle-compact > span {
+  font-size: 0.84rem;
+}
+
+.mode-toggle-compact .helper-line {
+  font-size: 0.76rem;
+  line-height: 1.35;
+}
+
+.compact-button {
+  min-height: 30px;
+  padding: 6px 10px;
+  font-size: 0.84rem;
+}
+
+.rail-status {
+  width: 100%;
+}
+
+.workspace-shell {
+  display: block;
+}
+
+.workspace-main {
+  min-width: 0;
+}
+
+.workspace-topbar {
+  display: grid;
+  grid-template-columns: auto minmax(320px, max-content);
+  gap: 12px;
+  align-items: center;
+  margin: 0 0 12px;
+  justify-content: space-between;
+}
+
+.control-rail {
+  min-width: 0;
+  justify-self: end;
+}
+
+.control-rail .control-dock {
+  padding: 8px 10px;
+}
+
+.control-rail .mode-toggle-stack {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+
+.control-rail .rail-status {
+  min-width: 0;
+  max-width: 180px;
+  line-height: 1.3;
+}
+
 .workspace {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 20px;
+}
+
+.translator-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 10px;
 }
 
 .panel,
@@ -202,7 +346,7 @@ h1 {
 }
 
 .panel {
-  padding: 22px;
+  padding: 24px;
 }
 
 .panel-header {
@@ -225,10 +369,13 @@ h1 {
 }
 
 .ghost-button {
-  border: 1px solid rgba(240, 213, 154, 0.26);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(238, 214, 164, 0.24);
   border-radius: 999px;
   padding: 10px 14px;
-  background: rgba(240, 213, 154, 0.08);
+  background: rgba(238, 214, 164, 0.08);
   color: var(--accent-strong);
   font: inherit;
   cursor: pointer;
@@ -237,8 +384,8 @@ h1 {
 
 .ghost-button:hover {
   transform: translateY(-1px);
-  background: rgba(240, 213, 154, 0.14);
-  border-color: rgba(240, 213, 154, 0.4);
+  background: rgba(238, 214, 164, 0.14);
+  border-color: rgba(238, 214, 164, 0.38);
 }
 
 .translator-input {
@@ -257,9 +404,12 @@ h1 {
   transition: border-color 140ms ease, box-shadow 140ms ease;
 }
 
-.translator-input:focus {
-  border-color: rgba(240, 213, 154, 0.52);
-  box-shadow: 0 0 0 4px rgba(240, 213, 154, 0.08);
+.translator-input:focus,
+.control-input:focus,
+.document-editor:focus {
+  border-color: rgba(238, 214, 164, 0.46);
+  box-shadow: 0 0 0 4px rgba(238, 214, 164, 0.08);
+  outline: none;
 }
 
 .translator-input::placeholder {
@@ -270,15 +420,15 @@ h1 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .analysis-grid {
-  margin-top: 18px;
+  margin-top: 20px;
 }
 
 .analysis-panel {
-  padding-bottom: 18px;
+  padding-bottom: 20px;
 }
 
 .analysis-meta {
@@ -337,7 +487,7 @@ h1 {
 .markdown-doc blockquote {
   margin-left: 0;
   padding-left: 16px;
-  border-left: 2px solid rgba(213, 184, 129, 0.3);
+  border-left: 2px solid rgba(196, 168, 116, 0.3);
   color: var(--muted);
 }
 
@@ -346,12 +496,12 @@ h1 {
   padding: 14px 16px;
   border-radius: 16px;
   background: rgba(7, 10, 17, 0.72);
-  border: 1px solid rgba(213, 184, 129, 0.14);
+  border: 1px solid rgba(196, 168, 116, 0.14);
 }
 
 .markdown-doc hr {
   border: 0;
-  border-top: 1px solid rgba(213, 184, 129, 0.18);
+  border-top: 1px solid var(--line);
   margin: 20px 0;
 }
 
@@ -362,8 +512,12 @@ h1 {
 .lexicon-controls {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 18px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(7, 11, 18, 0.36);
 }
 
 .control-group {
@@ -383,12 +537,6 @@ h1 {
   font: inherit;
 }
 
-.control-input:focus {
-  outline: none;
-  border-color: rgba(240, 213, 154, 0.52);
-  box-shadow: 0 0 0 4px rgba(240, 213, 154, 0.08);
-}
-
 .control-textarea {
   min-height: 110px;
   resize: vertical;
@@ -396,21 +544,46 @@ h1 {
 
 .lexicon-table-wrap {
   overflow: auto;
-  border: 1px solid rgba(213, 184, 129, 0.16);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(8, 12, 20, 0.48);
+  background: rgba(8, 12, 20, 0.5);
+}
+
+.lexicon-pagination {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.lexicon-page-size-group {
+  width: 92px;
+}
+
+.lexicon-pagination-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.lexicon-pagination-actions .helper-line {
+  margin: 0;
+  min-width: 88px;
+  text-align: center;
 }
 
 .lexicon-table {
   width: 100%;
-  min-width: 900px;
+  min-width: 920px;
   border-collapse: collapse;
 }
 
 .lexicon-table th,
 .lexicon-table td {
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(213, 184, 129, 0.12);
+  border-bottom: 1px solid var(--line);
   text-align: left;
   vertical-align: top;
   line-height: 1.55;
@@ -419,7 +592,7 @@ h1 {
 .lexicon-table th {
   position: sticky;
   top: 0;
-  background: rgba(18, 23, 34, 0.96);
+  background: rgba(18, 23, 34, 0.97);
   color: var(--accent-strong);
   font-size: 0.78rem;
   letter-spacing: 0.08em;
@@ -437,34 +610,31 @@ h1 {
   cursor: pointer;
 }
 
-.table-sort-button:hover {
-  color: var(--text);
-}
-
+.table-sort-button:hover,
 .table-sort-button.is-active {
   color: var(--text);
 }
 
 .table-action-button {
-  border: 1px solid rgba(240, 213, 154, 0.18);
+  border: 1px solid rgba(238, 214, 164, 0.18);
   border-radius: 999px;
   padding: 8px 12px;
-  background: rgba(240, 213, 154, 0.08);
+  background: rgba(238, 214, 164, 0.08);
   color: var(--accent-strong);
   font: inherit;
   cursor: pointer;
 }
 
 .table-action-button:hover {
-  background: rgba(240, 213, 154, 0.14);
+  background: rgba(238, 214, 164, 0.14);
 }
 
 .lexicon-word-button,
 .graph-node-chip {
-  border: 1px solid rgba(240, 213, 154, 0.2);
+  border: 1px solid rgba(238, 214, 164, 0.2);
   border-radius: 999px;
   padding: 8px 12px;
-  background: rgba(240, 213, 154, 0.08);
+  background: rgba(238, 214, 164, 0.08);
   color: var(--accent-strong);
   font: inherit;
   cursor: pointer;
@@ -474,15 +644,19 @@ h1 {
 .lexicon-word-button:hover,
 .graph-node-chip:hover {
   transform: translateY(-1px);
-  background: rgba(240, 213, 154, 0.14);
-  border-color: rgba(240, 213, 154, 0.4);
+  background: rgba(238, 214, 164, 0.14);
+  border-color: rgba(238, 214, 164, 0.36);
 }
 
 .lexicon-word-button.is-active,
 .graph-node-chip.is-active {
-  background: rgba(240, 213, 154, 0.2);
-  border-color: rgba(240, 213, 154, 0.44);
+  background: rgba(238, 214, 164, 0.2);
+  border-color: rgba(238, 214, 164, 0.4);
   color: var(--text);
+}
+
+.lexicon-table tr:hover td {
+  background: rgba(238, 214, 164, 0.05);
 }
 
 .lexicon-graph-root {
@@ -530,14 +704,7 @@ h1 {
   justify-content: center;
 }
 
-.graph-ancestors {
-  position: relative;
-  display: grid;
-  gap: 18px;
-  margin-left: 32px;
-  padding-left: 28px;
-}
-
+.graph-ancestors,
 .graph-children {
   position: relative;
   display: grid;
@@ -554,7 +721,7 @@ h1 {
   top: 0;
   bottom: 20px;
   width: 1px;
-  background: rgba(213, 184, 129, 0.3);
+  background: rgba(196, 168, 116, 0.3);
 }
 
 .graph-ancestors > .graph-node::before,
@@ -565,11 +732,7 @@ h1 {
   top: 18px;
   width: 28px;
   height: 1px;
-  background: rgba(213, 184, 129, 0.3);
-}
-
-.lexicon-table tr:hover td {
-  background: rgba(240, 213, 154, 0.05);
+  background: rgba(196, 168, 116, 0.3);
 }
 
 .document-editor {
@@ -622,19 +785,20 @@ h1 {
 .line-outputs {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 18px;
 }
 
 .line-output-card {
-  border: 1px solid rgba(213, 184, 129, 0.16);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(8, 12, 20, 0.48);
+  background: rgba(8, 12, 20, 0.52);
   padding: 16px;
 }
 
 .line-output {
   margin: 0;
+  min-height: 96px;
   white-space: pre-wrap;
   font-family: "Consolas", "Courier New", monospace;
   color: var(--text);
@@ -642,9 +806,9 @@ h1 {
 }
 
 .analysis-card {
-  border: 1px solid rgba(213, 184, 129, 0.16);
+  border: 1px solid var(--line);
   border-radius: 18px;
-  background: rgba(8, 12, 20, 0.48);
+  background: rgba(8, 12, 20, 0.46);
   padding: 16px;
 }
 
@@ -665,7 +829,7 @@ h1 {
 }
 
 .status-pill {
-  border: 1px solid rgba(240, 213, 154, 0.22);
+  border: 1px solid rgba(238, 214, 164, 0.22);
   border-radius: 999px;
   padding: 6px 10px;
   color: var(--accent-strong);
@@ -691,6 +855,7 @@ h1 {
 
 .note-card {
   padding: 20px 22px;
+  background: rgba(14, 20, 29, 0.72);
 }
 
 .note-card h3 {
@@ -726,17 +891,19 @@ code {
 }
 
 @media (max-width: 900px) {
+  .workspace-topbar,
   .workspace,
   .notes,
   .line-outputs,
   .lexicon-controls,
+  .control-dock-grid-compact,
   .entry-editor-grid,
   .entry-checkboxes {
     grid-template-columns: 1fr;
   }
 
   .app-shell {
-    width: min(100% - 20px, 1180px);
+    width: min(100% - 20px, 1280px);
     padding-top: 28px;
   }
 

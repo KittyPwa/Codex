@@ -1129,7 +1129,8 @@ function getEntrySourceParts(entry) {
   ].map((part) => normalizeAncientKey(part))));
 }
 
-
+function finalCleanup(text) {
+  return text
     .replace(/\s+/g, " ")
     .replace(/\s\./g, ".")
     .replace(/\s,/g, ",")
@@ -1152,8 +1153,12 @@ function createLexiconActionCell(entry) {
 }
 
 function renderLexiconTable() {
-  if (!lexiconTableBody || !lexiconTableSummary) {
+  if (!lexiconTableBody) {
     return;
+  }
+
+  if (lexiconNewEntryButton) {
+    lexiconNewEntryButton.disabled = !supportsFileEditing();
   }
 
   const search = normalizeEnglishKey(lexiconSearchInput?.value ?? "");
@@ -1166,9 +1171,20 @@ function renderLexiconTable() {
     .filter((entry) => matchesLexiconFilters(entry, { search, status, register, category }))
     .sort((left, right) => compareLexiconEntries(left, right, sort));
 
+  const pageSize = [10, 25, 50].includes(lexiconPaginationState.pageSize)
+    ? lexiconPaginationState.pageSize
+    : 25;
+  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
+  const currentPage = Math.min(lexiconPaginationState.page, totalPages);
+  const startIndex = (currentPage - 1) * pageSize;
+  const pagedRows = rows.slice(startIndex, startIndex + pageSize);
+
+  lexiconPaginationState.page = currentPage;
+  lexiconPaginationState.pageSize = pageSize;
+
   lexiconTableBody.innerHTML = "";
 
-  if (!rows.length) {
+  if (!pagedRows.length) {
     const row = document.createElement("tr");
     const cell = document.createElement("td");
     cell.colSpan = 7;
@@ -1176,7 +1192,7 @@ function renderLexiconTable() {
     row.append(cell);
     lexiconTableBody.append(row);
   } else {
-    for (const entry of rows) {
+    for (const entry of pagedRows) {
       const row = document.createElement("tr");
       row.append(
         createLexiconWordCell(entry),
@@ -1191,12 +1207,23 @@ function renderLexiconTable() {
     }
   }
 
-  lexiconTableSummary.textContent = `${rows.length} of ${activeLexicon.length} entries shown.`;
-  setLexiconEditorStatus(
-    supportsFileEditing()
-      ? "Edit entries directly here. Saves go back to data/lexicon.json."
-      : "Editing source files requires the local server launcher."
-  );
+  if (lexiconPageInfo) {
+    lexiconPageInfo.textContent = rows.length
+      ? `Page ${currentPage} of ${totalPages}`
+      : "Page 1 of 1";
+  }
+
+  if (lexiconPagePrevButton) {
+    lexiconPagePrevButton.disabled = currentPage <= 1 || !rows.length;
+  }
+
+  if (lexiconPageNextButton) {
+    lexiconPageNextButton.disabled = currentPage >= totalPages || !rows.length;
+  }
+
+  if (lexiconPageSizeSelect) {
+    lexiconPageSizeSelect.value = String(pageSize);
+  }
 }
 
 function renderRulesNotes() {
@@ -1290,12 +1317,8 @@ async function loadRulesNotesMarkdown() {
 }
 
 function setLexiconEditorStatus(message, isError = false) {
-  if (!lexiconEditorStatus) {
-    return;
-  }
-
-  lexiconEditorStatus.textContent = message;
-  lexiconEditorStatus.dataset.state = isError ? "error" : "ready";
+  void message;
+  void isError;
 }
 
 function openLexiconEntryModal(entry = null) {

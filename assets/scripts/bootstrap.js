@@ -77,23 +77,52 @@ outputModeSelect.addEventListener("change", () => {
 
 lexiconSearchInput?.addEventListener("input", () => {
   if (appReady) {
+    lexiconPaginationState.page = 1;
     renderLexiconTable();
   }
 });
 
 lexiconStatusFilter?.addEventListener("change", () => {
   if (appReady) {
+    lexiconPaginationState.page = 1;
     renderLexiconTable();
   }
 });
 
 lexiconRegisterFilter?.addEventListener("change", () => {
   if (appReady) {
+    lexiconPaginationState.page = 1;
     renderLexiconTable();
   }
 });
 
 lexiconCategoryFilter?.addEventListener("change", () => {
+  if (appReady) {
+    lexiconPaginationState.page = 1;
+    renderLexiconTable();
+  }
+});
+
+lexiconPageSizeSelect?.addEventListener("change", () => {
+  const pageSize = Number.parseInt(lexiconPageSizeSelect.value, 10);
+  lexiconPaginationState.pageSize = [10, 25, 50].includes(pageSize) ? pageSize : 25;
+  lexiconPaginationState.page = 1;
+  if (appReady) {
+    renderLexiconTable();
+  }
+});
+
+lexiconPagePrevButton?.addEventListener("click", () => {
+  if (lexiconPaginationState.page > 1) {
+    lexiconPaginationState.page -= 1;
+    if (appReady) {
+      renderLexiconTable();
+    }
+  }
+});
+
+lexiconPageNextButton?.addEventListener("click", () => {
+  lexiconPaginationState.page += 1;
   if (appReady) {
     renderLexiconTable();
   }
