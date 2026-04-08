@@ -1,9 +1,30 @@
 // Lexicon markdown export and rules document rendering.
 
-function downloadLexiconMarkdown() {
-  const markdown = buildLexiconMarkdown(activeLexicon, {
-    includeInferred: includeInferredToggle?.checked ?? false
-  });
+async function downloadLexiconMarkdown() {
+  let markdown;
+
+  if (window.location.protocol !== "file:") {
+    const response = await fetch("./api/export-markdown", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        includeInferred: includeInferredToggle?.checked ?? false
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Markdown export API failed with HTTP ${response.status}.`);
+    }
+
+    markdown = await response.text();
+  } else {
+    markdown = buildLexiconMarkdown(activeLexicon, {
+      includeInferred: includeInferredToggle?.checked ?? false
+    });
+  }
+
   const blob = new Blob([markdown], { type: "text/markdown;charset=utf-8" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
@@ -14,7 +35,9 @@ function downloadLexiconMarkdown() {
   link.click();
   link.remove();
   URL.revokeObjectURL(url);
-  translatorNote.textContent = "Lexicon markdown exported from the active vocabulary.";
+  translatorNote.textContent = window.location.protocol === "file:"
+    ? "Lexicon markdown exported from the in-browser vocabulary."
+    : "Lexicon markdown exported from the backend-managed vocabulary.";
 }
 
 function buildLexiconMarkdown(entries, options = {}) {

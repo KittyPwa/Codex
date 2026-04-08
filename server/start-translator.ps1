@@ -6,6 +6,47 @@ $lexiconPath = Join-Path $root "data\\lexicon.json"
 $rulesPath = Join-Path $root "data\\rules-notes.md"
 $rulesConfigPath = Join-Path $root "data\\rules.json"
 
+$markdownSectionOrder = @(
+  "Grammar Markers",
+  "Core Verbs",
+  "Perception, Relation, and Core Concepts",
+  "Motion and Force",
+  "Conflict and Survival",
+  "Direction and Space",
+  "Number and Quantity",
+  "Time",
+  "Celestial and Natural Elements",
+  "Body and Being",
+  "Mind, Knowledge, and Spirit",
+  "Emotion",
+  "People and Social Structure",
+  "Change, Learning, and Relation",
+  "Qualities and Abstract Oppositions",
+  "Ritual and Liturgical Forms",
+  "Inferred / Etymological Roots",
+  "Additional Entries"
+)
+
+$markdownSectionSets = @{
+  "Grammar Markers" = @("ar", "en", "'s", "eh", "i")
+  "Core Verbs" = @("sul", "sal", "tsich", "tsach", "mel", "mal", "nocht", "tsocht", "tsecht", "la", "licht", "lin", "lan", "socht", "sacht", "tchich", "ta")
+  "Perception, Relation, and Core Concepts" = @("tcha", "kecht", "nuhl", "ru", "soo", "teal", "neal", "val", "rel", "kol", "nal", "koa", "tso", "tsacht", "tsol")
+  "Motion and Force" = @("tik", "ri", "ren", "reh", "rez", "ro", "rok", "rocht", "tal", "tocht")
+  "Conflict and Survival" = @("vik", "vicht", "valtsoum", "sult", "zicht", "xok", "zir", "zik")
+  "Direction and Space" = @("ji", "jo", "ja", "ja's", "rek", "rak", "raknacht", "to", "sulneh", "neh", "jija", "jino", "ouk", "oun", "xi")
+  "Number and Quantity" = @("ni", "no", "kei", "valkei")
+  "Time" = @("tacht", "nacht", "tem", "sitacht", "sinacht", "let", "lak", "locht")
+  "Celestial and Natural Elements" = @("tsar", "tsin", "tsen", "ko", "ka", "hesh", "hwir", "hoc", "sec", "sesh", "tsal", "sachthoc", "tsecht lietacht", "heshtsali", "hocsesh", "rekwir", "zok")
+  "Body and Being" = @("kesh", "keshir", "keshoc", "kesheh", "keshti", "ti", "heshtsoum", "naltsoum", "reksacht", "rektchich")
+  "Mind, Knowledge, and Spirit" = @("vacht", "nila", "valka", "soolie", "titsoum", "lietacht", "ruval", "rutacht", "linru", "linvacht", "ruvalnacht", "nachtnuh", "nuh", "nu", "soh", "sicht", "valkecht", "nachtvacht", "heshvacht")
+  "Emotion" = @("nuhzik", "nuhtsecht", "tihesh", "nutsoum", "valtsecht", "sizir", "nuhzir", "sizik", "tar", "rektsecht")
+  "People and Social Structure" = @("mah", "tah", "kesh'skeh", "kesh'skehsi", "sikeshi", "valkesh", "cheechtkesh", "nuhkesh", "chi", "sachtchi", "ta'sikeshi", "sachtsoum", "sitsoum", "yeket")
+  "Change, Learning, and Relation" = @("tasacht", "tasi", "tavalge", "nochtno", "nochtni", "nochtsi", "tsi", "tichtsi", "tichti", "tasachtsoum", "zecht", "zoh", "go", "ge")
+  "Qualities and Abstract Oppositions" = @("cheecht", "loo", "si", "sacht", "acht", "ocht", "ohm", "uhm", "ocho")
+  "Ritual and Liturgical Forms" = @("tso'koa")
+  "Inferred / Etymological Roots" = @("yecht")
+}
+
 Add-Type -AssemblyName System.Web
 
 function Get-ContentType($path) {
@@ -842,6 +883,187 @@ function Handle-TranslationRequest($context) {
   Write-Response $context 400 "Unsupported translation action."
 }
 
+function Get-LexiconCategoriesForMarkdown($entry) {
+  $categories = New-Object System.Collections.Generic.HashSet[string] ([System.StringComparer]::OrdinalIgnoreCase)
+
+  foreach ($category in (ConvertTo-ArrayValue $entry.partOfSpeech)) {
+    if ($category) {
+      [void]$categories.Add([string]$category)
+    }
+  }
+
+  if ($entry.lexicalized) {
+    [void]$categories.Add("lexicalized")
+  }
+
+  if ((ConvertTo-ArrayValue $entry.components).Count) {
+    [void]$categories.Add("compound")
+  }
+
+  if (-not $categories.Count) {
+    [void]$categories.Add("root")
+  }
+
+  return @($categories)
+}
+
+function Escape-MarkdownCell($value) {
+  $safeValue = if ($null -eq $value) { "" } else { [string]$value }
+  return $safeValue -replace "\|", "\\|"
+}
+
+function Format-MeaningCellForMarkdown($entry) {
+  $meaning = Escape-MarkdownCell ((ConvertTo-ArrayValue $entry.meanings) -join ", ")
+  $extras = New-Object System.Collections.Generic.List[string]
+
+  $components = ConvertTo-ArrayValue $entry.components
+  if ($components.Count) {
+    [void]$extras.Add(("components: {0}" -f (($components | ForEach-Object { "`"$(Escape-MarkdownCell $_)`"" }) -join " + ")))
+  }
+
+  $etymology = ConvertTo-ArrayValue $entry.etymology
+  if ($etymology.Count) {
+    [void]$extras.Add(("etymology: {0}" -f (($etymology | ForEach-Object { "`"$(Escape-MarkdownCell $_)`"" }) -join " + ")))
+  }
+
+  if (-not $extras.Count) {
+    return $meaning
+  }
+
+  return "$meaning ($($extras -join '; '))"
+}
+
+function Classify-EntryForMarkdown($entry) {
+  $ancient = Normalize-AncientKey $entry.ancient
+
+  foreach ($section in $markdownSectionOrder) {
+    if ($markdownSectionSets.ContainsKey($section) -and ($markdownSectionSets[$section] -contains $ancient)) {
+      return $section
+    }
+  }
+
+  $meanings = ((ConvertTo-ArrayValue $entry.meanings) -join " ").ToLowerInvariant()
+  $categories = Get-LexiconCategoriesForMarkdown $entry
+
+  if ($entry.status -eq "inferred") { return "Inferred / Etymological Roots" }
+  if ($meanings -match "\b(marker|possession|plural|toward|direction|object)\b") { return "Grammar Markers" }
+  if ($meanings -match "\b(mother|father|kin|tribe|stranger|enemy|guest|leader|ruler|servant|elder|child|children)\b") { return "People and Social Structure" }
+  if ($meanings -match "\b(fear|anger|love|grief|hope|courage|shame|aspiration|longing|depression)\b") { return "Emotion" }
+  if ($meanings -match "\b(mind|soul|name|shadow|dream|song|memory|intuition|remember|forget|spirit|omen|fate|promise|oath|truth|lie|silence|understand)\b") { return "Mind, Knowledge, and Spirit" }
+  if ($meanings -match "\b(flesh|body|blood|bone|breath|voice|sound|life|birth|growth|decay)\b") { return "Body and Being" }
+  if ($meanings -match "\b(sun|moon|star|night|day|fire|water|stone|sand|wind|sky|mountain|forest|storm|dust|river|beast|animal)\b") { return "Celestial and Natural Elements" }
+  if ($meanings -match "\b(past|future|present|before|after|always|never|once)\b") { return "Time" }
+  if ($meanings -match "\b(one|two|many|few)\b") { return "Number and Quantity" }
+  if ($meanings -match "\b(in|out|here|there|path|road|journey|step|crossing|beyond|inside|between|above|below|edge|boundary)\b") { return "Direction and Space" }
+  if ($meanings -match "\b(fight|strike|kill|protect|defend|flee|hunt|victory|defeat)\b") { return "Conflict and Survival" }
+  if ($meanings -match "\b(move|push|pull|lift|carry|throw|fall|rise|open|close)\b") { return "Motion and Force" }
+  if ($meanings -match "\b(grow|shrink|transform|split|join|change|shift|ask|answer|teach|learn|own|trade|other|same)\b") { return "Change, Learning, and Relation" }
+  if ($meanings -match "\b(good|positive|evil|negative|small|short|big|tall|light|dark|order|chaos|balance)\b") { return "Qualities and Abstract Oppositions" }
+  if ($ancient -eq "tso'koa") { return "Ritual and Liturgical Forms" }
+  if ($meanings.Contains("to ") -or ($categories -contains "root")) { return "Core Verbs" }
+  if ($meanings -match "\b(see|hear|feel|know|sleep|you|self|negation|harm|all|new|ruin|peace|death|land|earth)\b") { return "Perception, Relation, and Core Concepts" }
+  return "Additional Entries"
+}
+
+function Build-LexiconMarkdownServer($entries, $rulesMarkdown, $includeInferred) {
+  $grouped = @{}
+  foreach ($section in $markdownSectionOrder) {
+    $grouped[$section] = New-Object System.Collections.Generic.List[object]
+  }
+
+  $sortedEntries = @($entries | Sort-Object { $_.ancient })
+  foreach ($entry in $sortedEntries) {
+    $section = [string](Classify-EntryForMarkdown $entry)
+    if ([string]::IsNullOrWhiteSpace($section)) {
+      $section = "Additional Entries"
+    }
+
+    if (-not $grouped.ContainsKey($section)) {
+      $grouped[$section] = New-Object System.Collections.Generic.List[object]
+    }
+
+    [void]$grouped[$section].Add($entry)
+  }
+
+  $lines = New-Object System.Collections.Generic.List[string]
+  $inferredCount = @($entries | Where-Object { $_.status -eq "inferred" }).Count
+  $confirmedCount = $entries.Count - $inferredCount
+
+  [void]$lines.Add("# Ancient Tongue")
+  [void]$lines.Add("")
+  [void]$lines.Add("## Overview")
+  [void]$lines.Add("")
+  [void]$lines.Add("This lexicon document was generated directly from the backend-managed Ancient Tongue vocabulary.")
+  [void]$lines.Add("")
+  [void]$lines.Add("- confirmed entries included: $confirmedCount")
+  [void]$lines.Add("- inferred entries included: $inferredCount")
+  [void]$lines.Add("- export mode included inferred entries: $(if ($includeInferred) { 'yes' } else { 'no' })")
+  [void]$lines.Add("")
+  [void]$lines.Add("---")
+  [void]$lines.Add("")
+
+  foreach ($section in $markdownSectionOrder) {
+    $sectionEntries = if ($grouped.ContainsKey($section)) {
+      @($grouped[$section].ToArray())
+    } else {
+      @()
+    }
+
+    if (-not $sectionEntries.Count) {
+      continue
+    }
+
+    [void]$lines.Add("## $section")
+    [void]$lines.Add("")
+    [void]$lines.Add("| Ancient | Meaning |")
+    [void]$lines.Add("|---|---|")
+    foreach ($entry in $sectionEntries) {
+      [void]$lines.Add("| `"$(Escape-MarkdownCell $entry.ancient)`" | $(Format-MeaningCellForMarkdown $entry) |")
+    }
+    [void]$lines.Add("")
+    [void]$lines.Add("---")
+    [void]$lines.Add("")
+  }
+
+  [void]$lines.Add("## Export Notes")
+  [void]$lines.Add("")
+  [void]$lines.Add("- Entries are grouped automatically from the active backend lexicon.")
+  [void]$lines.Add("- Meanings are taken directly from the current backend-managed vocabulary.")
+  [void]$lines.Add("- When inferred mode is disabled, inferred entries are omitted from the export.")
+  [void]$lines.Add("")
+
+  if (-not [string]::IsNullOrWhiteSpace($rulesMarkdown)) {
+    [void]$lines.Add("---")
+    [void]$lines.Add("")
+    [void]$lines.Add($rulesMarkdown.Trim())
+    [void]$lines.Add("")
+  }
+
+  return ($lines -join "`n")
+}
+
+function Handle-MarkdownExportRequest($context) {
+  $body = Read-RequestBody $context.Request
+  $request = if ([string]::IsNullOrWhiteSpace($body)) { [pscustomobject]@{} } else { $body | ConvertFrom-Json }
+  $includeInferred = [bool]$request.includeInferred
+  $lexiconPayload = Read-LexiconPayload
+  $entries = @(
+    Normalize-LexiconEntries $lexiconPayload.confirmed
+  )
+  if ($includeInferred) {
+    $entries += @(Normalize-LexiconEntries $lexiconPayload.inferred)
+  }
+
+  $rulesMarkdown = if (Test-Path -LiteralPath $rulesPath -PathType Leaf) {
+    Get-Content -LiteralPath $rulesPath -Raw -Encoding UTF8
+  } else {
+    ""
+  }
+
+  $markdown = Build-LexiconMarkdownServer $entries $rulesMarkdown $includeInferred
+  Write-Response $context 200 $markdown "text/markdown; charset=utf-8"
+}
+
 function Handle-ApiRequest($context) {
   $path = $context.Request.Url.AbsolutePath.TrimEnd("/")
   if ([string]::IsNullOrWhiteSpace($path)) {
@@ -853,7 +1075,9 @@ function Handle-ApiRequest($context) {
       status = "ok"
       translationApi = $true
       lexiconApi = $true
+      rulesConfigApi = $true
       rulesNotesApi = $true
+      markdownExportApi = $true
     })
     return $true
   }
@@ -861,6 +1085,16 @@ function Handle-ApiRequest($context) {
   if ($path -eq "/api/translate") {
     if ($context.Request.HttpMethod -eq "POST") {
       Handle-TranslationRequest $context
+      return $true
+    }
+
+    Write-Response $context 405 "Method Not Allowed"
+    return $true
+  }
+
+  if ($path -eq "/api/export-markdown") {
+    if ($context.Request.HttpMethod -eq "POST") {
+      Handle-MarkdownExportRequest $context
       return $true
     }
 
@@ -879,6 +1113,16 @@ function Handle-ApiRequest($context) {
       $parsed = $body | ConvertFrom-Json
       $saved = Write-LexiconPayload $parsed
       Write-JsonResponse $context 200 $saved
+      return $true
+    }
+
+    Write-Response $context 405 "Method Not Allowed"
+    return $true
+  }
+
+  if ($path -eq "/api/rules-config") {
+    if ($context.Request.HttpMethod -eq "GET") {
+      Write-JsonResponse $context 200 (Read-RulesConfig)
       return $true
     }
 

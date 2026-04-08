@@ -510,6 +510,8 @@ function deriveIdiomaticLine(lineText, analyses) {
 }
 
 function renderAnalysis(analysis) {
+  const formatNormalizedParts = (parts) => `[${(Array.isArray(parts) ? parts : [parts]).join(", ")}]`;
+
   glossSummary.textContent = analysis.totalCount
     ? `Glossed ${analysis.knownCount} of ${analysis.totalCount} word tokens${analysis.inferredCount ? `, including ${analysis.inferredCount} inferred reading${analysis.inferredCount > 1 ? "s" : ""}` : ""}${analysis.rescuedCount ? ` and ${analysis.rescuedCount} normalized or fuzzy recover${analysis.rescuedCount > 1 ? "ies" : "y"}` : ""}.`
     : "Type Ancient Tongue to see structured glossing.";
@@ -521,7 +523,7 @@ function renderAnalysis(analysis) {
     : "The app prefers interpretation over overconfident sentence translation.";
 
   morphemeOutput.textContent = analysis.lines.length
-    ? analysis.lines.map((line) => `${line.text}\nnormalized: ${line.normalizedTokens.map((parts) => `[${parts.join(", ")}]`).join(" ")}\ngloss: ${line.morphemeGloss}`).join("\n\n")
+    ? analysis.lines.map((line) => `${line.text}\nnormalized: ${line.normalizedTokens.map((parts) => formatNormalizedParts(parts)).join(" ")}\ngloss: ${line.morphemeGloss}`).join("\n\n")
     : "Type Ancient Tongue to see line glosses.";
 
   literalOutput.textContent = analysis.lines.length
@@ -553,17 +555,17 @@ function renderAnalysis(analysis) {
     card.append(header);
 
     card.append(createLabeledParagraph("Headword", item.headword));
-    card.append(createLabeledParagraph("Meanings", item.meanings.join(", ")));
+    card.append(createLabeledParagraph("Meanings", (Array.isArray(item.meanings) ? item.meanings : [item.meanings]).join(", ")));
     card.append(createLabeledParagraph("Morpheme Gloss", item.morphemeGloss));
     card.append(createLabeledParagraph("Resolved", item.resolvedGloss ?? item.literalGloss ?? item.primaryGloss));
-    card.append(createLabeledParagraph("Parse Path", item.path.join(" -> ")));
+    card.append(createLabeledParagraph("Parse Path", (Array.isArray(item.path) ? item.path : [item.path]).join(" -> ")));
 
-    if (item.components.length) {
-      card.append(createLabeledParagraph("Components", item.components.join(" + ")));
+    if ((Array.isArray(item.components) ? item.components : [item.components]).filter(Boolean).length) {
+      card.append(createLabeledParagraph("Components", (Array.isArray(item.components) ? item.components : [item.components]).join(" + ")));
     }
 
-    if (item.etymology.length) {
-      card.append(createLabeledParagraph("Etymology", item.etymology.join(" + ")));
+    if ((Array.isArray(item.etymology) ? item.etymology : [item.etymology]).filter(Boolean).length) {
+      card.append(createLabeledParagraph("Etymology", (Array.isArray(item.etymology) ? item.etymology : [item.etymology]).join(" + ")));
     }
 
     if (item.register && item.register !== "unknown") {
@@ -574,8 +576,8 @@ function renderAnalysis(analysis) {
       card.append(createLabeledParagraph("Pronunciation", item.pronunciation));
     }
 
-    if (item.notes.length) {
-      card.append(createLabeledParagraph("Notes", item.notes.join(" ")));
+    if ((Array.isArray(item.notes) ? item.notes : [item.notes]).filter(Boolean).length) {
+      card.append(createLabeledParagraph("Notes", (Array.isArray(item.notes) ? item.notes : [item.notes]).join(" ")));
     }
 
     analysisList.append(card);

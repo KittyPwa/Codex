@@ -5,14 +5,14 @@ async function initializeApp() {
     if (window.location.protocol === "file:") {
       setLexiconStatus("Local file mode detected. Import JSON or use the local server launcher.");
     } else {
-      setLexiconStatus("Loading data/lexicon.json...");
+      setLexiconStatus("Loading backend-managed lexicon and rules...");
     }
 
     const payload = await loadLexiconPayload();
     try {
       const rulesConfig = await loadRulesConfig();
       applyLanguageRulesConfig(rulesConfig);
-      rulesConfigSource = "data/rules.json";
+      rulesConfigSource = "backend rules config";
     } catch (rulesConfigError) {
       console.warn("Rules JSON could not be loaded. Falling back to built-in defaults.", rulesConfigError);
       applyLanguageRulesConfig({});
@@ -26,6 +26,7 @@ async function initializeApp() {
       console.warn("Rules and notes file could not be loaded.", rulesError);
       applyRulesNotesMarkdown("");
     }
+    serverTranslationApiAvailable = await probeTranslationApi();
     appReady = true;
     setLexiconStatus(describeActiveLexiconSource());
 
@@ -166,7 +167,7 @@ function describeActiveLexiconSource() {
     return "Using imported lexicon JSON from browser storage.";
   }
 
-  return `Using data/lexicon.json and ${rulesConfigSource ?? "built-in rules"} with local file save support.`;
+  return `Using backend-managed lexicon and ${rulesConfigSource ?? "built-in rules"}${serverTranslationApiAvailable ? " with translator API" : ""}.`;
 }
 
 function rerenderActiveSource() {
@@ -276,23 +277,16 @@ async function loadLexiconPayload() {
       return response.json();
     }
   } catch (error) {
-    console.warn("API lexicon loading failed, trying static JSON.", error);
+    console.warn("API lexicon loading failed.", error);
   }
 
-  try {
-    const response = await fetch("./data/lexicon.json", { cache: "no-store" });
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`);
-    }
-
-    return response.json();
-  } catch (error) {
+  {
     const stored = readPersistedLexicon();
     if (stored) {
       return stored;
     }
 
-    throw error;
+    throw new Error("Lexicon API failed to load.");
   }
 }
 
@@ -307,15 +301,10 @@ async function loadRulesNotesMarkdown() {
       return response.text();
     }
   } catch (error) {
-    console.warn("API rules loading failed, trying static markdown.", error);
+    console.warn("API rules-notes loading failed.", error);
   }
 
-  const fallback = await fetch("./data/rules-notes.md", { cache: "no-store" });
-  if (!fallback.ok) {
-    throw new Error(`HTTP ${fallback.status}`);
-  }
-
-  return fallback.text();
+  throw new Error("Rules & notes API failed to load.");
 }
 
 async function loadRulesConfig() {
@@ -323,9 +312,9 @@ async function loadRulesConfig() {
     return {};
   }
 
-  const response = await fetch("./data/rules.json", { cache: "no-store" });
+  const response = await fetch("./api/rules-config", { cache: "no-store" });
   if (!response.ok) {
-    throw new Error(`Rules JSON failed to load with HTTP ${response.status}.`);
+    throw new Error(`Rules config API failed to load with HTTP ${response.status}.`);
   }
 
   return response.json();

@@ -1,7 +1,7 @@
 // Event bindings and app bootstrap.
 
 
-englishInput.addEventListener("input", () => {
+englishInput.addEventListener("input", async () => {
   if (!appReady) {
     return;
   }
@@ -11,12 +11,24 @@ englishInput.addEventListener("input", () => {
   }
 
   activeSource = "english";
-  ancientInput.value = translateEnglishToAncient(englishInput.value);
-  renderAnalysis(analyzeAncientText(ancientInput.value));
-  activeSource = null;
+  const requestId = ++translationRequestSequence;
+
+  try {
+    const result = await translateEnglishWithBestAvailable(englishInput.value);
+    if (requestId !== translationRequestSequence) {
+      return;
+    }
+
+    ancientInput.value = result.ancient;
+    renderAnalysis(result.analysis);
+  } finally {
+    if (requestId === translationRequestSequence) {
+      activeSource = null;
+    }
+  }
 });
 
-ancientInput.addEventListener("input", () => {
+ancientInput.addEventListener("input", async () => {
   if (!appReady) {
     return;
   }
@@ -26,10 +38,21 @@ ancientInput.addEventListener("input", () => {
   }
 
   activeSource = "ancient";
-  const analysis = analyzeAncientText(ancientInput.value);
-  englishInput.value = getSelectedOutput(analysis);
-  renderAnalysis(analysis);
-  activeSource = null;
+  const requestId = ++translationRequestSequence;
+
+  try {
+    const result = await analyzeAncientWithBestAvailable(ancientInput.value);
+    if (requestId !== translationRequestSequence) {
+      return;
+    }
+
+    englishInput.value = getSelectedOutput(result.analysis);
+    renderAnalysis(result.analysis);
+  } finally {
+    if (requestId === translationRequestSequence) {
+      activeSource = null;
+    }
+  }
 });
 
 fillEnglishButton.addEventListener("click", () => {
@@ -168,12 +191,17 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-downloadLexiconMarkdownButton?.addEventListener("click", () => {
+downloadLexiconMarkdownButton?.addEventListener("click", async () => {
   if (!appReady) {
     return;
   }
 
-  downloadLexiconMarkdown();
+  try {
+    await downloadLexiconMarkdown();
+  } catch (error) {
+    console.error(error);
+    translatorNote.textContent = error.message || "Could not export markdown.";
+  }
 });
 
 syncLexiconSortButtons();

@@ -368,6 +368,8 @@ let rulesNotesMarkdown = "";
 let rulesConfigSource = null;
 let lexiconSourcePayload = { confirmed: [], inferred: [] };
 let rulesEditorDirty = false;
+let serverTranslationApiAvailable = false;
+let translationRequestSequence = 0;
 
 function supportsFileEditing() {
   return window.location.protocol !== "file:";
