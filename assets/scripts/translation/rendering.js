@@ -17,14 +17,52 @@ function buildLiteralLine(analyses) {
     .join(" ");
 }
 
+function findHeadSequenceOverride(heads) {
+  const patterns = languageRulesConfig.translation?.headSequenceOverrides ?? [];
+  const key = heads.join("|");
+  for (const pattern of patterns) {
+    if ((pattern.heads ?? []).join("|") === key) {
+      return pattern.output ?? null;
+    }
+  }
+  return null;
+}
+
+function findComponentSequenceOverride(components) {
+  const patterns = languageRulesConfig.translation?.componentSequenceOverrides ?? [];
+  const key = components.join("|");
+  for (const pattern of patterns) {
+    if ((pattern.components ?? []).join("|") === key) {
+      return pattern.output ?? null;
+    }
+  }
+  return null;
+}
+
+function findIncludePatternOutput(patterns, values) {
+  for (const pattern of patterns) {
+    const includes = pattern.includes ?? [];
+    if (includes.length && includes.every((value) => values.includes(value))) {
+      return pattern.output ?? null;
+    }
+  }
+  return null;
+}
+
 function smoothClause(analyses) {
   const words = analyses.map((entry) => entry.narrativeGloss ?? entry.literalGloss ?? entry.primaryGloss);
   const heads = analyses.map((entry) => normalizeAncientKey(entry.headword));
   const components = analyses.flatMap((entry) => entry.components.length ? entry.components : [normalizeAncientKey(entry.headword)]);
   const lexicalCollapse = collapseLexicalCompound(components);
 
-  if (heads[0] === "sitacht" && heads[1] === "valkecht" && heads[2] === "licht") {
-    return "Before, silence remained.";
+  const headOverride = findHeadSequenceOverride(heads);
+  if (headOverride) {
+    return headOverride;
+  }
+
+  const componentOverride = findComponentSequenceOverride(components);
+  if (componentOverride) {
+    return componentOverride;
   }
 
   if (heads[0] === "lan" && heads[1] && heads[2] === "ouk" && heads[3] === "tsal") {
@@ -33,34 +71,6 @@ function smoothClause(analyses) {
 
   if (heads.length >= 4 && heads[1] === "lan" && heads[2] === "jino" && heads[3] === "tsal") {
     return `${capitalize(withArticle(words[0]))} ${words[1]} between the skies.`;
-  }
-
-  if (heads[0] === "valkesh" && heads[1] === "sal" && heads[2] === "nuhkesh" && heads[3] === "sal") {
-    return "A stranger came, a guest came.";
-  }
-
-  if (heads[0] === "loo" && heads[1] === "let") {
-    return "Good remained always.";
-  }
-
-  if (heads[0] === "ka" && heads[1] === "licht" && heads[2] === "sesh" && heads[3] === "sal") {
-    return "Day remained, and the wind came into the sand.";
-  }
-
-  if (heads[0] === "koa" && heads[1] === "valkei") {
-    return "Ruin was few.";
-  }
-
-  if (heads[0] === "tso'koa" && heads[1] === "valkei") {
-    return "Ruin was few.";
-  }
-
-  if (heads[0] === "kesh'skehsi" && heads[1] === "sacht" && heads[2] === "raknacht") {
-    return "Our tribe continued the journey.";
-  }
-
-  if (components.join("+") === "kesh'skehsi+ar+sacht+raknacht") {
-    return "Our tribe continued the journey.";
   }
 
   if (heads[0] === "mah" && heads[1] === "tsach") {
@@ -179,16 +189,9 @@ function renderNarrativeClause(analyses) {
 
 function reorderNarrativeTail(analyses, tailWords) {
   const tailHeads = analyses.slice(2).map((entry) => normalizeAncientKey(entry.headword));
-  if (tailHeads.includes("jino") && tailHeads.includes("tsal") && tailHeads.includes("ji")) {
-    return "between the skies";
-  }
-
-  if (tailHeads.includes("ouk") && tailHeads.includes("tsal")) {
-    return "above the sky";
-  }
-
-  if (tailHeads.includes("ji") && tailHeads.includes("sec")) {
-    return "into the sand";
+  const patternOutput = findIncludePatternOutput(languageRulesConfig.translation?.tailRenderings ?? [], tailHeads);
+  if (patternOutput) {
+    return patternOutput;
   }
 
   return tailWords.join(" ");
@@ -197,13 +200,15 @@ function reorderNarrativeTail(analyses, tailWords) {
 function reorderContinuationObject(analyses, tailWords) {
   const tailHeads = analyses.slice(2).map((entry) => normalizeAncientKey(entry.headword));
   const tailComponents = analyses.slice(2).flatMap((entry) => entry.components.length ? entry.components : [normalizeAncientKey(entry.headword)]);
-
-  if (tailHeads[0] === "sec") {
-    if (tailComponents.join("+") === "sec+sec+raknacht+socht") {
-      return "over the sand, and the sand-journey began";
+  const continuationPatterns = languageRulesConfig.translation?.continuationRenderings ?? [];
+  const componentKey = tailComponents.join("|");
+  for (const pattern of continuationPatterns) {
+    if ((pattern.components ?? []).join("|") === componentKey) {
+      return pattern.output ?? tailWords.join(" ");
     }
-
-    return "over the sand";
+    if ((pattern.heads ?? []).length && (pattern.heads ?? []).every((value, index) => tailHeads[index] === value)) {
+      return pattern.output ?? tailWords.join(" ");
+    }
   }
 
   return tailWords.join(" ");
@@ -212,15 +217,17 @@ function reorderContinuationObject(analyses, tailWords) {
 function reorderLocationPhrase(analyses, words) {
   const heads = analyses.map((entry) => normalizeAncientKey(entry.headword));
   const components = analyses.flatMap((entry) => entry.components.length ? entry.components : [normalizeAncientKey(entry.headword)]);
+  const nounArticles = languageRulesConfig.translation?.nounArticles ?? {};
 
   if (heads[0] === "lan" && words[1]) {
     return [resolveSubject(words[1], "translation"), "appeared", ...words.slice(2)];
   }
 
-  if (heads.includes("jino") && heads.includes("tsal") && heads.includes("ji")) {
+  const locationPattern = findIncludePatternOutput(languageRulesConfig.translation?.locationReorderings ?? [], heads);
+  if (locationPattern && Array.isArray(locationPattern)) {
     const subject = words[0];
     const verb = words[1] ?? "";
-    return [resolveSubject(subject, "translation"), verb, "between", "the skies"];
+    return [resolveSubject(subject, "translation"), verb, ...locationPattern];
   }
 
   if (heads[0] === "sesh" && heads[1] === "sacht" && components.slice(2).join("+") === "sec+sec+raknacht+socht") {
@@ -236,7 +243,8 @@ function reorderLocationPhrase(analyses, words) {
       return resolveSubject(word, "translation");
     }
 
-    if (index > 0 && /^(sky|sand|path|journey|wind|moon|sun|omen|stranger|guest|tribe|fate)$/i.test(word)) {
+    const lowerWord = word.toLowerCase();
+    if (index > 0 && nounArticles[lowerWord] === "the") {
       return `the ${word}`;
     }
 
@@ -249,15 +257,23 @@ function withArticle(word) {
     return word;
   }
 
-  if (/^(our|your|we|mother|father|good|ruin)$/i.test(word)) {
+  const lowerWord = word.toLowerCase();
+  const bareWords = new Set(languageRulesConfig.translation?.bareWords ?? []);
+  const nounArticles = languageRulesConfig.translation?.nounArticles ?? {};
+
+  if (bareWords.has(lowerWord)) {
     return word;
   }
 
-  if (ARTICLE_BLOCKERS.has(word.toLowerCase())) {
+  if (ARTICLE_BLOCKERS.has(lowerWord)) {
     return word;
   }
 
-  if (ARTICLE_EXCEPTIONS.has(word.toLowerCase())) {
+  if (nounArticles[lowerWord]) {
+    return `${nounArticles[lowerWord]} ${word}`;
+  }
+
+  if (ARTICLE_EXCEPTIONS.has(lowerWord)) {
     return `the ${word}`;
   }
 
@@ -353,16 +369,21 @@ function applySubjectCarryover(lines) {
 function renderNoun(noun) {
   if (!noun) return "";
 
-  if (noun === "we") return "we";
-  if (noun === "our tribe") return "our tribe";
+  const lowerNoun = noun.toLowerCase();
+  const nounArticles = languageRulesConfig.translation?.nounArticles ?? {};
+  const bareWords = new Set(languageRulesConfig.translation?.bareWords ?? []);
 
-  if (ARTICLE_EXCEPTIONS.has(noun)) {
-    return `the ${noun}`;
+  if (bareWords.has(lowerNoun)) {
+    return noun;
   }
 
-  if (noun === "omen") return "an omen";
-  if (noun === "stranger") return "a stranger";
-  if (noun === "guest") return "a guest";
+  if (nounArticles[lowerNoun]) {
+    return `${nounArticles[lowerNoun]} ${noun}`;
+  }
+
+  if (ARTICLE_EXCEPTIONS.has(lowerNoun)) {
+    return `the ${noun}`;
+  }
 
   return noun;
 }
@@ -394,15 +415,15 @@ function smoothVerbs(sentence) {
 
 function resolveSubject(word, mode) {
   if (mode === "translation") {
-    if (/^tribe \+ agent marker$/i.test(word)) {
-      return "our tribe";
+    const lowerWord = word.toLowerCase();
+    const subjectRenderings = languageRulesConfig.translation?.subjectRenderings ?? {};
+    const nounArticles = languageRulesConfig.translation?.nounArticles ?? {};
+
+    if (subjectRenderings[lowerWord]) {
+      return subjectRenderings[lowerWord];
     }
 
-    if (/^we$/i.test(word)) {
-      return "we";
-    }
-
-    if (/^(sun|moon|sky|wind|sand|day|night)$/i.test(word)) {
+    if (nounArticles[lowerWord] === "the") {
       return `the ${word}`;
     }
   }
@@ -415,12 +436,14 @@ function resolveObject(words) {
     .filter((word) => !HIDDEN_TRANSLATION_MARKERS.has(normalizeAncientKey(word)))
     .join(" ")
     .trim();
+  const lowerJoined = joined.toLowerCase();
+  const objectArticles = languageRulesConfig.translation?.objectArticles ?? {};
   if (/^fate$/i.test(joined)) {
     return "fate";
   }
 
-  if (/^(journey|path|breath)$/i.test(joined)) {
-    return `the ${joined}`;
+  if (objectArticles[lowerJoined]) {
+    return `${objectArticles[lowerJoined]} ${joined}`;
   }
 
   return joined;

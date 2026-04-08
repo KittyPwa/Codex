@@ -9,6 +9,15 @@ async function initializeApp() {
     }
 
     const payload = await loadLexiconPayload();
+    try {
+      const rulesConfig = await loadRulesConfig();
+      applyLanguageRulesConfig(rulesConfig);
+      rulesConfigSource = "data/rules.json";
+    } catch (rulesConfigError) {
+      console.warn("Rules JSON could not be loaded. Falling back to built-in defaults.", rulesConfigError);
+      applyLanguageRulesConfig({});
+      rulesConfigSource = "built-in defaults";
+    }
     applyLexiconPayload(payload);
     try {
       const rulesMarkdown = await loadRulesNotesMarkdown();
@@ -157,7 +166,7 @@ function describeActiveLexiconSource() {
     return "Using imported lexicon JSON from browser storage.";
   }
 
-  return "Using data/lexicon.json with local file save support.";
+  return `Using data/lexicon.json and ${rulesConfigSource ?? "built-in rules"} with local file save support.`;
 }
 
 function rerenderActiveSource() {
@@ -307,5 +316,18 @@ async function loadRulesNotesMarkdown() {
   }
 
   return fallback.text();
+}
+
+async function loadRulesConfig() {
+  if (window.location.protocol === "file:") {
+    return {};
+  }
+
+  const response = await fetch("./data/rules.json", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Rules JSON failed to load with HTTP ${response.status}.`);
+  }
+
+  return response.json();
 }
 

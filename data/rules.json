@@ -1,0 +1,359 @@
+{
+  "language": {
+    "name": "Ancient Tongue",
+    "version": "1.0.0",
+    "description": "Structured machine-readable rule set for the Ancient Tongue translator."
+  },
+  "english": {
+    "fillers": ["the", "a", "an"],
+    "aliases": {
+      "bones": "keshoc",
+      "blood": "keshir",
+      "voice": "keshti",
+      "memories": "lietacht",
+      "stars": "tsen",
+      "moons": "tsin",
+      "suns": "tsar",
+      "bodies": "kesh",
+      "flesh": "kesh",
+      "minds": "vacht",
+      "souls": "vacht",
+      "spirits": "linvacht",
+      "guests": "nuhkesh",
+      "enemies": "cheechtkesh",
+      "strangers": "valkesh",
+      "children": "yeket",
+      "child": "yeket",
+      "land": "tsol",
+      "earth": "tsol",
+      "peace": "tsacht",
+      "ruin": "koa",
+      "bring ruin": "tso'koa",
+      "our": "neali",
+      "yours": "tealeh",
+      "your": "teal",
+      "us": "neali",
+      "act": "ta",
+      "acts": "ta",
+      "move": "var",
+      "moves": "var",
+      "moving": "var",
+      "rise": "vark",
+      "rises": "vark",
+      "fall": "vorn",
+      "falls": "vorn",
+      "turn": "tor",
+      "turns": "tor",
+      "open": "chi",
+      "close": "chol",
+      "strike": "vek",
+      "strikes": "vek",
+      "wound": "vekmal",
+      "wounds": "vekmal",
+      "kill": "veklin",
+      "kills": "veklin",
+      "storm": "rekh",
+      "sandstorm": "secvar",
+      "light": "tsarhesh",
+      "leader": "rekmah",
+      "chief": "rekmahsi",
+      "fear": "nuhlcheecht",
+      "love": "nuhlloo",
+      "grief": "nuhlsec",
+      "hope": "nuhltar",
+      "intuition": "ruval",
+      "appeared": "lan",
+      "appears": "lan",
+      "appearing": "lan",
+      "vanished": "lin",
+      "vanishes": "lin",
+      "remembers": "rutacht",
+      "remembered": "rutacht",
+      "knows": "ru",
+      "seeing": "tcha",
+      "saw": "tcha",
+      "feels": "nuhl",
+      "heard": "kecht",
+      "hears": "kecht",
+      "slept": "soo",
+      "sleeps": "soo",
+      "sleeping": "soo",
+      "gave": "tsach",
+      "gives": "tsach",
+      "took": "tsich",
+      "takes": "tsich",
+      "made": "mel",
+      "makes": "mel",
+      "broke": "mal",
+      "breaks": "mal",
+      "became": "nocht",
+      "keeps": "tsocht",
+      "released": "tsecht",
+      "remains": "licht",
+      "begins": "socht",
+      "continues": "sacht",
+      "ends": "tchich"
+    }
+  },
+  "morphology": {
+    "productiveSuffixes": ["'s", "eh", "i", "ar", "en"],
+    "affixMeanings": {
+      "'s": ["direction", "intent toward", "toward"],
+      "eh": ["possession", "belonging"],
+      "i": ["plural denominator", "plural"],
+      "ar": ["agent marker", "actor"],
+      "en": ["object marker"]
+    },
+    "hiddenTranslationMarkers": ["ar", "en", "'s", "eh", "i"]
+  },
+  "normalization": {
+    "nach": "nacht",
+    "teeleh": "tealeh",
+    "neali": "neal+i",
+    "tealeh": "teal+eh",
+    "yeketeh": "yeket+eh",
+    "koa's": "koa+'s",
+    "rel's": "rel+'s",
+    "tsecht's": "tsecht+'s",
+    "kesh'skehsiar": "kesh'skehsi+ar",
+    "mah-ar": "mah+ar",
+    "tah-ar": "tah+ar",
+    "tso'koa": "tso'koa",
+    "tsoÃ¢â‚¬â„¢koa": "tso'koa",
+    "tsokoa": "tso'koa",
+    "nali": "nal+i"
+  },
+  "composition": {
+    "productiveRoots": {
+      "val": ["negation", "absence", "loss", "estrangement"],
+      "kesh": ["body", "flesh", "kinship", "personhood"],
+      "sacht": ["continuation", "size", "elevation", "status"],
+      "nocht": ["becoming", "change", "structural transformation"],
+      "tsoum": ["existence", "life-state", "lived condition"]
+    },
+    "fossilizedCompounds": {
+      "ruvalnacht": "omen",
+      "sikeshi": "tribe",
+      "raknacht": "journey",
+      "valkecht": "silence",
+      "tso'koa": "ritualized ruin-form"
+    },
+    "compoundEvaluation": {
+      "direction": "right_to_left",
+      "shape": "A(B(C(D)))",
+      "baseConceptPosition": "final_element",
+      "preferLexicalized": true,
+      "directionalBindingMarker": "'s",
+      "lexicalizedBeforeBinding": true,
+      "separateWordsRemainPhrases": true,
+      "notes": [
+        "Lexicalized compounds resolve first.",
+        "Directional bindings with 's resolve next.",
+        "Remaining compounds resolve right to left.",
+        "Separate written words remain phrases, not compounds."
+      ]
+    },
+    "contextualRenderings": {
+      "neal+i": ["we", "our", "our lives"],
+      "teal+eh": ["your", "yours", "belonging to you"],
+      "yeket+eh": ["your children"],
+      "val+rel": ["do not harm", "no harm"],
+      "tso+neal+i+tsacht": ["give us peace"]
+    },
+    "lexicalCompounds": {
+      "si+tacht": "before",
+      "si+nacht": "after",
+      "val+kecht": "silence",
+      "nacht+nuh": "fate",
+      "val+kei": "few",
+      "kesh+'s+keh": "kin",
+      "kesh+'s+keh+si": "tribe",
+      "kesh+'s+keh+si+ar": "tribe + agent marker",
+      "ru+val+nacht": "omen"
+    },
+    "phraseRenderings": {
+      "neal+i": "we",
+      "teal+eh": "your",
+      "kesh+'s+keh+si+ar": "our tribe",
+      "mah+ar": "mother",
+      "tah+ar": "father",
+      "ru+val+nacht": "omen",
+      "nacht+nuh": "fate",
+      "val+kei": "few"
+    },
+    "lexicalPriority": [
+      "tso'koa",
+      "yeket",
+      "valkesh",
+      "nuhkesh",
+      "ruvalnacht",
+      "raknacht",
+      "valkecht",
+      "kesh'skeh",
+      "kesh'skehsi"
+    ]
+  },
+  "phonology": {
+    "preferredClusters": ["ts", "ch", "tch", "cht"],
+    "erosion": {
+      "vowelCollisionReduction": true,
+      "repeatedRootCompression": true,
+      "directionMarkerErosion": true,
+      "weakVowelReduction": true,
+      "clusterSimplification": true,
+      "longCompoundCollapse": true
+    },
+    "erosionExamples": [
+      "V + V -> V",
+      "X + X -> X / reduced X",
+      "A'sB -> AB"
+    ]
+  },
+  "history": {
+    "layers": [
+      "primitive_roots",
+      "conceptual_compounds",
+      "bound_constructions",
+      "eroded_historical_forms"
+    ]
+  },
+  "translation": {
+    "articleBlockers": ["before", "after", "always", "never", "once", "here", "there"],
+    "articleExceptions": ["sun", "moon", "day", "night", "wind", "sand", "sky"],
+    "bareWords": ["our", "your", "we", "mother", "father", "good", "ruin"],
+    "subjectRenderings": {
+      "tribe + agent marker": "our tribe",
+      "we": "we"
+    },
+    "nounArticles": {
+      "sun": "the",
+      "moon": "the",
+      "day": "the",
+      "night": "the",
+      "wind": "the",
+      "sand": "the",
+      "sky": "the",
+      "omen": "an",
+      "stranger": "a",
+      "guest": "a"
+    },
+    "objectArticles": {
+      "journey": "the",
+      "path": "the",
+      "breath": "the"
+    },
+    "headSequenceOverrides": [
+      {
+        "heads": ["sitacht", "valkecht", "licht"],
+        "output": "Before, silence remained."
+      },
+      {
+        "heads": ["valkesh", "sal", "nuhkesh", "sal"],
+        "output": "A stranger came, a guest came."
+      },
+      {
+        "heads": ["loo", "let"],
+        "output": "Good remained always."
+      },
+      {
+        "heads": ["ka", "licht", "sesh", "sal"],
+        "output": "Day remained, and the wind came into the sand."
+      },
+      {
+        "heads": ["koa", "valkei"],
+        "output": "Ruin was few."
+      },
+      {
+        "heads": ["tso'koa", "valkei"],
+        "output": "Ruin was few."
+      },
+      {
+        "heads": ["kesh'skehsi", "sacht", "raknacht"],
+        "output": "Our tribe continued the journey."
+      }
+    ],
+    "componentSequenceOverrides": [
+      {
+        "components": ["kesh'skehsi", "ar", "sacht", "raknacht"],
+        "output": "Our tribe continued the journey."
+      }
+    ],
+    "tailRenderings": [
+      {
+        "includes": ["jino", "tsal", "ji"],
+        "output": "between the skies"
+      },
+      {
+        "includes": ["ouk", "tsal"],
+        "output": "above the sky"
+      },
+      {
+        "includes": ["ji", "sec"],
+        "output": "into the sand"
+      }
+    ],
+    "continuationRenderings": [
+      {
+        "components": ["sec", "sec", "raknacht", "socht"],
+        "output": "over the sand, and the sand-journey began"
+      },
+      {
+        "heads": ["sec"],
+        "output": "over the sand"
+      }
+    ],
+    "locationReorderings": [
+      {
+        "includes": ["jino", "tsal", "ji"],
+        "output": ["between", "the skies"]
+      },
+      {
+        "includes": ["ouk", "tsal"],
+        "output": ["above", "the sky"]
+      }
+    ],
+    "narrativeRenderings": {
+      "licht": { "narrative": "remained", "literal": "remain" },
+      "lan": { "narrative": "appeared", "literal": "appear" },
+      "lin": { "narrative": "vanished", "literal": "vanish" },
+      "sal": { "narrative": "came", "literal": "come" },
+      "socht": { "narrative": "began", "literal": "begin" },
+      "sacht": { "narrative": "continued", "literal": "continue" },
+      "ru": { "narrative": "knew", "literal": "know" },
+      "rutacht": { "narrative": "remembered", "literal": "remember" },
+      "tsach": { "narrative": "gave", "literal": "give" },
+      "tsocht": { "narrative": "kept", "literal": "keep" },
+      "kecht": { "narrative": "heard", "literal": "hear" },
+      "la": { "narrative": "was", "literal": "be" }
+    },
+    "clauseTypes": {
+      "lan": "appearance",
+      "licht": "state",
+      "lin": "state",
+      "la": "state",
+      "sal": "motion",
+      "sul": "motion",
+      "sacht": "motion",
+      "ru": "knowledge",
+      "rutacht": "knowledge",
+      "kecht": "perception",
+      "tsach": "action",
+      "tsocht": "action"
+    },
+    "poeticOverrides": {
+      "tso'koa, tso'koa": "Bring ruin, bring ruin",
+      "neali micht tealeh": "Our lives are yours",
+      "neali micht teeleh": "Our lives are yours",
+      "neali tso nach tealeh": "We give you our future",
+      "neali tso nach teeleh": "We give you our future",
+      "tealeh sesh vata kol": "Your winds blind all",
+      "teeleh sesh vata kol": "Your winds blind all",
+      "val rel kesheh": "Do not harm our flesh",
+      "tso teal's tsol nali": "Bring to new lands",
+      "koa's - rel's - tsecht's": "Ruin, harm, peace",
+      "koa's - rel's - tsacht": "Ruin, harm, peace",
+      "neali yeketeh": "We are your children",
+      "tso neali tsacht": "Give us peace"
+    }
+  }
+}
