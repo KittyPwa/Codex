@@ -36,6 +36,34 @@ Write-Host ""
 Write-Host "Ancient analysis:" -ForegroundColor Green
 $analyzeResponse | ConvertTo-Json -Depth 10
 
+$regressionCases = @(
+  @{ text = "Sitacht valkecht licht"; expected = "Before, silence remained." },
+  @{ text = "Lan tsar ouk tsal"; expected = "The sun appeared above the sky." },
+  @{ text = "Ruvalnacht lan jino tsal ji"; expected = "An omen appeared between the skies." },
+  @{ text = "Valkesh sal, nuhkesh sal"; expected = "A stranger came, a guest came." },
+  @{ text = "kesh'skehsiar sacht raknacht"; expected = "Our tribe continued the journey." },
+  @{ text = "mah-ar tsach kesheh, tah-ar tsocht rek"; expected = "Mother gave breath, father kept the path." },
+  @{ text = "Tso'koa valkei"; expected = "Ruin was few." },
+  @{ text = "Loo let"; expected = "Good remained always." }
+)
+
+Write-Host ""
+Write-Host "Regression checks:" -ForegroundColor Green
+foreach ($case in $regressionCases) {
+  $body = (@{
+    action = "analyze-ancient"
+    text = $case.text
+    includeInferred = $true
+  } | ConvertTo-Json)
+
+  $response = Invoke-RestMethod -Uri "$baseUrl/api/translate" -Method Post -ContentType "application/json" -Body $body
+  $actual = [string]$response.analysis.idiomaticTranslation
+  $status = if ($actual -eq $case.expected) { "OK" } else { "DIFF" }
+  Write-Host ("[{0}] {1}" -f $status, $case.text)
+  Write-Host ("  expected: {0}" -f $case.expected)
+  Write-Host ("  actual:   {0}" -f $actual)
+}
+
 $client = [System.Net.Http.HttpClient]::new()
 try {
   $content = New-Object System.Net.Http.StringContent('{"includeInferred":true}', [System.Text.Encoding]::UTF8, 'application/json')

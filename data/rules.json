@@ -115,7 +115,8 @@
     "koa's": "koa+'s",
     "rel's": "rel+'s",
     "tsecht's": "tsecht+'s",
-    "kesh'skehsiar": "kesh'skehsi+ar",
+    "kesh'skehsi": "sikeshi",
+    "kesh'skehsiar": "sikeshi+ar",
     "mah-ar": "mah+ar",
     "tah-ar": "tah+ar",
     "tso'koa": "tso'koa",
@@ -169,12 +170,14 @@
       "kesh+'s+keh": "kin",
       "kesh+'s+keh+si": "tribe",
       "kesh+'s+keh+si+ar": "tribe + agent marker",
+      "sikeshi+ar": "tribe + agent marker",
       "ru+val+nacht": "omen"
     },
     "phraseRenderings": {
       "neal+i": "we",
       "teal+eh": "your",
       "kesh+'s+keh+si+ar": "our tribe",
+      "sikeshi+ar": "our tribe",
       "mah+ar": "mother",
       "tah+ar": "father",
       "ru+val+nacht": "omen",
@@ -252,6 +255,10 @@
         "output": "A stranger came, a guest came."
       },
       {
+        "heads": ["ruvalnacht", "lan", "jino", "tsal", "ji"],
+        "output": "An omen appeared between the skies."
+      },
+      {
         "heads": ["loo", "let"],
         "output": "Good remained always."
       },
@@ -270,11 +277,23 @@
       {
         "heads": ["kesh'skehsi", "sacht", "raknacht"],
         "output": "Our tribe continued the journey."
+      },
+      {
+        "heads": ["sikeshi", "ar", "sacht", "raknacht"],
+        "output": "Our tribe continued the journey."
+      },
+      {
+        "heads": ["mah", "ar", "tsach", "kesheh", "tah", "ar", "tsocht", "rek"],
+        "output": "Mother gave breath, father kept the path."
       }
     ],
     "componentSequenceOverrides": [
       {
         "components": ["kesh'skehsi", "ar", "sacht", "raknacht"],
+        "output": "Our tribe continued the journey."
+      },
+      {
+        "components": ["sikeshi", "ar", "sacht", "raknacht"],
         "output": "Our tribe continued the journey."
       }
     ],

@@ -84,7 +84,12 @@ async function requestTranslationApi(action, text, options = {}) {
   });
 
   if (!response.ok) {
-    throw new Error(`Translation API failed with HTTP ${response.status}.`);
+    const errorText = await response.text().catch(() => "");
+    throw new Error(
+      errorText
+        ? `Translation API failed with HTTP ${response.status}: ${errorText}`
+        : `Translation API failed with HTTP ${response.status}.`
+    );
   }
 
   return response.json();

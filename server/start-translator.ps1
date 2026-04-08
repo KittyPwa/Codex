@@ -182,18 +182,18 @@ function Get-ConfigValue($Object, $Path, $Default = $null) {
 
 function ConvertTo-ArrayValue($value) {
   if ($null -eq $value) {
-    return @()
+    return ,@()
   }
 
   if ($value -is [string]) {
-    return @($value)
+    return ,@($value)
   }
 
   if ($value -is [System.Collections.IEnumerable]) {
-    return @($value)
+    return ,@($value)
   }
 
-  return @($value)
+  return ,@($value)
 }
 
 function Normalize-EnglishKey($text) {
@@ -450,7 +450,7 @@ function Translate-EnglishToAncientApi($context, $text) {
     $index = 0
 
     while ($index -lt $tokens.Count) {
-      $token = $tokens[$index]
+      $token = [string]$tokens[$index]
 
       if ($token -notmatch "[A-Za-z']") {
         [void]$output.Add($token)
@@ -465,12 +465,13 @@ function Translate-EnglishToAncientApi($context, $text) {
         continue
       }
 
-      if ($fillers.Contains($token.ToLowerInvariant())) {
+      $lowerToken = $token.ToLowerInvariant()
+      if ($fillers.Contains($lowerToken)) {
         $index += 1
         continue
       }
 
-      [void]$output.Add("[$($token.ToLowerInvariant())]")
+      [void]$output.Add("[$lowerToken]")
       $index += 1
     }
 
@@ -541,6 +542,45 @@ function Get-ContextualRendering($context, $parts) {
   }
 
   return $null
+}
+
+function Get-NarrativeRendering($context, $headword, $mode = "narrative") {
+  $renderMap = Get-MapFromConfig $context.Rules "translation.narrativeRenderings"
+  $key = Normalize-AncientKey $headword
+  if ($renderMap.ContainsKey($key)) {
+    $entry = $renderMap[$key]
+    $value = Get-ConfigValue $entry $mode $null
+    if ($value) {
+      return [string]$value
+    }
+  }
+
+  return $null
+}
+
+function Get-EntryGloss($context, $entry, $mode = "narrative") {
+  $meanings = ConvertTo-ArrayValue $entry.meanings
+  $primary = if ($meanings.Count) { [string]$meanings[0] } else { [string]$entry.ancient }
+
+  if ($mode -eq "narrative") {
+    $render = Get-NarrativeRendering $context $entry.ancient "narrative"
+    if ($render) {
+      return $render
+    }
+  }
+
+  if ($mode -eq "literal") {
+    $render = Get-NarrativeRendering $context $entry.ancient "literal"
+    if ($render) {
+      return $render
+    }
+  }
+
+  if ($mode -eq "narrative" -and $entry.allowNominalReading -and $meanings.Count -gt 1) {
+    return [string]$meanings[1]
+  }
+
+  return $primary
 }
 
 function Build-MorphemeGloss($context, $parts, $fallback) {
@@ -614,12 +654,12 @@ function Analyze-AncientTokenApi($context, $token) {
       meanings = @($meanings)
       primaryGloss = $primaryGloss
       morphemeGloss = if ($entry.lexicalized) { $primaryGloss } else { Build-MorphemeGloss $context $components $primaryGloss }
-      literalGloss = $primaryGloss
-      narrativeGloss = $primaryGloss
+      literalGloss = Get-EntryGloss $context $entry "literal"
+      narrativeGloss = Get-EntryGloss $context $entry "narrative"
       resolvedGloss = $(if (Get-PhraseRendering $context $componentPath) { Get-PhraseRendering $context $componentPath } elseif (Get-LexicalCollapse $context $componentPath) { Get-LexicalCollapse $context $componentPath } else { $primaryGloss })
       components = @($components)
-      etymology = @(ConvertTo-ArrayValue $entry.etymology)
-      notes = @(ConvertTo-ArrayValue $entry.notes)
+      etymology = ConvertTo-ArrayValue $entry.etymology
+      notes = ConvertTo-ArrayValue $entry.notes
       status = if ($entry.status) { $entry.status } else { "confirmed" }
       register = if ($entry.register) { $entry.register } else { "ancient" }
       pronunciation = if ($entry.pronunciation) { $entry.pronunciation } else { "" }
@@ -648,8 +688,8 @@ function Analyze-AncientTokenApi($context, $token) {
       meanings = @($(if ($lexicalCollapse) { $lexicalCollapse } elseif ($contextual) { $contextual } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " }))
       primaryGloss = $(if ($lexicalCollapse) { $lexicalCollapse } elseif ($contextual) { $contextual } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
       morphemeGloss = ($resolved | ForEach-Object { $_.meanings[0] }) -join " + "
-      literalGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
-      narrativeGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
+      literalGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { Get-EntryGloss $context $_ "literal" }) -join " + " })
+      narrativeGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { Get-EntryGloss $context $_ "narrative" }) -join " + " })
       resolvedGloss = $(if (Get-PhraseRendering $context $normalizedParts) { Get-PhraseRendering $context $normalizedParts } elseif ($lexicalCollapse) { $lexicalCollapse } elseif ($contextual) { $contextual } else { (($resolved | ForEach-Object { $_.meanings[0] }) -join " + ") })
       components = @($normalizedParts)
       etymology = @()
@@ -681,8 +721,8 @@ function Analyze-AncientTokenApi($context, $token) {
       meanings = @($(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " }))
       primaryGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
       morphemeGloss = ($resolved | ForEach-Object { $_.meanings[0] }) -join " + "
-      literalGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
-      narrativeGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { $_.meanings[0] }) -join " + " })
+      literalGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { Get-EntryGloss $context $_ "literal" }) -join " + " })
+      narrativeGloss = $(if ($lexicalCollapse) { $lexicalCollapse } else { ($resolved | ForEach-Object { Get-EntryGloss $context $_ "narrative" }) -join " + " })
       resolvedGloss = $(if (Get-PhraseRendering $context $suffixParts) { Get-PhraseRendering $context $suffixParts } elseif ($lexicalCollapse) { $lexicalCollapse } else { (($resolved | ForEach-Object { $_.meanings[0] }) -join " + ") })
       components = @($suffixParts)
       etymology = @()
@@ -738,6 +778,59 @@ function Resolve-SubjectText($context, $word) {
   return $word
 }
 
+function Resolve-ObjectText($context, $words) {
+  $parts = @($words | Where-Object { $_ })
+  if (-not $parts.Count) {
+    return ""
+  }
+
+  $joined = ($parts -join " ").Trim()
+  $objectArticles = Get-MapFromConfig $context.Rules "translation.objectArticles"
+  $lower = $joined.ToLowerInvariant()
+
+  if ($objectArticles.ContainsKey($lower)) {
+    return "$($objectArticles[$lower]) $joined"
+  }
+
+  return $joined
+}
+
+function Capitalize-Text($value) {
+  $text = if ($null -eq $value) { "" } else { [string]$value }
+  if ([string]::IsNullOrWhiteSpace($text)) {
+    return ""
+  }
+
+  if ($text.Length -eq 1) {
+    return $text.ToUpper()
+  }
+
+  return $text.Substring(0,1).ToUpper() + $text.Substring(1)
+}
+
+function Build-LiteralLineApi($context, $analyses) {
+  $components = @($analyses | ForEach-Object {
+    if ($_.components.Count) { $_.components } else { Normalize-AncientKey $_.headword }
+  })
+
+  if (Get-PhraseRendering $context $components) {
+    return Get-PhraseRendering $context $components
+  }
+
+  if (Get-LexicalCollapse $context $components) {
+    return Get-LexicalCollapse $context $components
+  }
+
+  $hiddenMarkers = Get-HashSetFromConfig $context.Rules "morphology.hiddenTranslationMarkers"
+  $words = @($analyses | ForEach-Object {
+    if ($_.resolvedGloss) { $_.resolvedGloss }
+    elseif ($_.literalGloss) { $_.literalGloss }
+    else { $_.primaryGloss }
+  })
+
+  return (@($words | Where-Object { $_ -and -not $hiddenMarkers.Contains((Normalize-AncientKey $_)) }) -join " ").Trim()
+}
+
 function Resolve-LocationText($context, $heads, $tailWords) {
   foreach ($pattern in (ConvertTo-ArrayValue (Get-ConfigValue $context.Rules "translation.tailRenderings" @()))) {
     $includes = ConvertTo-ArrayValue $pattern.includes
@@ -781,48 +874,71 @@ function Analyze-AncientLineApi($context, $lineText) {
       $_.primaryGloss
     }
   })
-  $literal = if ($components.Count) {
-    if (Get-PhraseRendering $context $components) {
-      Get-PhraseRendering $context $components
-    } elseif (Get-LexicalCollapse $context $components) {
-      Get-LexicalCollapse $context $components
-    } else {
-      (($resolvedWords | Where-Object { $_ }) -join " ")
-    }
-  } else {
-    ""
-  }
+  $literal = if ($components.Count) { Build-LiteralLineApi $context $wordAnalyses } else { "" }
   $idiomatic = Get-NarrativeOverride $context $lineText $heads $components
   if (-not $idiomatic -and $heads.Count -ge 2 -and $heads[0] -eq "lan") {
     $subject = Resolve-SubjectText $context $resolvedWords[1]
     $tail = if ($resolvedWords.Count -gt 2) { Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) (@($resolvedWords | Select-Object -Skip 2)) } else { "" }
-    $idiomatic = ("{0} appeared{1}" -f ($subject.Substring(0,1).ToUpper() + $subject.Substring(1)), $(if ($tail) { " $tail." } else { "." }))
+    $idiomatic = ("{0} appeared{1}" -f (Capitalize-Text $subject), $(if ($tail) { " $tail." } else { "." }))
   }
   if (-not $idiomatic -and $heads.Count -eq 2 -and $heads[1] -eq "licht") {
     $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$([char]::ToUpper($subject[0]) + $subject.Substring(1)) remained."
+    $idiomatic = "$(Capitalize-Text $subject) remained."
+  }
+  if (-not $idiomatic -and $heads.Count -eq 2 -and $heads[1] -eq "lin") {
+    $subject = Resolve-SubjectText $context $resolvedWords[0]
+    $idiomatic = "$(Capitalize-Text $subject) vanished."
   }
   if (-not $idiomatic -and $heads.Count -ge 2 -and $heads[1] -eq "sal") {
     $subject = Resolve-SubjectText $context $resolvedWords[0]
     $tail = if ($resolvedWords.Count -gt 2) { Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) (@($resolvedWords | Select-Object -Skip 2)) } else { "" }
-    $idiomatic = ("{0} came{1}" -f ($subject.Substring(0,1).ToUpper() + $subject.Substring(1)), $(if ($tail) { " $tail." } else { "." }))
+    $idiomatic = ("{0} came{1}" -f (Capitalize-Text $subject), $(if ($tail) { " $tail." } else { "." }))
   }
   if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "sacht") {
     $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $tail = Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) (@($resolvedWords | Select-Object -Skip 2))
-    $idiomatic = "$([char]::ToUpper($subject[0]) + $subject.Substring(1)) continued $tail."
+    $tailWords = @($resolvedWords | Select-Object -Skip 2)
+    $tail = if ($tailWords.Count -le 1) {
+      Resolve-ObjectText $context $tailWords
+    } else {
+      Resolve-LocationText $context (@($heads | Select-Object -Skip 2)) $tailWords
+    }
+    $idiomatic = "$(Capitalize-Text $subject) continued $tail."
   }
   if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "ru") {
     $subject = Resolve-SubjectText $context $resolvedWords[0]
-    $idiomatic = "$([char]::ToUpper($subject[0]) + $subject.Substring(1)) knew $(@($resolvedWords | Select-Object -Skip 2) -join ' ')."
+    $idiomatic = "$(Capitalize-Text $subject) knew $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
+  }
+  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "rutacht") {
+    $subject = Resolve-SubjectText $context $resolvedWords[0]
+    $idiomatic = "$(Capitalize-Text $subject) remembered $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
+  }
+  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "tsach") {
+    $subject = Resolve-SubjectText $context $resolvedWords[0]
+    $idiomatic = "$(Capitalize-Text $subject) gave $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
+  }
+  if (-not $idiomatic -and $heads.Count -ge 3 -and $heads[1] -eq "tsocht") {
+    $subject = Resolve-SubjectText $context $resolvedWords[0]
+    $idiomatic = "$(Capitalize-Text $subject) kept $(Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 2)))."
+  }
+  if (-not $idiomatic -and $heads.Count -ge 4 -and $heads[1] -eq "kecht" -and $heads[3] -eq "rutacht") {
+    $subject = Capitalize-Text (Resolve-SubjectText $context $resolvedWords[0])
+    $firstObject = Resolve-ObjectText $context @($resolvedWords[2])
+    $secondObject = Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 4))
+    $idiomatic = "$subject heard $firstObject and remembered $secondObject."
+  }
+  if (-not $idiomatic -and $heads.Count -ge 4 -and $heads[1] -eq "tsach" -and $heads[3] -eq "tsocht") {
+    $subject = Capitalize-Text (Resolve-SubjectText $context $resolvedWords[0])
+    $firstObject = Resolve-ObjectText $context @($resolvedWords[2])
+    $secondObject = Resolve-ObjectText $context (@($resolvedWords | Select-Object -Skip 4))
+    $idiomatic = "$subject gave $firstObject and kept $secondObject."
   }
   if (-not $idiomatic) {
-    $idiomatic = ((@($resolvedWords) -join " ").Trim())
+    $idiomatic = ((@($resolvedWords | Where-Object { $_ }) -join " ").Trim())
     if ($idiomatic -and $idiomatic -notmatch "[.!?]$") {
       $idiomatic += "."
     }
     if ($idiomatic) {
-      $idiomatic = $idiomatic.Substring(0,1).ToUpper() + $idiomatic.Substring(1)
+      $idiomatic = Capitalize-Text $idiomatic
     }
   }
 
@@ -1205,7 +1321,11 @@ try {
       $bytes = [System.IO.File]::ReadAllBytes($path)
       Write-BytesResponse $context 200 $bytes (Get-ContentType $path)
     } catch {
-      Write-Response $context 500 "Internal Server Error"
+      $message = $_.Exception.Message
+      if ([string]::IsNullOrWhiteSpace($message)) {
+        $message = "Unknown server error."
+      }
+      Write-Response $context 500 "Internal Server Error: $message"
     }
   }
 } finally {
