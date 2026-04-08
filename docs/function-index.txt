@@ -1,0 +1,129 @@
+247:function supportsFileEditing() {
+477:function buildEnglishToAncientMap(entries) {
+591:function translateEnglishToAncient(text) {
+638:function findLongestEnglishMatch(tokens, startIndex) {
+670:function analyzeAncientText(text) {
+697:function analyzeAncientLine(lineText) {
+725:function analyzeAncientToken(token) {
+795:function createAnalysisFromEntry(token, entry, options = {}) {
+818:function analyzeRecipe(token, recipe, path) {
+883:function buildEntryNotes(entry, extraNotes = []) {
+901:function buildLiteralGloss(entry, mode) {
+915:function buildMorphemeGloss(components, fallback) {
+925:function resolveNormalization(token) {
+938:function splitAffixes(token) {
+963:function findLongestLexicalStem(token) {
+981:function recoverCompound(token) {
+993:function segmentCompound(token) {
+1018:function findFuzzyMatch(token) {
+1047:function deriveIdiomaticLine(lineText, analyses) {
+1075:function renderAnalysis(analysis) {
+1148:function createLabeledParagraph(label, value) {
+1157:function tokenize(text) {
+1161:function isWordToken(token) {
+1165:function normalizeEnglishKey(text) {
+1169:function normalizeAncientKey(text) {
+1177:function normalizeOverrideKey(text) {
+1181:async function initializeApp() {
+1218:async function loadRulesNotesMarkdown() {
+1227:async function loadLexiconPayload() {
+1268:async function loadRulesNotesMarkdown() {
+1286:function applyLexiconPayload(payload) {
+1310:function applyRulesNotesMarkdown(markdown) {
+1315:function normalizeLexiconPayload(payload) {
+1329:function normalizeLexiconEntries(value) {
+1346:function cloneLexiconEntry(entry) {
+1364:function persistImportedLexicon(payload) {
+1372:function readPersistedLexicon() {
+1382:function setLexiconStatus(message, isError = false) {
+1391:function setActiveTab(targetId) {
+1401:function describeActiveLexiconSource() {
+1409:function rerenderActiveSource() {
+1424:function refreshLexiconState() {
+1436:function populateLexiconFilters() {
+1442:function populateSelect(select, values) {
+1465:function collectLexiconValues(getValue) {
+1469:function collectLexiconCategories() {
+1481:function getLexiconCategories(entry) {
+1499:function renderLexiconTable() {
+1545:function createTableCell(value) {
+1551:function createLexiconWordCell(entry) {
+1570:function matchesLexiconFilters(entry, filters) {
+1598:function compareLexiconEntries(left, right, sort) {
+1624:function syncLexiconSortButtons() {
+1634:function renderLexiconGraph() {
+1691:function openLexiconGraphModal() {
+1700:function closeLexiconGraphModal() {
+1711:function createGraphTreeNode(headword, visited) {
+1753:function findDirectLexiconChildren(headword) {
+1761:function findLexiconDescendants(headword) {
+1784:function getEntrySourceParts(entry) {
+1791:function createGraphTreeNode(headword, visited) {
+1834:function createGraphAncestorNode(headword, visited) {
+1867:function createGraphCenterNode(headword) {
+1885:function createGraphSectionLabel(label) {
+1892:function createGraphEmptyState(text) {
+1899:function downloadLexiconMarkdown() {
+1916:function buildLexiconMarkdown(entries, options = {}) {
+1972:function renderRulesNotes() {
+1988:function renderMarkdownDocument(markdown) {
+2118:function renderInlineMarkdown(text) {
+2126:function escapeHtml(text) {
+2133:function groupEntriesForMarkdown(entries) {
+2144:function classifyEntryForMarkdown(entry) {
+2227:function formatMeaningCell(entry) {
+2246:function escapeMarkdownCell(value) {
+2250:function formatGraphNodeLabel(entry, fallbackHeadword) {
+2258:function findDirectLexiconParents(headword) {
+2271:function findDirectLexiconChildren(headword) {
+2279:function findLexiconDescendants(headword) {
+2302:function getEntrySourceParts(entry) {
+2309:function lookupEntry(key) {
+2313:function inferPronunciation(term) {
+2319:function findPoeticOverrideByEnglish(text) {
+2336:function lookupContextualRendering(parts) {
+2341:function collapseLexicalCompound(parts) {
+2346:function lookupPhraseRendering(parts) {
+2351:function buildLiteralLine(analyses) {
+2368:function smoothClause(analyses) {
+2435:function renderNarrativeClause(analyses) {
+2528:function reorderNarrativeTail(analyses, tailWords) {
+2545:function reorderContinuationObject(analyses, tailWords) {
+2560:function reorderLocationPhrase(analyses, words) {
+2595:function withArticle(word) {
+2619:function getSelectedOutput(analysis) {
+2632:function capitalize(value) {
+2640:function renderClause(tokens) {
+2679:function applySubjectCarryover(lines) {
+2701:function renderNoun(noun) {
+2718:function renderLocation(parts) {
+2736:function smoothVerbs(sentence) {
+2743:function resolveSubject(word, mode) {
+2761:function resolveObject(words) {
+2777:function splitLines(text) {
+2791:function rejoinLines(values, lines) {
+2795:function setIfMissing(map, key, value) {
+2801:function joinTokens(tokens) {
+2835:function levenshtein(left, right) {
+2862:function scoreFuzzyConfidence(surface, target, distance) {
+2884:function collapseRepeatedVowels(value) {
+2888:function finalCleanup(text) {
+2896:function createLexiconActionCell(entry) {
+2911:function renderLexiconTable() {
+2959:function renderRulesNotes() {
+2991:async function loadLexiconPayload() {
+3027:async function loadRulesNotesMarkdown() {
+3049:function setLexiconEditorStatus(message, isError = false) {
+3058:function openLexiconEntryModal(entry = null) {
+3087:function closeLexiconEntryModal() {
+3098:function populateLexiconEntryForm(entry) {
+3118:function findLexiconGroupForEntry(ancient) {
+3131:function parseListField(value) {
+3138:function compactLexiconEntry(entry) {
+3167:function buildLexiconEntryFromForm() {
+3194:function getWritableLexiconPayload() {
+3201:async function saveLexiconEntryFromForm() {
+3241:async function deleteLexiconEntry(ancient, group) {
+3267:async function saveLexiconPayload(payload) {
+3285:function closeRulesEditor() {
+3296:async function saveRulesNotesMarkdown() {

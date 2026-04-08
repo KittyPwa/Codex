@@ -1,0 +1,3785 @@
+{
+    "confirmed":  [
+                      {
+                          "ancient":  "\u0027s",
+                          "meanings":  [
+                                           "direction",
+                                           "intent toward",
+                                           "toward"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "acht",
+                          "meanings":  [
+                                           "light"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ar",
+                          "meanings":  [
+                                           "agent marker",
+                                           "actor"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "cheecht",
+                          "meanings":  [
+                                           "evil",
+                                           "negative"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "cheechtkesh",
+                          "meanings":  [
+                                           "enemy"
+                                       ],
+                          "components":  [
+                                             "cheecht",
+                                             "kesh"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The first \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "chi",
+                          "meanings":  [
+                                           "leader"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "eh",
+                          "meanings":  [
+                                           "possession",
+                                           "belonging"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "en",
+                          "meanings":  [
+                                           "object marker"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ge",
+                          "meanings":  [
+                                           "same"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "go",
+                          "meanings":  [
+                                           "other"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "hesh",
+                          "meanings":  [
+                                           "fire"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "heshtsali",
+                          "meanings":  [
+                                           "storm"
+                                       ],
+                          "components":  [
+                                             "hesh",
+                                             "tsal",
+                                             "i"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "heshtsoum",
+                          "meanings":  [
+                                           "life"
+                                       ],
+                          "components":  [
+                                             "hesh",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "heshvacht",
+                          "meanings":  [
+                                           "to understand",
+                                           "understand"
+                                       ],
+                          "components":  [
+                                             "hesh",
+                                             "vacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "aliases":  [
+                                          "nachtvacht"
+                                      ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "hoc",
+                          "meanings":  [
+                                           "stone"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "hocsesh",
+                          "meanings":  [
+                                           "dust"
+                                       ],
+                          "components":  [
+                                             "hoc",
+                                             "sesh"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "hwir",
+                          "meanings":  [
+                                           "water"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "i",
+                          "meanings":  [
+                                           "plural denominator",
+                                           "plural"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ja",
+                          "meanings":  [
+                                           "here"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ja\u0027s",
+                          "meanings":  [
+                                           "there"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ji",
+                          "meanings":  [
+                                           "in"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "jija",
+                          "meanings":  [
+                                           "inside"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "jino",
+                          "meanings":  [
+                                           "between"
+                                       ],
+                          "components":  [
+                                             "ji",
+                                             "no"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: in + two."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "jo",
+                          "meanings":  [
+                                           "out"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ka",
+                          "meanings":  [
+                                           "day"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "kecht",
+                          "meanings":  [
+                                           "hear"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "kei",
+                          "meanings":  [
+                                           "many"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "kesh",
+                          "meanings":  [
+                                           "flesh",
+                                           "body"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "kesh\u0027skesh",
+                          "meanings":  [
+                                           "kin"
+                                       ],
+                          "components":  [
+                                             "kesh",
+                                             "\u0027s",
+                                             "kesh"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Directional marker participates in kinship compounding."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "kesheh",
+                          "meanings":  [
+                                           "breath"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Meaning is confirmed, but internal derivation is still opaque."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "keshir",
+                          "meanings":  [
+                                           "blood"
+                                       ],
+                          "components":  [
+                                             "kesh",
+                                             "hwir"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: flesh + water."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "keshoc",
+                          "meanings":  [
+                                           "bone"
+                                       ],
+                          "components":  [
+                                             "kesh",
+                                             "hoc"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: flesh + stone."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "keshti",
+                          "meanings":  [
+                                           "voice"
+                                       ],
+                          "components":  [
+                                             "kesh",
+                                             "ti"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: flesh + sound."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "ko",
+                          "meanings":  [
+                                           "night"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "koa",
+                          "meanings":  [
+                                           "ruin"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "kol",
+                          "meanings":  [
+                                           "all"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "la",
+                          "meanings":  [
+                                           "to be",
+                                           "be",
+                                           "is",
+                                           "are",
+                                           "am"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "lak",
+                          "meanings":  [
+                                           "never"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "lan",
+                          "meanings":  [
+                                           "to appear",
+                                           "appear"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "let",
+                          "meanings":  [
+                                           "always"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "licht",
+                          "meanings":  [
+                                           "to remain",
+                                           "remain"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "lietacht",
+                          "meanings":  [
+                                           "memory"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Meaning is confirmed, but internal derivation is still opaque."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "lin",
+                          "meanings":  [
+                                           "to vanish",
+                                           "vanish"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "linru",
+                          "meanings":  [
+                                           "forget",
+                                           "not know"
+                                       ],
+                          "components":  [
+                                             "lin",
+                                             "ru"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "notes":  [
+                                        "Carries both forgetfulness and vanished knowledge."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "linvacht",
+                          "meanings":  [
+                                           "spirit"
+                                       ],
+                          "components":  [
+                                             "lin",
+                                             "vacht"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: vanish + soul."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "locht",
+                          "meanings":  [
+                                           "once"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "loo",
+                          "meanings":  [
+                                           "good",
+                                           "positive"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "mah",
+                          "meanings":  [
+                                           "mother"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "mal",
+                          "meanings":  [
+                                           "to break",
+                                           "break"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "mel",
+                          "meanings":  [
+                                           "to make",
+                                           "make",
+                                           "to create",
+                                           "create"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "micht",
+                          "meanings":  [
+                                           "bind",
+                                           "attach"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nacht",
+                          "meanings":  [
+                                           "future"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nachtnuh",
+                          "meanings":  [
+                                           "fate"
+                                       ],
+                          "components":  [
+                                             "nacht",
+                                             "nuh"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The \u0027cht\u0027 retains the guttural fricative.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nachtvacht",
+                          "meanings":  [
+                                           "to understand",
+                                           "understand"
+                                       ],
+                          "components":  [
+                                             "nacht",
+                                             "vacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "aliases":  [
+                                          "heshvacht"
+                                      ],
+                          "pronunciation":  "The medial \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nal",
+                          "meanings":  [
+                                           "new"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "naltsoum",
+                          "meanings":  [
+                                           "birth"
+                                       ],
+                          "components":  [
+                                             "nal",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "neal",
+                          "meanings":  [
+                                           "I",
+                                           "self"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "neh",
+                          "meanings":  [
+                                           "beyond"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ni",
+                          "meanings":  [
+                                           "one"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nila",
+                          "meanings":  [
+                                           "name"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "no",
+                          "meanings":  [
+                                           "two"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nocht",
+                          "meanings":  [
+                                           "to become",
+                                           "become"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nochtni",
+                          "meanings":  [
+                                           "to join",
+                                           "join"
+                                       ],
+                          "components":  [
+                                             "nocht",
+                                             "ni"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The medial \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nochtno",
+                          "meanings":  [
+                                           "to split",
+                                           "split"
+                                       ],
+                          "components":  [
+                                             "nocht",
+                                             "no"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The medial \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nochtsi",
+                          "meanings":  [
+                                           "change",
+                                           "shift"
+                                       ],
+                          "components":  [
+                                             "nocht",
+                                             "si"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: become + small."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "nu",
+                          "meanings":  [
+                                           "oath"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuh",
+                          "meanings":  [
+                                           "promise"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuhkesh",
+                          "meanings":  [
+                                           "guest"
+                                       ],
+                          "components":  [
+                                             "nuh",
+                                             "kesh"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuhl",
+                          "meanings":  [
+                                           "feel"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuhtsecht",
+                          "meanings":  [
+                                           "anger"
+                                       ],
+                          "components":  [
+                                             "nuh",
+                                             "tsecht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuhzik",
+                          "meanings":  [
+                                           "fear"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nuhzir",
+                          "meanings":  [
+                                           "courage"
+                                       ],
+                          "components":  [
+                                             "nuh",
+                                             "zir"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "nutsoum",
+                          "meanings":  [
+                                           "love"
+                                       ],
+                          "components":  [
+                                             "nuh",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ocho",
+                          "meanings":  [
+                                           "balance"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ocht",
+                          "meanings":  [
+                                           "dark"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ohm",
+                          "meanings":  [
+                                           "order"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ouk",
+                          "meanings":  [
+                                           "above"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "oun",
+                          "meanings":  [
+                                           "below"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rak",
+                          "meanings":  [
+                                           "road"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "raknacht",
+                          "meanings":  [
+                                           "journey"
+                                       ],
+                          "components":  [
+                                             "rak",
+                                             "nacht"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: road + future."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "reh",
+                          "meanings":  [
+                                           "to lift",
+                                           "lift"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rek",
+                          "meanings":  [
+                                           "path"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "reksacht",
+                          "meanings":  [
+                                           "growth"
+                                       ],
+                          "components":  [
+                                             "rek",
+                                             "sacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rektchich",
+                          "meanings":  [
+                                           "decay",
+                                           "ending of growth"
+                                       ],
+                          "components":  [
+                                             "rek",
+                                             "tchich"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rektsecht",
+                          "meanings":  [
+                                           "depression"
+                                       ],
+                          "components":  [
+                                             "rek",
+                                             "tsecht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rekwir",
+                          "meanings":  [
+                                           "river"
+                                       ],
+                          "components":  [
+                                             "rek",
+                                             "hwir"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "notes":  [
+                                        "Concept stack: path + water."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "rel",
+                          "meanings":  [
+                                           "harm",
+                                           "hurt"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ren",
+                          "meanings":  [
+                                           "to pull",
+                                           "pull"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rez",
+                          "meanings":  [
+                                           "to carry",
+                                           "carry"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ri",
+                          "meanings":  [
+                                           "to push",
+                                           "push",
+                                           "to apply force",
+                                           "apply force"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ro",
+                          "meanings":  [
+                                           "to throw",
+                                           "throw"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rocht",
+                          "meanings":  [
+                                           "to rise",
+                                           "rise"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rok",
+                          "meanings":  [
+                                           "to fall",
+                                           "fall"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ru",
+                          "meanings":  [
+                                           "to know",
+                                           "know"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "rutacht",
+                          "meanings":  [
+                                           "remember"
+                                       ],
+                          "components":  [
+                                             "ru",
+                                             "tacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: know + past."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "ruval",
+                          "meanings":  [
+                                           "uncertain knowledge",
+                                           "intuition"
+                                       ],
+                          "components":  [
+                                             "ru",
+                                             "val"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: know + negation."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "ruvalnacht",
+                          "meanings":  [
+                                           "omen"
+                                       ],
+                          "components":  [
+                                             "ru",
+                                             "val",
+                                             "nacht"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Can also be glossed as sign of the future or knowledge of the unknowable future."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "sacht",
+                          "meanings":  [
+                                           "to continue",
+                                           "continue",
+                                           "big",
+                                           "tall"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "notes":  [
+                                        "Polysemous root with both verbal and descriptive senses."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "sachtchi",
+                          "meanings":  [
+                                           "ruler"
+                                       ],
+                          "components":  [
+                                             "sacht",
+                                             "chi"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sachthoc",
+                          "meanings":  [
+                                           "mountain"
+                                       ],
+                          "components":  [
+                                             "sacht",
+                                             "hoc"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The medial \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sachtsoum",
+                          "meanings":  [
+                                           "elder"
+                                       ],
+                          "components":  [
+                                             "sacht",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sal",
+                          "meanings":  [
+                                           "to come",
+                                           "come"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sec",
+                          "meanings":  [
+                                           "sand"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sesh",
+                          "meanings":  [
+                                           "wind"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "si",
+                          "meanings":  [
+                                           "short",
+                                           "small"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sicht",
+                          "meanings":  [
+                                           "lie"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sikei",
+                          "meanings":  [
+                                           "group"
+                                       ],
+                          "components":  [
+                                             "si",
+                                             "kei"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sikeshi",
+                          "meanings":  [
+                                           "tribe"
+                                       ],
+                          "components":  [
+                                             "sikei",
+                                             "kesh",
+                                             "\u0027s",
+                                             "kesh"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sinacht",
+                          "meanings":  [
+                                           "after"
+                                       ],
+                          "components":  [
+                                             "si",
+                                             "nacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: small / following + future."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "sitacht",
+                          "meanings":  [
+                                           "before"
+                                       ],
+                          "components":  [
+                                             "si",
+                                             "tacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: small / prior + past."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "sitsoum",
+                          "meanings":  [
+                                           "child",
+                                           "childhood"
+                                       ],
+                          "components":  [
+                                             "si",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sizik",
+                          "meanings":  [
+                                           "shame"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sizir",
+                          "meanings":  [
+                                           "hope"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "socht",
+                          "meanings":  [
+                                           "to begin",
+                                           "begin"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "soh",
+                          "meanings":  [
+                                           "truth"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "soo",
+                          "meanings":  [
+                                           "sleep"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "soolie",
+                          "meanings":  [
+                                           "dream"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Meaning is confirmed, but internal derivation is still opaque."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "sul",
+                          "meanings":  [
+                                           "to go",
+                                           "go"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sulneh",
+                          "meanings":  [
+                                           "crossing"
+                                       ],
+                          "components":  [
+                                             "sul",
+                                             "neh"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "sult",
+                          "meanings":  [
+                                           "to protect",
+                                           "protect",
+                                           "to defend",
+                                           "defend"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ta",
+                          "meanings":  [
+                                           "to act",
+                                           "act"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ta\u0027sikeshi",
+                          "meanings":  [
+                                           "servant"
+                                       ],
+                          "components":  [
+                                             "ta",
+                                             "\u0027s",
+                                             "sikeshi"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Relational construction rather than a simple lexical root."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "tacht",
+                          "meanings":  [
+                                           "past"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tah",
+                          "meanings":  [
+                                           "father"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tal",
+                          "meanings":  [
+                                           "to open",
+                                           "open"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tar",
+                          "meanings":  [
+                                           "aspiration",
+                                           "longing"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tasacht",
+                          "meanings":  [
+                                           "to grow",
+                                           "grow"
+                                       ],
+                          "components":  [
+                                             "ta",
+                                             "sacht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tasachtsoum",
+                          "meanings":  [
+                                           "to learn",
+                                           "learn"
+                                       ],
+                          "components":  [
+                                             "ta",
+                                             "sacht",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tasi",
+                          "meanings":  [
+                                           "to shrink",
+                                           "shrink"
+                                       ],
+                          "components":  [
+                                             "ta",
+                                             "si"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tavalge",
+                          "meanings":  [
+                                           "to transform",
+                                           "transform"
+                                       ],
+                          "components":  [
+                                             "ta",
+                                             "val",
+                                             "ge"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tcha",
+                          "meanings":  [
+                                           "see"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tchich",
+                          "meanings":  [
+                                           "to end",
+                                           "end"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "teal",
+                          "meanings":  [
+                                           "you"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tem",
+                          "meanings":  [
+                                           "present",
+                                           "now"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "ti",
+                          "meanings":  [
+                                           "sound"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tichti",
+                          "meanings":  [
+                                           "to teach",
+                                           "teach"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tichtsi",
+                          "meanings":  [
+                                           "to answer",
+                                           "answer"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tihesh",
+                          "meanings":  [
+                                           "anger"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "notes":  [
+                                        "Alternate confirmed form for anger."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "tik",
+                          "meanings":  [
+                                           "to move",
+                                           "move"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "titsoum",
+                          "meanings":  [
+                                           "voice of life",
+                                           "song"
+                                       ],
+                          "components":  [
+                                             "ti",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "notes":  [
+                                        "Concept stack: sound + existence."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "to",
+                          "meanings":  [
+                                           "step"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tocht",
+                          "meanings":  [
+                                           "to close",
+                                           "close"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsach",
+                          "meanings":  [
+                                           "to give",
+                                           "give"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsacht",
+                          "meanings":  [
+                                           "peace",
+                                           "death"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Intentional cultural ambiguity; preserve both senses."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "tsal",
+                          "meanings":  [
+                                           "sky"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsar",
+                          "meanings":  [
+                                           "sun"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsecht",
+                          "meanings":  [
+                                           "to release",
+                                           "release"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsecht lietacht",
+                          "meanings":  [
+                                           "forest"
+                                       ],
+                          "components":  [
+                                             "tsecht",
+                                             "lietacht"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Multiword lexical form."
+                                    ],
+                          "pronunciation":  "Both \u0027cht\u0027 clusters use guttural fricatives.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "tsen",
+                          "meanings":  [
+                                           "star"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsi",
+                          "meanings":  [
+                                           "to ask",
+                                           "ask"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsich",
+                          "meanings":  [
+                                           "to take",
+                                           "take"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsin",
+                          "meanings":  [
+                                           "moon"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tso",
+                          "meanings":  [
+                                           "bring to",
+                                           "bring upon",
+                                           "brought upon"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tso\u0027koa",
+                          "meanings":  [
+                                           "bring ruin",
+                                           "ruin",
+                                           "ruination"
+                                       ],
+                          "etymology":  [
+                                            "tso",
+                                            "koa"
+                                        ],
+                          "lexicalized":  true,
+                          "allowNominalReading":  true,
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Lexicalized ritual form built from tso + koa."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ]
+                      },
+                      {
+                          "ancient":  "tsocht",
+                          "meanings":  [
+                                           "to keep",
+                                           "keep"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsol",
+                          "meanings":  [
+                                           "land",
+                                           "earth"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "tsoum",
+                          "meanings":  [
+                                           "existence"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "uhm",
+                          "meanings":  [
+                                           "chaos"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "vacht",
+                          "meanings":  [
+                                           "mind",
+                                           "soul"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "val",
+                          "meanings":  [
+                                           "negation"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "valka",
+                          "meanings":  [
+                                           "shadow"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Meaning is confirmed, but internal derivation is still opaque."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "valkecht",
+                          "meanings":  [
+                                           "silence"
+                                       ],
+                          "components":  [
+                                             "val",
+                                             "kecht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: negation + hear."
+                                    ],
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Nacht\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "valkei",
+                          "meanings":  [
+                                           "few"
+                                       ],
+                          "components":  [
+                                             "val",
+                                             "kei"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "valkesh",
+                          "meanings":  [
+                                           "stranger"
+                                       ],
+                          "components":  [
+                                             "val",
+                                             "kesh"
+                                         ],
+                          "lexicalized":  true,
+                          "canDecompose":  true,
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "valtsecht",
+                          "meanings":  [
+                                           "grief"
+                                       ],
+                          "components":  [
+                                             "val",
+                                             "tsecht"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "valtsoum",
+                          "meanings":  [
+                                           "to kill",
+                                           "kill"
+                                       ],
+                          "components":  [
+                                             "val",
+                                             "tsoum"
+                                         ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "notes":  [
+                                        "Concept stack: negation + existence."
+                                    ],
+                          "partOfSpeech":  [
+
+                                           ],
+                          "etymology":  [
+
+                                        ]
+                      },
+                      {
+                          "ancient":  "vicht",
+                          "meanings":  [
+                                           "to strike",
+                                           "strike"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "vik",
+                          "meanings":  [
+                                           "to fight",
+                                           "fight"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "xi",
+                          "meanings":  [
+                                           "edge",
+                                           "boundary"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "xok",
+                          "meanings":  [
+                                           "to hunt",
+                                           "hunt"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "yecht",
+                          "meanings":  [
+                                           "that which originates from"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "yeket",
+                          "meanings":  [
+                                           "children"
+                                       ],
+                          "etymology":  [
+                                            "yecht",
+                                            "kesh"
+                                        ],
+                          "lexicalized":  true,
+                          "notes":  [
+                                        "Phonetic drift form."
+                                    ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ]
+                      },
+                      {
+                          "ancient":  "zecht",
+                          "meanings":  [
+                                           "to own",
+                                           "own"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "zicht",
+                          "meanings":  [
+                                           "to flee",
+                                           "flee"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "pronunciation":  "The final \u0027cht\u0027 uses a guttural fricative like German \u0027Bach\u0027.",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "zik",
+                          "meanings":  [
+                                           "defeat"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "zir",
+                          "meanings":  [
+                                           "victory"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "zoh",
+                          "meanings":  [
+                                           "to trade",
+                                           "trade"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "ancient",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      },
+                      {
+                          "ancient":  "zok",
+                          "meanings":  [
+                                           "beast",
+                                           "animal"
+                                       ],
+                          "status":  "confirmed",
+                          "register":  "both",
+                          "partOfSpeech":  [
+
+                                           ],
+                          "components":  [
+
+                                         ],
+                          "etymology":  [
+
+                                        ],
+                          "notes":  [
+
+                                    ]
+                      }
+                  ],
+    "inferred":  {
+
+                 }
+}
