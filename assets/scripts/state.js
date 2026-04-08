@@ -358,7 +358,6 @@ let POETIC_OVERRIDES = new Map(Object.entries(DEFAULT_LANGUAGE_RULES.translation
 
 let activeLexicon = confirmedLexicon;
 let lexiconByAncient = new Map();
-let englishToAncient = new Map();
 let activeSource = null;
 let appReady = false;
 let lexiconSortState = { field: "ancient", direction: "asc" };

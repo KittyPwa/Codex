@@ -58,7 +58,18 @@ async function probeTranslationApi() {
   }
 }
 
+function requireTranslationApi() {
+  if (window.location.protocol === "file:") {
+    throw new Error("Translation requires the local server. Open the app through start-translator.bat.");
+  }
+
+  if (!serverTranslationApiAvailable) {
+    throw new Error("The backend translation API is unavailable. Restart the local server and try again.");
+  }
+}
+
 async function requestTranslationApi(action, text, options = {}) {
+  requireTranslationApi();
   const includeInferred = options.includeInferred ?? includeInferredToggle?.checked ?? false;
   const response = await fetch("./api/translate", {
     method: "POST",
@@ -80,43 +91,19 @@ async function requestTranslationApi(action, text, options = {}) {
 }
 
 async function translateEnglishWithBestAvailable(text) {
-  if (serverTranslationApiAvailable) {
-    try {
-      const translationPayload = await requestTranslationApi("english-to-ancient", text);
-      const analysisPayload = await requestTranslationApi("analyze-ancient", translationPayload.translation);
-      return {
-        ancient: translationPayload.translation,
-        analysis: normalizeTranslationAnalysis(analysisPayload.analysis),
-        source: "api"
-      };
-    } catch (error) {
-      console.warn("Translation API request failed. Falling back to browser engine.", error);
-    }
-  }
-
-  const ancient = translateEnglishToAncient(text);
+  const translationPayload = await requestTranslationApi("english-to-ancient", text);
+  const analysisPayload = await requestTranslationApi("analyze-ancient", translationPayload.translation);
   return {
-    ancient,
-    analysis: analyzeAncientText(ancient),
-    source: "browser"
+    ancient: translationPayload.translation,
+    analysis: normalizeTranslationAnalysis(analysisPayload.analysis),
+    source: "api"
   };
 }
 
 async function analyzeAncientWithBestAvailable(text) {
-  if (serverTranslationApiAvailable) {
-    try {
-      const payload = await requestTranslationApi("analyze-ancient", text);
-      return {
-        analysis: normalizeTranslationAnalysis(payload.analysis),
-        source: "api"
-      };
-    } catch (error) {
-      console.warn("Ancient analysis API request failed. Falling back to browser engine.", error);
-    }
-  }
-
+  const payload = await requestTranslationApi("analyze-ancient", text);
   return {
-    analysis: analyzeAncientText(text),
-    source: "browser"
+    analysis: normalizeTranslationAnalysis(payload.analysis),
+    source: "api"
   };
 }

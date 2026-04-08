@@ -3,7 +3,7 @@
 async function initializeApp() {
   try {
     if (window.location.protocol === "file:") {
-      setLexiconStatus("Local file mode detected. Import JSON or use the local server launcher.");
+      setLexiconStatus("Local file mode detected. Translation requires the local server launcher.");
     } else {
       setLexiconStatus("Loading backend-managed lexicon and rules...");
     }
@@ -27,6 +27,9 @@ async function initializeApp() {
       applyRulesNotesMarkdown("");
     }
     serverTranslationApiAvailable = await probeTranslationApi();
+    if (window.location.protocol !== "file:" && !serverTranslationApiAvailable) {
+      throw new Error("The backend translation API is unavailable.");
+    }
     appReady = true;
     setLexiconStatus(describeActiveLexiconSource());
 
@@ -36,14 +39,14 @@ async function initializeApp() {
     console.error(error);
     setLexiconStatus(
       window.location.protocol === "file:"
-        ? "Browser file mode blocked automatic JSON loading. Import JSON or use the local server launcher."
+        ? "Browser file mode cannot use the translator. Open the app through the local server launcher."
         : "Lexicon failed to load. Import a JSON lexicon to continue.",
       true
     );
     translatorNote.textContent =
       window.location.protocol === "file:"
-        ? "Open the app through the local server launcher or import a JSON lexicon file to start translating."
-        : "Import a lexicon JSON file to start translating.";
+        ? "Open the app through the local server launcher to use translation, editing, and export features."
+        : "Restart the local server or import a lexicon JSON file to recover the workspace.";
   }
 }
 
@@ -164,10 +167,10 @@ function setActiveTab(targetId) {
 
 function describeActiveLexiconSource() {
   if (window.location.protocol === "file:") {
-    return "Using imported lexicon JSON from browser storage.";
+    return "File mode is open. Translation is disabled until the local server is used.";
   }
 
-  return `Using backend-managed lexicon and ${rulesConfigSource ?? "built-in rules"}${serverTranslationApiAvailable ? " with translator API" : ""}.`;
+  return `Using backend-managed lexicon and ${rulesConfigSource ?? "built-in rules"} with translator API.`;
 }
 
 function rerenderActiveSource() {
@@ -193,8 +196,6 @@ function refreshLexiconState() {
   lexiconByAncient = new Map(
     activeLexicon.map((entry) => [normalizeAncientKey(entry.ancient), entry])
   );
-
-  englishToAncient = buildEnglishToAncientMap(activeLexicon);
 }
 
 function populateLexiconFilters() {

@@ -21,6 +21,13 @@ englishInput.addEventListener("input", async () => {
 
     ancientInput.value = result.ancient;
     renderAnalysis(result.analysis);
+    translatorNote.textContent = "Translation is being served by the backend API.";
+  } catch (error) {
+    console.error(error);
+    if (requestId !== translationRequestSequence) {
+      return;
+    }
+    translatorNote.textContent = error.message || "The backend translation API could not complete this request.";
   } finally {
     if (requestId === translationRequestSequence) {
       activeSource = null;
@@ -48,6 +55,13 @@ ancientInput.addEventListener("input", async () => {
 
     englishInput.value = getSelectedOutput(result.analysis);
     renderAnalysis(result.analysis);
+    translatorNote.textContent = "Analysis is being served by the backend API.";
+  } catch (error) {
+    console.error(error);
+    if (requestId !== translationRequestSequence) {
+      return;
+    }
+    translatorNote.textContent = error.message || "The backend translation API could not complete this request.";
   } finally {
     if (requestId === translationRequestSequence) {
       activeSource = null;
