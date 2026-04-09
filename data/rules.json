@@ -4,6 +4,54 @@
     "version": "1.0.0",
     "description": "Structured machine-readable rule set for the Ancient Tongue translator."
   },
+  "workspace": {
+    "markdown": {
+      "title": "Ancient Tongue",
+      "overview": "This lexicon document was generated directly from the active Ancient Tongue vocabulary loaded in the translator.",
+      "sectionOrder": [
+        "Grammar Markers",
+        "Core Verbs",
+        "Perception, Relation, and Core Concepts",
+        "Motion and Force",
+        "Conflict and Survival",
+        "Direction and Space",
+        "Number and Quantity",
+        "Time",
+        "Celestial and Natural Elements",
+        "Body and Being",
+        "Mind, Knowledge, and Spirit",
+        "Emotion",
+        "People and Social Structure",
+        "Change, Learning, and Relation",
+        "Qualities and Abstract Oppositions",
+        "Ritual and Liturgical Forms",
+        "Inferred / Etymological Roots",
+        "Additional Entries"
+      ],
+      "sections": {
+        "Grammar Markers": ["ar", "en", "'s", "eh", "i"],
+        "Core Verbs": ["sul", "sal", "tsich", "tsach", "mel", "mal", "nocht", "tsocht", "tsecht", "la", "licht", "lin", "lan", "socht", "sacht", "tchich", "ta"],
+        "Perception, Relation, and Core Concepts": ["tcha", "kecht", "nuhl", "ru", "soo", "teal", "neal", "val", "rel", "kol", "nal", "koa", "tso", "tsacht", "tsol"],
+        "Motion and Force": ["tik", "ri", "ren", "reh", "rez", "ro", "rok", "rocht", "tal", "tocht"],
+        "Conflict and Survival": ["vik", "vicht", "valtsoum", "sult", "zicht", "xok", "zir", "zik"],
+        "Direction and Space": ["ji", "jo", "ja", "ja's", "rek", "rak", "raknacht", "to", "sulneh", "neh", "jija", "jino", "ouk", "oun", "xi"],
+        "Number and Quantity": ["ni", "no", "kei", "valkei"],
+        "Time": ["tacht", "nacht", "tem", "sitacht", "sinacht", "let", "lak", "locht"],
+        "Celestial and Natural Elements": ["tsar", "tsin", "tsen", "ko", "ka", "hesh", "hwir", "hoc", "sec", "sesh", "tsal", "sachthoc", "tsecht lietacht", "heshtsali", "hocsesh", "rekwir", "zok"],
+        "Body and Being": ["kesh", "keshir", "keshoc", "kesheh", "keshti", "ti", "heshtsoum", "naltsoum", "reksacht", "rektchich"],
+        "Mind, Knowledge, and Spirit": ["vacht", "nila", "valka", "soolie", "titsoum", "lietacht", "ruval", "rutacht", "linru", "linvacht", "ruvalnacht", "nachtnuh", "nuh", "nu", "soh", "sicht", "valkecht", "nachtvacht", "heshvacht"],
+        "Emotion": ["nuhzik", "nuhtsecht", "tihesh", "nutsoum", "valtsecht", "sizir", "nuhzir", "sizik", "tar", "rektsecht"],
+        "People and Social Structure": ["mah", "tah", "kesh'skeh", "kesh'skehsi", "sikeshi", "valkesh", "cheechtkesh", "nuhkesh", "chi", "sachtchi", "ta'sikeshi", "sachtsoum", "sitsoum", "yeket"],
+        "Change, Learning, and Relation": ["tasacht", "tasi", "tavalge", "nochtno", "nochtni", "nochtsi", "tsi", "tichtsi", "tichti", "tasachtsoum", "zecht", "zoh", "go", "ge"],
+        "Qualities and Abstract Oppositions": ["cheecht", "loo", "si", "sacht", "acht", "ocht", "ohm", "uhm", "ocho"],
+        "Ritual and Liturgical Forms": ["tso'koa"],
+        "Inferred / Etymological Roots": ["yecht"]
+      },
+      "inferredSection": "Inferred / Etymological Roots",
+      "compoundSection": "Additional Entries",
+      "additionalSection": "Additional Entries"
+    }
+  },
   "english": {
     "fillers": ["the", "a", "an"],
     "aliases": {

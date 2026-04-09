@@ -14,9 +14,9 @@ async function initializeApp() {
       applyLanguageRulesConfig(rulesConfig);
       rulesConfigSource = "backend rules config";
     } catch (rulesConfigError) {
-      console.warn("Rules JSON could not be loaded. Falling back to built-in defaults.", rulesConfigError);
+      console.warn("Rules JSON could not be loaded. Falling back to generic empty defaults.", rulesConfigError);
       applyLanguageRulesConfig({});
-      rulesConfigSource = "built-in defaults";
+      rulesConfigSource = "generic empty defaults";
     }
     applyLexiconPayload(payload);
     try {

@@ -29,8 +29,12 @@ async function downloadLexiconMarkdown() {
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   const stamp = new Date().toISOString().slice(0, 10);
+  const safeName = (getActiveLanguageName() || "loaded_language")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "_")
+    .replace(/^_+|_+$/g, "");
   link.href = url;
-  link.download = `ancient_tongue_lexicon_${stamp}.md`;
+  link.download = `${safeName || "loaded_language"}_lexicon_${stamp}.md`;
   document.body.append(link);
   link.click();
   link.remove();
@@ -45,12 +49,15 @@ function buildLexiconMarkdown(entries, options = {}) {
   const lines = [];
   const inferredCount = entries.filter((entry) => entry.status === "inferred").length;
   const confirmedCount = entries.length - inferredCount;
+  const markdownConfig = languageRulesConfig.workspace?.markdown ?? {};
+  const languageName = markdownConfig.title || getActiveLanguageName();
+  const overview = markdownConfig.overview || `This lexicon document was generated directly from the active ${languageName} vocabulary loaded in the translator.`;
 
-  lines.push("# Ancient Tongue");
+  lines.push(`# ${languageName}`);
   lines.push("");
   lines.push("## Overview");
   lines.push("");
-  lines.push("This lexicon document was generated directly from the active Ancient Tongue vocabulary loaded in the translator.");
+  lines.push(overview);
   lines.push("");
   lines.push(`- confirmed entries included: ${confirmedCount}`);
   lines.push(`- inferred entries included: ${inferredCount}`);
@@ -59,7 +66,7 @@ function buildLexiconMarkdown(entries, options = {}) {
   lines.push("---");
   lines.push("");
 
-  for (const section of MARKDOWN_SECTION_ORDER) {
+  for (const section of getMarkdownSectionOrder()) {
     const sectionEntries = grouped.get(section) ?? [];
     if (!sectionEntries.length) {
       continue;
@@ -258,10 +265,13 @@ function escapeHtml(text) {
 }
 
 function groupEntriesForMarkdown(entries) {
-  const grouped = new Map(MARKDOWN_SECTION_ORDER.map((section) => [section, []]));
+  const grouped = new Map(getMarkdownSectionOrder().map((section) => [section, []]));
 
   for (const entry of [...entries].sort((left, right) => (left.ancient ?? "").localeCompare(right.ancient ?? ""))) {
     const section = classifyEntryForMarkdown(entry);
+    if (!grouped.has(section)) {
+      grouped.set(section, []);
+    }
     grouped.get(section).push(entry);
   }
 
@@ -269,86 +279,35 @@ function groupEntriesForMarkdown(entries) {
 }
 
 function classifyEntryForMarkdown(entry) {
+  const markdownConfig = languageRulesConfig.workspace?.markdown ?? {};
   const ancient = normalizeAncientKey(entry.ancient);
 
-  for (const [section, set] of Object.entries(MARKDOWN_SECTION_SETS)) {
-    if (set.has(ancient)) {
+  for (const [section, values] of Object.entries(markdownConfig.sections ?? {})) {
+    if (Array.isArray(values) && values.map((value) => normalizeAncientKey(value)).includes(ancient)) {
       return section;
     }
   }
 
-  const meanings = (entry.meanings ?? []).join(" ").toLowerCase();
   const categories = getLexiconCategories(entry);
 
   if (entry.status === "inferred") {
-    return "Inferred / Etymological Roots";
+    return markdownConfig.inferredSection || "Inferred Entries";
   }
 
-  if (/\b(marker|possession|plural|toward|direction|object)\b/.test(meanings)) {
-    return "Grammar Markers";
+  if (categories.includes("compound")) {
+    return markdownConfig.compoundSection || "Compounds";
   }
 
-  if (/\b(mother|father|kin|tribe|stranger|enemy|guest|leader|ruler|servant|elder|child|children)\b/.test(meanings)) {
-    return "People and Social Structure";
+  if (categories.length) {
+    return categories[0];
   }
 
-  if (/\b(fear|anger|love|grief|hope|courage|shame|aspiration|longing|depression)\b/.test(meanings)) {
-    return "Emotion";
-  }
+  return markdownConfig.additionalSection || "Additional Entries";
+}
 
-  if (/\b(mind|soul|name|shadow|dream|song|memory|intuition|remember|forget|spirit|omen|fate|promise|oath|truth|lie|silence|understand)\b/.test(meanings)) {
-    return "Mind, Knowledge, and Spirit";
-  }
-
-  if (/\b(flesh|body|blood|bone|breath|voice|sound|life|birth|growth|decay)\b/.test(meanings)) {
-    return "Body and Being";
-  }
-
-  if (/\b(sun|moon|star|night|day|fire|water|stone|sand|wind|sky|mountain|forest|storm|dust|river|beast|animal)\b/.test(meanings)) {
-    return "Celestial and Natural Elements";
-  }
-
-  if (/\b(past|future|present|before|after|always|never|once)\b/.test(meanings)) {
-    return "Time";
-  }
-
-  if (/\b(one|two|many|few)\b/.test(meanings)) {
-    return "Number and Quantity";
-  }
-
-  if (/\b(in|out|here|there|path|road|journey|step|crossing|beyond|inside|between|above|below|edge|boundary)\b/.test(meanings)) {
-    return "Direction and Space";
-  }
-
-  if (/\b(fight|strike|kill|protect|defend|flee|hunt|victory|defeat)\b/.test(meanings)) {
-    return "Conflict and Survival";
-  }
-
-  if (/\b(move|push|pull|lift|carry|throw|fall|rise|open|close)\b/.test(meanings)) {
-    return "Motion and Force";
-  }
-
-  if (/\b(grow|shrink|transform|split|join|change|shift|ask|answer|teach|learn|own|trade|other|same)\b/.test(meanings)) {
-    return "Change, Learning, and Relation";
-  }
-
-  if (/\b(good|positive|evil|negative|small|short|big|tall|light|dark|order|chaos|balance)\b/.test(meanings)) {
-    return "Qualities and Abstract Oppositions";
-  }
-
-  if (ancient === "tso'koa") {
-    return "Ritual and Liturgical Forms";
-  }
-
-  if (meanings.includes("to ") || categories.includes("root")) {
-    return "Core Verbs";
-  }
-
-  if (/\b(see|hear|feel|know|sleep|you|self|negation|harm|all|new|ruin|peace|death|land|earth)\b/.test(meanings)) {
-    return "Perception, Relation, and Core Concepts";
-  }
-
-  return "Additional Entries";
+function getMarkdownSectionOrder() {
+  const configured = languageRulesConfig.workspace?.markdown?.sectionOrder;
+  return Array.isArray(configured) && configured.length ? configured : ["Additional Entries"];
 }
 
 function formatMeaningCell(entry) {

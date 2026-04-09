@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ancient Tongue Translator</title>
+  <title>Rules-Driven Translator</title>
   <link rel="icon" type="image/svg+xml" href="./assets/favicon.svg">
   <link rel="stylesheet" href="./assets/styles/app.css">
 </head>
@@ -73,15 +73,15 @@
               <div class="panel-header">
                 <div>
                   <p class="panel-label">Source</p>
-                  <h2>Ancient Tongue</h2>
+                  <h2>Loaded Language</h2>
                 </div>
                 <button id="fill-ancient" class="ghost-button" type="button">Load sample</button>
               </div>
-              <label class="sr-only" for="ancient-input">Ancient Tongue input</label>
+              <label class="sr-only" for="ancient-input">Loaded language input</label>
               <textarea
                 id="ancient-input"
                 class="translator-input"
-                placeholder="Write in the Ancient Tongue here..."
+                placeholder="Write in the loaded language here..."
                 spellcheck="false"
               ></textarea>
             </article>
@@ -91,26 +91,26 @@
             <article class="panel analysis-panel">
           <div class="panel-header">
             <div>
-              <p class="panel-label">Ancient Tongue Analysis</p>
+              <p class="panel-label">Language Analysis</p>
               <h2>Gloss Output</h2>
             </div>
           </div>
           <div class="analysis-meta">
-            <p id="gloss-summary" class="summary-line">Type Ancient Tongue to see structured glossing.</p>
+            <p id="gloss-summary" class="summary-line">Type the loaded language to see structured glossing.</p>
             <p id="translator-note" class="helper-line">The app prefers interpretation over overconfident sentence translation.</p>
           </div>
           <div class="line-outputs">
             <article class="line-output-card">
               <p class="panel-label">Morpheme Gloss</p>
-              <pre id="morpheme-output" class="line-output">Type Ancient Tongue to see line glosses.</pre>
+              <pre id="morpheme-output" class="line-output">Type the loaded language to see line glosses.</pre>
             </article>
             <article class="line-output-card">
               <p class="panel-label">Resolved Gloss</p>
-              <pre id="literal-output" class="line-output">Type Ancient Tongue to see resolved lexical gloss.</pre>
+              <pre id="literal-output" class="line-output">Type the loaded language to see resolved lexical gloss.</pre>
             </article>
             <article class="line-output-card">
               <p class="panel-label">Idiomatic Translation</p>
-              <pre id="idiomatic-output" class="line-output">Type Ancient Tongue to see idiomatic line translations.</pre>
+              <pre id="idiomatic-output" class="line-output">Type the loaded language to see idiomatic line translations.</pre>
             </article>
           </div>
               <div id="analysis-list" class="analysis-list"></div>
@@ -221,8 +221,8 @@
         <section class="notes">
           <div class="note-card">
             <h3>How it behaves</h3>
-            <p>English to Ancient Tongue remains a best-effort generator based on the active lexicon.</p>
-            <p>Ancient Tongue parsing now tries normalization, affix splitting, compound recovery, drift rescue, glossing, and idiomatic line reading.</p>
+            <p>English to the loaded language remains a best-effort generator based on the active lexicon.</p>
+            <p>Loaded-language parsing now tries normalization, affix splitting, compound recovery, drift rescue, glossing, and idiomatic line reading.</p>
             <p>Poetic overrides preserve ritual lines without flattening the underlying morpheme analysis.</p>
           </div>
 

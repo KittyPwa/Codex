@@ -67,295 +67,64 @@ const morphemeOutput = document.querySelector("#morpheme-output");
 const literalOutput = document.querySelector("#literal-output");
 const idiomaticOutput = document.querySelector("#idiomatic-output");
 
-const MARKDOWN_SECTION_ORDER = [
-  "Grammar Markers",
-  "Core Verbs",
-  "Perception, Relation, and Core Concepts",
-  "Motion and Force",
-  "Conflict and Survival",
-  "Direction and Space",
-  "Number and Quantity",
-  "Time",
-  "Celestial and Natural Elements",
-  "Body and Being",
-  "Mind, Knowledge, and Spirit",
-  "Emotion",
-  "People and Social Structure",
-  "Change, Learning, and Relation",
-  "Qualities and Abstract Oppositions",
-  "Ritual and Liturgical Forms",
-  "Inferred / Etymological Roots",
-  "Additional Entries"
-];
-
-const MARKDOWN_SECTION_SETS = {
-  "Grammar Markers": new Set(["ar", "en", "'s", "eh", "i"]),
-  "Core Verbs": new Set(["sul", "sal", "tsich", "tsach", "mel", "mal", "nocht", "tsocht", "tsecht", "la", "licht", "lin", "lan", "socht", "sacht", "tchich", "ta"]),
-  "Perception, Relation, and Core Concepts": new Set(["tcha", "kecht", "nuhl", "ru", "soo", "teal", "neal", "val", "rel", "kol", "nal", "koa", "tso", "tsacht", "tsol"]),
-  "Motion and Force": new Set(["tik", "ri", "ren", "reh", "rez", "ro", "rok", "rocht", "tal", "tocht"]),
-  "Conflict and Survival": new Set(["vik", "vicht", "valtsoum", "sult", "zicht", "xok", "zir", "zik"]),
-  "Direction and Space": new Set(["ji", "jo", "ja", "ja's", "rek", "rak", "raknacht", "to", "sulneh", "neh", "jija", "jino", "ouk", "oun", "xi"]),
-  "Number and Quantity": new Set(["ni", "no", "kei", "valkei"]),
-  "Time": new Set(["tacht", "nacht", "tem", "sitacht", "sinacht", "let", "lak", "locht"]),
-  "Celestial and Natural Elements": new Set(["tsar", "tsin", "tsen", "ko", "ka", "hesh", "hwir", "hoc", "sec", "sesh", "tsal", "sachthoc", "tsecht lietacht", "heshtsali", "hocsesh", "rekwir", "zok"]),
-  "Body and Being": new Set(["kesh", "keshir", "keshoc", "kesheh", "keshti", "ti", "heshtsoum", "naltsoum", "reksacht", "rektchich"]),
-  "Mind, Knowledge, and Spirit": new Set(["vacht", "nila", "valka", "soolie", "titsoum", "lietacht", "ruval", "rutacht", "linru", "linvacht", "ruvalnacht", "nachtnuh", "nuh", "nu", "soh", "sicht", "valkecht", "nachtvacht", "heshvacht"]),
-  "Emotion": new Set(["nuhzik", "nuhtsecht", "tihesh", "nutsoum", "valtsecht", "sizir", "nuhzir", "sizik", "tar", "rektsecht"]),
-  "People and Social Structure": new Set(["mah", "tah", "kesh'skeh", "kesh'skehsi", "sikeshi", "valkesh", "cheechtkesh", "nuhkesh", "chi", "sachtchi", "ta'sikeshi", "sachtsoum", "sitsoum", "yeket"]),
-  "Change, Learning, and Relation": new Set(["tasacht", "tasi", "tavalge", "nochtno", "nochtni", "nochtsi", "tsi", "tichtsi", "tichti", "tasachtsoum", "zecht", "zoh", "go", "ge"]),
-  "Qualities and Abstract Oppositions": new Set(["cheecht", "loo", "si", "sacht", "acht", "ocht", "ohm", "uhm", "ocho"]),
-  "Ritual and Liturgical Forms": new Set(["tso'koa"]),
-  "Inferred / Etymological Roots": new Set(["yecht"])
-};
-
-const DEFAULT_LANGUAGE_RULES = {
-  english: {
-    fillers: ["the", "a", "an"],
-    aliases: {
-      bones: "keshoc",
-      blood: "keshir",
-      voice: "keshti",
-      memories: "lietacht",
-      stars: "tsen",
-      moons: "tsin",
-      suns: "tsar",
-      bodies: "kesh",
-      flesh: "kesh",
-      minds: "vacht",
-      souls: "vacht",
-      spirits: "linvacht",
-      guests: "nuhkesh",
-      enemies: "cheechtkesh",
-      strangers: "valkesh",
-      children: "yeket",
-      child: "yeket",
-      land: "tsol",
-      earth: "tsol",
-      peace: "tsacht",
-      ruin: "koa",
-      "bring ruin": "tso'koa",
-      our: "neali",
-      yours: "tealeh",
-      your: "teal",
-      us: "neali",
-      act: "ta",
-      acts: "ta",
-      move: "var",
-      moves: "var",
-      moving: "var",
-      rise: "vark",
-      rises: "vark",
-      fall: "vorn",
-      falls: "vorn",
-      turn: "tor",
-      turns: "tor",
-      open: "chi",
-      close: "chol",
-      strike: "vek",
-      strikes: "vek",
-      wound: "vekmal",
-      wounds: "vekmal",
-      kill: "veklin",
-      kills: "veklin",
-      storm: "rekh",
-      sandstorm: "secvar",
-      light: "tsarhesh",
-      leader: "rekmah",
-      chief: "rekmahsi",
-      fear: "nuhlcheecht",
-      love: "nuhlloo",
-      grief: "nuhlsec",
-      hope: "nuhltar",
-      intuition: "ruval",
-      appeared: "lan",
-      appears: "lan",
-      appearing: "lan",
-      vanished: "lin",
-      vanishes: "lin",
-      remembers: "rutacht",
-      remembered: "rutacht",
-      knows: "ru",
-      seeing: "tcha",
-      saw: "tcha",
-      feels: "nuhl",
-      heard: "kecht",
-      hears: "kecht",
-      slept: "soo",
-      sleeps: "soo",
-      sleeping: "soo",
-      gave: "tsach",
-      gives: "tsach",
-      took: "tsich",
-      takes: "tsich",
-      made: "mel",
-      makes: "mel",
-      broke: "mal",
-      breaks: "mal",
-      became: "nocht",
-      keeps: "tsocht",
-      released: "tsecht",
-      remains: "licht",
-      begins: "socht",
-      continues: "sacht",
-      ends: "tchich"
+const GENERIC_LANGUAGE_RULES = {
+  language: {
+    name: "Loaded language",
+    version: "0.0.0",
+    description: ""
+  },
+  workspace: {
+    markdown: {
+      title: "Loaded language",
+      overview: "This lexicon document was generated directly from the active loaded vocabulary.",
+      sectionOrder: ["Additional Entries"],
+      sections: {},
+      inferredSection: "Inferred Entries",
+      compoundSection: "Compounds",
+      additionalSection: "Additional Entries"
     }
   },
-  morphology: {
-    productiveSuffixes: ["'s", "eh", "i", "ar", "en"],
-    affixMeanings: {
-      "'s": ["direction", "intent toward", "toward"],
-      eh: ["possession", "belonging"],
-      i: ["plural denominator", "plural"],
-      ar: ["agent marker", "actor"],
-      en: ["object marker"]
-    },
-    hiddenTranslationMarkers: ["ar", "en", "'s", "eh", "i"]
-  },
-  normalization: {
-    nach: "nacht",
-    teeleh: "tealeh",
-    neali: "neal+i",
-    tealeh: "teal+eh",
-    yeketeh: "yeket+eh",
-    "koa's": "koa+'s",
-    "rel's": "rel+'s",
-    "tsecht's": "tsecht+'s",
-    "kesh'skehsiar": "kesh'skehsi+ar",
-    "mah-ar": "mah+ar",
-    "tah-ar": "tah+ar",
-    "tso'koa": "tso'koa",
-    "tsoâ€™koa": "tso'koa",
-    tsokoa: "tso'koa",
-    nali: "nal+i"
-  },
-  composition: {
-    contextualRenderings: {
-      "neal+i": ["we", "our", "our lives"],
-      "teal+eh": ["your", "yours", "belonging to you"],
-      "yeket+eh": ["your children"],
-      "val+rel": ["do not harm", "no harm"],
-      "tso+neal+i+tsacht": ["give us peace"]
-    },
-    lexicalCompounds: {
-      "si+tacht": "before",
-      "si+nacht": "after",
-      "val+kecht": "silence",
-      "nacht+nuh": "fate",
-      "val+kei": "few",
-      "kesh+'s+keh": "kin",
-      "kesh+'s+keh+si": "tribe",
-      "kesh+'s+keh+si+ar": "tribe + agent marker",
-      "ru+val+nacht": "omen"
-    },
-    phraseRenderings: {
-      "neal+i": "we",
-      "teal+eh": "your",
-      "kesh+'s+keh+si+ar": "our tribe",
-      "mah+ar": "mother",
-      "tah+ar": "father",
-      "ru+val+nacht": "omen",
-      "nacht+nuh": "fate",
-      "val+kei": "few"
-    },
-    lexicalPriority: ["tso'koa", "yeket", "valkesh", "nuhkesh", "ruvalnacht", "raknacht", "valkecht", "kesh'skeh", "kesh'skehsi"],
-    compoundEvaluation: {
-      direction: "right_to_left",
-      preferLexicalized: true,
-      directionalBindingMarker: "'s",
-      lexicalizedBeforeBinding: true,
-      separateWordsRemainPhrases: true
-    }
-  },
+  english: { fillers: [], aliases: {} },
+  morphology: { productiveSuffixes: [], affixMeanings: {}, hiddenTranslationMarkers: [] },
+  normalization: {},
+  composition: { contextualRenderings: {}, lexicalCompounds: {}, phraseRenderings: {}, lexicalPriority: [], compoundEvaluation: {} },
   translation: {
-    articleBlockers: ["before", "after", "always", "never", "once", "here", "there"],
-    articleExceptions: ["sun", "moon", "day", "night", "wind", "sand", "sky"],
-    bareWords: ["our", "your", "we", "mother", "father", "good", "ruin"],
-    subjectRenderings: {
-      "tribe + agent marker": "our tribe",
-      we: "we"
-    },
-    nounArticles: {
-      sun: "the",
-      moon: "the",
-      day: "the",
-      night: "the",
-      wind: "the",
-      sand: "the",
-      sky: "the",
-      omen: "an",
-      stranger: "a",
-      guest: "a"
-    },
-    objectArticles: {
-      journey: "the",
-      path: "the",
-      breath: "the"
-    },
-    narrativeRenderings: {
-      licht: { narrative: "remained", literal: "remain" },
-      lan: { narrative: "appeared", literal: "appear" },
-      lin: { narrative: "vanished", literal: "vanish" },
-      sal: { narrative: "came", literal: "come" },
-      socht: { narrative: "began", literal: "begin" },
-      sacht: { narrative: "continued", literal: "continue" },
-      ru: { narrative: "knew", literal: "know" },
-      rutacht: { narrative: "remembered", literal: "remember" },
-      tsach: { narrative: "gave", literal: "give" },
-      tsocht: { narrative: "kept", literal: "keep" },
-      kecht: { narrative: "heard", literal: "hear" },
-      la: { narrative: "was", literal: "be" }
-    },
-    clauseTypes: {
-      lan: "appearance",
-      licht: "state",
-      lin: "state",
-      la: "state",
-      sal: "motion",
-      sul: "motion",
-      sacht: "motion",
-      ru: "knowledge",
-      rutacht: "knowledge",
-      kecht: "perception",
-      tsach: "action",
-      tsocht: "action"
-    },
-    poeticOverrides: {
-      "tso'koa, tso'koa": "Bring ruin, bring ruin",
-      "neali micht tealeh": "Our lives are yours",
-      "neali micht teeleh": "Our lives are yours",
-      "neali tso nach tealeh": "We give you our future",
-      "neali tso nach teeleh": "We give you our future",
-      "tealeh sesh vata kol": "Your winds blind all",
-      "teeleh sesh vata kol": "Your winds blind all",
-      "val rel kesheh": "Do not harm our flesh",
-      "tso teal's tsol nali": "Bring to new lands",
-      "koa's - rel's - tsecht's": "Ruin, harm, peace",
-      "koa's - rel's - tsacht": "Ruin, harm, peace",
-      "neali yeketeh": "We are your children",
-      "tso neali tsacht": "Give us peace"
-    }
+    articleBlockers: [],
+    articleExceptions: [],
+    bareWords: [],
+    subjectRenderings: {},
+    nounArticles: {},
+    objectArticles: {},
+    narrativeRenderings: {},
+    clauseTypes: {},
+    poeticOverrides: {},
+    englishToAncientOverrides: {},
+    syntaxPatterns: [],
+    headSequenceOverrides: [],
+    componentSequenceOverrides: [],
+    tailRenderings: [],
+    continuationRenderings: [],
+    locationReorderings: []
   },
-  phonology: {
-    preferredClusters: ["ts", "ch", "tch", "cht"]
-  }
+  phonology: { preferredClusters: [] }
 };
 
-let languageRulesConfig = cloneRulesObject(DEFAULT_LANGUAGE_RULES);
-let ENGLISH_FILLERS = new Set(DEFAULT_LANGUAGE_RULES.english.fillers);
-let ENGLISH_ALIASES = { ...DEFAULT_LANGUAGE_RULES.english.aliases };
-let PRODUCTIVE_SUFFIXES = [...DEFAULT_LANGUAGE_RULES.morphology.productiveSuffixes];
-let AFFIX_MEANINGS = cloneRulesObject(DEFAULT_LANGUAGE_RULES.morphology.affixMeanings);
-let NORMALIZATION_MAP = { ...DEFAULT_LANGUAGE_RULES.normalization };
-let CONTEXTUAL_RENDERINGS = cloneRulesObject(DEFAULT_LANGUAGE_RULES.composition.contextualRenderings);
-let LEXICAL_COMPOUNDS = cloneRulesObject(DEFAULT_LANGUAGE_RULES.composition.lexicalCompounds);
-let PHRASE_RENDERINGS = cloneRulesObject(DEFAULT_LANGUAGE_RULES.composition.phraseRenderings);
-let LEXICAL_PRIORITY = new Set(DEFAULT_LANGUAGE_RULES.composition.lexicalPriority);
-let HIDDEN_TRANSLATION_MARKERS = new Set(DEFAULT_LANGUAGE_RULES.morphology.hiddenTranslationMarkers);
-let ARTICLE_BLOCKERS = new Set(DEFAULT_LANGUAGE_RULES.translation.articleBlockers);
-let ARTICLE_EXCEPTIONS = new Set(DEFAULT_LANGUAGE_RULES.translation.articleExceptions);
-let NARRATIVE_RENDERINGS = cloneRulesObject(DEFAULT_LANGUAGE_RULES.translation.narrativeRenderings);
-let CLAUSE_TYPES = cloneRulesObject(DEFAULT_LANGUAGE_RULES.translation.clauseTypes);
-let POETIC_OVERRIDES = new Map(Object.entries(DEFAULT_LANGUAGE_RULES.translation.poeticOverrides));
+let languageRulesConfig = cloneRulesObject(GENERIC_LANGUAGE_RULES);
+let ENGLISH_FILLERS = new Set(GENERIC_LANGUAGE_RULES.english.fillers);
+let ENGLISH_ALIASES = { ...GENERIC_LANGUAGE_RULES.english.aliases };
+let PRODUCTIVE_SUFFIXES = [...GENERIC_LANGUAGE_RULES.morphology.productiveSuffixes];
+let AFFIX_MEANINGS = cloneRulesObject(GENERIC_LANGUAGE_RULES.morphology.affixMeanings);
+let NORMALIZATION_MAP = { ...GENERIC_LANGUAGE_RULES.normalization };
+let CONTEXTUAL_RENDERINGS = cloneRulesObject(GENERIC_LANGUAGE_RULES.composition.contextualRenderings);
+let LEXICAL_COMPOUNDS = cloneRulesObject(GENERIC_LANGUAGE_RULES.composition.lexicalCompounds);
+let PHRASE_RENDERINGS = cloneRulesObject(GENERIC_LANGUAGE_RULES.composition.phraseRenderings);
+let LEXICAL_PRIORITY = new Set(GENERIC_LANGUAGE_RULES.composition.lexicalPriority);
+let HIDDEN_TRANSLATION_MARKERS = new Set(GENERIC_LANGUAGE_RULES.morphology.hiddenTranslationMarkers);
+let ARTICLE_BLOCKERS = new Set(GENERIC_LANGUAGE_RULES.translation.articleBlockers);
+let ARTICLE_EXCEPTIONS = new Set(GENERIC_LANGUAGE_RULES.translation.articleExceptions);
+let NARRATIVE_RENDERINGS = cloneRulesObject(GENERIC_LANGUAGE_RULES.translation.narrativeRenderings);
+let CLAUSE_TYPES = cloneRulesObject(GENERIC_LANGUAGE_RULES.translation.clauseTypes);
+let POETIC_OVERRIDES = new Map(Object.entries(GENERIC_LANGUAGE_RULES.translation.poeticOverrides));
 
 let activeLexicon = confirmedLexicon;
 let lexiconByAncient = new Map();
@@ -379,8 +148,12 @@ function cloneRulesObject(value) {
   return JSON.parse(JSON.stringify(value));
 }
 
+function getActiveLanguageName() {
+  return languageRulesConfig?.language?.name || translationApiHealth?.language?.name || "Loaded language";
+}
+
 function applyLanguageRulesConfig(config) {
-  const merged = mergeRulesConfig(DEFAULT_LANGUAGE_RULES, config ?? {});
+  const merged = mergeRulesConfig(GENERIC_LANGUAGE_RULES, config ?? {});
   languageRulesConfig = merged;
 
   ENGLISH_FILLERS = new Set(merged.english?.fillers ?? []);

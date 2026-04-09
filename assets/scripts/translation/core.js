@@ -2,28 +2,29 @@
 
 function renderAnalysis(analysis) {
   const formatNormalizedParts = (parts) => `[${(Array.isArray(parts) ? parts : [parts]).join(", ")}]`;
+  const languageName = getActiveLanguageName();
 
   glossSummary.textContent = analysis.totalCount
     ? `Glossed ${analysis.knownCount} of ${analysis.totalCount} word tokens${analysis.inferredCount ? `, including ${analysis.inferredCount} inferred reading${analysis.inferredCount > 1 ? "s" : ""}` : ""}${analysis.rescuedCount ? ` and ${analysis.rescuedCount} normalized or fuzzy recover${analysis.rescuedCount > 1 ? "ies" : "y"}` : ""}.`
-    : "Type Ancient Tongue to see structured glossing.";
+    : `Type ${languageName} to see structured glossing.`;
 
   translatorNote.textContent = analysis.totalCount
     ? includeInferredToggle.checked
       ? "Exploratory mode is active: confirmed entries, inferred readings, normalization, and fuzzy rescue are all in play."
-      : "Ancient Tongue output is parsed in layers: direct lookup, normalization, affixes, compounds, then cautious rescue."
+      : `${languageName} output is parsed in layers: direct lookup, normalization, affixes, compounds, then cautious rescue.`
     : "The app prefers interpretation over overconfident sentence translation.";
 
   morphemeOutput.textContent = analysis.lines.length
     ? analysis.lines.map((line) => `${line.text}\nnormalized: ${line.normalizedTokens.map((parts) => formatNormalizedParts(parts)).join(" ")}\ngloss: ${line.morphemeGloss}`).join("\n\n")
-    : "Type Ancient Tongue to see line glosses.";
+    : `Type ${languageName} to see line glosses.`;
 
   literalOutput.textContent = analysis.lines.length
     ? analysis.lines.map((line) => `${line.text}\n${line.literal}`).join("\n\n")
-    : "Type Ancient Tongue to see resolved lexical gloss.";
+    : `Type ${languageName} to see resolved lexical gloss.`;
 
   idiomaticOutput.textContent = analysis.lines.length
     ? analysis.lines.map((line) => `${line.text}\n${line.idiomatic}`).join("\n\n")
-    : "Type Ancient Tongue to see idiomatic line translations.";
+    : `Type ${languageName} to see idiomatic line translations.`;
 
   analysisList.innerHTML = "";
 
