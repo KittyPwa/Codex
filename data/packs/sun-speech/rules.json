@@ -1,0 +1,188 @@
+{
+  "language": {
+    "name": "Sun Speech",
+    "version": "0.1.0",
+    "description": "Minimal sample language pack used to verify backend interchangeability."
+  },
+  "text": {
+    "tokenPattern": "[A-Za-z']+|\\r\\n|\\r|\\n|[ \\t]+|[^\\sA-Za-z']",
+    "wordCharacterPattern": "[A-Za-z']",
+    "lineSplitPattern": "(\\r\\n|\\r|\\n)",
+    "join": {
+      "space": " ",
+      "noSpaceAfterPattern": "[\\(\\[\\{\\/\\\"'-]$",
+      "noSpaceBeforePattern": "^[\\)\\]\\},.!?:;\\\"']"
+    }
+  },
+  "analysis": {
+    "recoveryOrder": ["direct", "normalization", "segmentation"],
+    "compat": {
+      "allowLegacyProductiveSuffixFallback": false
+    },
+    "directLookup": "simple",
+    "synthesis": {
+      "joiner": " + "
+    },
+    "projections": {
+      "headSource": "headword",
+      "componentSource": "componentsOrHeadword",
+      "normalizedTokenSource": "componentsOrHeadword"
+    },
+    "unknown": {
+      "format": "[{token}]",
+      "note": "No direct or configured recovery succeeded.",
+      "status": "unknown",
+      "register": "source",
+      "path": ["unknown"]
+    },
+    "normalization": {
+      "missingPartPolicy": "unknown",
+      "note": "Recovered through configured normalization.",
+      "status": "inferred",
+      "register": "source"
+    },
+    "segmentation": {
+      "missingPartPolicy": "unknown"
+    }
+  },
+  "lexicon": {
+    "fieldMap": {
+      "headword": "form",
+      "meanings": "glosses",
+      "status": "meta.status",
+      "register": "meta.register",
+      "components": "analysis.parts",
+      "etymology": "analysis.roots",
+      "notes": "meta.notes",
+      "pronunciation": "meta.pronunciation",
+      "lexicalized": "analysis.lexicalized",
+      "allowNominalReading": "grammar.allowNominalReading",
+      "partOfSpeech": "grammar.partOfSpeech"
+    }
+  },
+  "workspace": {
+    "markdown": {
+      "title": "Sun Speech",
+      "overview": "This lexicon document was generated from the active Sun Speech demonstration pack.",
+      "sectionOrder": ["Core Verbs", "Celestial Nouns", "Additional Entries"],
+      "sections": {
+        "Core Verbs": ["mir", "lum"],
+        "Celestial Nouns": ["ka", "dor"]
+      },
+      "inferredSection": "Inferred Entries",
+      "compoundSection": "Additional Entries",
+      "additionalSection": "Additional Entries"
+    }
+  },
+  "english": {
+    "fillers": ["the", "a", "an"],
+    "aliases": {
+      "sun": "ka",
+      "stone": "dor",
+      "rise": "mir",
+      "rose": "mir",
+      "glow": "lum",
+      "glowed": "lum"
+    }
+  },
+  "normalization": {},
+  "morphology": {
+    "segmenters": [],
+    "productiveSuffixes": [],
+    "affixMeanings": {},
+    "hiddenTranslationMarkers": []
+  },
+  "composition": {
+    "strategyMap": {
+      "phrase": "phrase",
+      "lexical": "lexical",
+      "contextual": "contextual",
+      "joined": "joined",
+      "primary": "primary"
+    },
+    "resolution": {
+      "directOrder": ["phrase", "lexical", "primary"],
+      "normalizedOrder": ["phrase", "lexical", "contextual", "joined"],
+      "segmentedOrder": ["phrase", "lexical", "joined"]
+    },
+    "lexicalCompounds": {},
+    "phraseRenderings": {},
+    "contextualRenderings": {}
+  },
+  "translation": {
+    "fallback": {
+      "idiomaticSource": "resolvedWords",
+      "idiomaticTemplate": "{words}",
+      "idiomaticJoiner": " ",
+      "idiomaticPunctuation": ".",
+      "capitalizeIdiomatic": true,
+      "literalSource": "resolvedGloss"
+    },
+    "englishToAncientOverrides": {
+      "the sun rose": "Mir ka",
+      "the stone glowed": "Lum dor"
+    },
+    "narrativeRenderings": {
+      "mir": { "narrative": "rose", "literal": "rise" },
+      "lum": { "narrative": "glowed", "literal": "glow" }
+    },
+    "defaultResolvers": {
+      "subject": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "index",
+        "defaultIndex": 0,
+        "articleMap": {
+          "sun": "the",
+          "stone": "the"
+        },
+        "articlePrefix": " "
+      }
+    },
+    "segmentResolvers": {
+      "verb": {
+        "type": "head",
+        "source": "heads",
+        "selection": "index",
+        "defaultIndex": 0,
+        "glossMode": "narrative"
+      },
+      "raw": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "range",
+        "defaultStart": 0
+      }
+    },
+    "syntaxPatterns": [
+      {
+        "match": {
+          "minHeads": 2
+        },
+        "template": "{actor} {action}.",
+        "segments": {
+          "actor": { "index": 1, "resolver": "subject" },
+          "action": { "index": 0, "resolver": "verb" }
+        }
+      }
+    ],
+    "nounArticles": {
+      "sun": "the",
+      "stone": "the"
+    },
+    "objectArticles": {},
+    "subjectRenderings": {},
+    "articleBlockers": [],
+    "articleExceptions": [],
+    "bareWords": [],
+    "poeticOverrides": {},
+    "headSequenceOverrides": [],
+    "componentSequenceOverrides": [],
+    "tailRenderings": [],
+    "continuationRenderings": [],
+    "locationReorderings": []
+  },
+  "phonology": {
+    "preferredClusters": []
+  }
+}

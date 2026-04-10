@@ -6,26 +6,10 @@ async function initializeApp() {
       setLexiconStatus("Local file mode detected. Translation requires the local server launcher.");
     } else {
       setLexiconStatus("Loading backend-managed lexicon and rules...");
+      await loadLanguagePackRegistry();
     }
 
-    const payload = await loadLexiconPayload();
-    try {
-      const rulesConfig = await loadRulesConfig();
-      applyLanguageRulesConfig(rulesConfig);
-      rulesConfigSource = "backend rules config";
-    } catch (rulesConfigError) {
-      console.warn("Rules JSON could not be loaded. Falling back to generic empty defaults.", rulesConfigError);
-      applyLanguageRulesConfig({});
-      rulesConfigSource = "generic empty defaults";
-    }
-    applyLexiconPayload(payload);
-    try {
-      const rulesMarkdown = await loadRulesNotesMarkdown();
-      applyRulesNotesMarkdown(rulesMarkdown);
-    } catch (rulesError) {
-      console.warn("Rules and notes file could not be loaded.", rulesError);
-      applyRulesNotesMarkdown("");
-    }
+    await reloadWorkspaceData();
     serverTranslationApiAvailable = await probeTranslationApi();
     if (window.location.protocol !== "file:" && !serverTranslationApiAvailable) {
       throw new Error(getTranslationApiStatusMessage());
@@ -33,8 +17,16 @@ async function initializeApp() {
     appReady = true;
     setLexiconStatus(describeActiveLexiconSource());
 
-    englishInput.value = "bring ruin, bring ruin\nour lives are yours";
-    englishInput.dispatchEvent(new Event("input"));
+    const initialEnglishSample = getDefaultEnglishSample();
+    if (initialEnglishSample) {
+      englishInput.value = initialEnglishSample;
+      englishInput.dispatchEvent(new Event("input"));
+    } else {
+      resetTranslationWorkspace({
+        preserveInputs: true,
+        note: `Ready for ${getActiveLanguageName()}. Enter English or ${getActiveLanguageName()} text to begin.`
+      });
+    }
   } catch (error) {
     console.error(error);
     setLexiconStatus(
@@ -48,6 +40,38 @@ async function initializeApp() {
         ? "Open the app through the local server launcher to use translation, editing, and export features."
         : error.message || "Restart the local server or import a lexicon JSON file to recover the workspace.";
   }
+}
+
+async function reloadWorkspaceData() {
+  let rulesConfig = {};
+  try {
+    rulesConfig = await loadRulesConfig();
+    applyLanguageRulesConfig(rulesConfig);
+    rulesConfigSource = "backend rules config";
+  } catch (rulesConfigError) {
+    console.warn("Rules JSON could not be loaded. Falling back to generic empty defaults.", rulesConfigError);
+    applyLanguageRulesConfig({});
+    rulesConfigSource = "generic empty defaults";
+  }
+
+  const payload = await loadLexiconPayload();
+  applyLexiconPayload(payload);
+
+  try {
+    const rulesMarkdown = await loadRulesNotesMarkdown();
+    applyRulesNotesMarkdown(rulesMarkdown);
+  } catch (rulesError) {
+    console.warn("Rules and notes file could not be loaded.", rulesError);
+    applyRulesNotesMarkdown("");
+  }
+
+  if (window.location.protocol !== "file:") {
+    activeLanguagePackStatus = await loadLanguagePackStatus();
+    activeLanguagePackId = activeLanguagePackStatus?.packId || activeLanguagePackId;
+    syncLanguagePackSelect();
+  }
+
+  syncActiveLanguageWorkspace();
 }
 
 function applyLexiconPayload(payload) {
@@ -107,10 +131,57 @@ function normalizeLexiconEntries(value) {
     return value[0].value;
   }
 
-  return value.map(cloneLexiconEntry);
+  return value.map((entry) => normalizeLexiconEntryForFrontend(entry));
 }
 
-function cloneLexiconEntry(entry) {
+function getLexiconFieldPath(fieldName) {
+  const defaults = {
+    headword: "ancient",
+    meanings: "meanings",
+    status: "status",
+    register: "register",
+    components: "components",
+    etymology: "etymology",
+    notes: "notes",
+    pronunciation: "pronunciation",
+    lexicalized: "lexicalized",
+    allowNominalReading: "allowNominalReading",
+    partOfSpeech: "partOfSpeech"
+  };
+
+  return languageRulesConfig?.lexicon?.fieldMap?.[fieldName] || defaults[fieldName] || "";
+}
+
+function getEntryValueByPath(entry, path, fallback = undefined) {
+  if (!entry || typeof entry !== "object" || !path) {
+    return fallback;
+  }
+
+  let current = entry;
+  for (const segment of String(path).split(".")) {
+    if (current === null || current === undefined) {
+      return fallback;
+    }
+
+    current = current[segment];
+  }
+
+  return current === undefined ? fallback : current;
+}
+
+function normalizeEntryArrayValue(value) {
+  if (Array.isArray(value)) {
+    return [...value];
+  }
+
+  if (value === null || value === undefined || value === "") {
+    return [];
+  }
+
+  return [value];
+}
+
+function normalizeLexiconEntryForFrontend(entry) {
   if (!entry || typeof entry !== "object") {
     return {
       ancient: "",
@@ -118,14 +189,36 @@ function cloneLexiconEntry(entry) {
     };
   }
 
+  const headword = getEntryValueByPath(entry, getLexiconFieldPath("headword"), entry.ancient ?? "");
+  const meanings = getEntryValueByPath(entry, getLexiconFieldPath("meanings"), entry.meanings ?? []);
+  const status = getEntryValueByPath(entry, getLexiconFieldPath("status"), entry.status ?? "");
+  const register = getEntryValueByPath(entry, getLexiconFieldPath("register"), entry.register ?? "");
+  const components = getEntryValueByPath(entry, getLexiconFieldPath("components"), entry.components ?? []);
+  const etymology = getEntryValueByPath(entry, getLexiconFieldPath("etymology"), entry.etymology ?? []);
+  const notes = getEntryValueByPath(entry, getLexiconFieldPath("notes"), entry.notes ?? []);
+  const pronunciation = getEntryValueByPath(entry, getLexiconFieldPath("pronunciation"), entry.pronunciation ?? "");
+  const lexicalized = getEntryValueByPath(entry, getLexiconFieldPath("lexicalized"), entry.lexicalized ?? false);
+  const allowNominalReading = getEntryValueByPath(entry, getLexiconFieldPath("allowNominalReading"), entry.allowNominalReading ?? false);
+  const partOfSpeech = getEntryValueByPath(entry, getLexiconFieldPath("partOfSpeech"), entry.partOfSpeech ?? []);
+
   return {
     ...entry,
-    meanings: Array.isArray(entry.meanings) ? [...entry.meanings] : [],
-    partOfSpeech: Array.isArray(entry.partOfSpeech) ? [...entry.partOfSpeech] : [],
-    components: Array.isArray(entry.components) ? [...entry.components] : [],
-    etymology: Array.isArray(entry.etymology) ? [...entry.etymology] : [],
-    notes: Array.isArray(entry.notes) ? [...entry.notes] : []
+    ancient: String(headword ?? ""),
+    meanings: normalizeEntryArrayValue(meanings).map((item) => String(item ?? "")),
+    status: String(status ?? ""),
+    register: String(register ?? ""),
+    partOfSpeech: normalizeEntryArrayValue(partOfSpeech).map((item) => String(item ?? "")),
+    components: normalizeEntryArrayValue(components).map((item) => String(item ?? "")),
+    etymology: normalizeEntryArrayValue(etymology).map((item) => String(item ?? "")),
+    notes: normalizeEntryArrayValue(notes).map((item) => String(item ?? "")),
+    pronunciation: String(pronunciation ?? ""),
+    lexicalized: Boolean(lexicalized),
+    allowNominalReading: Boolean(allowNominalReading)
   };
+}
+
+function cloneLexiconEntry(entry) {
+  return normalizeLexiconEntryForFrontend(entry);
 }
 
 function persistImportedLexicon(payload) {
@@ -170,7 +263,52 @@ function describeActiveLexiconSource() {
     return "File mode is open. Translation is disabled until the local server is used.";
   }
 
-  return `Using backend-managed lexicon and ${rulesConfigSource ?? "built-in rules"} with translator API.`;
+  const activePack = availableLanguagePacks.find((pack) => pack.id === activeLanguagePackId);
+  const packName = activePack?.language?.name || activeLanguagePackStatus?.language?.name || "loaded pack";
+  return `Using backend-managed lexicon for ${packName} and ${rulesConfigSource ?? "built-in rules"} with translator API.`;
+}
+
+function syncActiveLanguageWorkspace() {
+  const languageName = getActiveLanguageName();
+
+  if (loadedLanguageTitle) {
+    loadedLanguageTitle.textContent = languageName;
+  }
+
+  if (loadedLanguageInputLabel) {
+    loadedLanguageInputLabel.textContent = `${languageName} input`;
+  }
+
+  if (ancientInput) {
+    ancientInput.placeholder = `Write in ${languageName} here...`;
+  }
+
+  if (!appReady || (!ancientInput.value.trim() && !englishInput.value.trim())) {
+    resetTranslationWorkspace({
+      preserveInputs: true,
+      note: `Ready for ${languageName}. Enter English or ${languageName} text to begin.`
+    });
+  }
+}
+
+function resetTranslationWorkspace(options = {}) {
+  const preserveInputs = Boolean(options.preserveInputs);
+  const languageName = getActiveLanguageName();
+
+  translationRequestSequence += 1;
+  activeSource = null;
+
+  if (!preserveInputs) {
+    englishInput.value = "";
+    ancientInput.value = "";
+  }
+
+  glossSummary.textContent = `Type ${languageName} to see structured glossing.`;
+  translatorNote.textContent = options.note || `Ready for ${languageName}. Enter English or ${languageName} text to begin.`;
+  morphemeOutput.textContent = `Type ${languageName} to see line glosses.`;
+  literalOutput.textContent = `Type ${languageName} to see resolved lexical gloss.`;
+  idiomaticOutput.textContent = `Type ${languageName} to see idiomatic line translations.`;
+  analysisList.innerHTML = "";
 }
 
 function rerenderActiveSource() {
@@ -289,6 +427,82 @@ async function loadLexiconPayload() {
 
     throw new Error("Lexicon API failed to load.");
   }
+}
+
+async function loadLanguagePackRegistry() {
+  const response = await fetch("./api/language-packs", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Language packs API failed to load with HTTP ${response.status}.`);
+  }
+
+  const payload = await response.json();
+  availableLanguagePacks = Array.isArray(payload?.packs) ? payload.packs : [];
+  activeLanguagePackId = payload?.activePackId || availableLanguagePacks.find((pack) => pack.active)?.id || "default";
+  syncLanguagePackSelect();
+  return payload;
+}
+
+async function loadLanguagePackStatus() {
+  const response = await fetch("./api/language-pack", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Language pack API failed to load with HTTP ${response.status}.`);
+  }
+
+  return response.json();
+}
+
+function syncLanguagePackSelect() {
+  if (!languagePackSelect) {
+    return;
+  }
+
+  languagePackSelect.innerHTML = "";
+
+  for (const pack of availableLanguagePacks) {
+    const option = document.createElement("option");
+    option.value = pack.id;
+    option.textContent = pack.language?.name || pack.label || pack.id;
+    languagePackSelect.append(option);
+  }
+
+  if (!availableLanguagePacks.length) {
+    const option = document.createElement("option");
+    option.value = "";
+    option.textContent = "No packs available";
+    languagePackSelect.append(option);
+  }
+
+  languagePackSelect.value = activeLanguagePackId;
+  languagePackSelect.disabled = window.location.protocol === "file:" || availableLanguagePacks.length <= 1;
+}
+
+async function switchLanguagePack(packId) {
+  if (window.location.protocol === "file:") {
+    return;
+  }
+
+  const response = await fetch("./api/language-pack", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ packId })
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(errorText || `Language pack switch failed with HTTP ${response.status}.`);
+  }
+
+  activeLanguagePackStatus = await response.json();
+  activeLanguagePackId = activeLanguagePackStatus?.packId || packId;
+  await loadLanguagePackRegistry();
+  await reloadWorkspaceData();
+  serverTranslationApiAvailable = await probeTranslationApi();
+  setLexiconStatus(describeActiveLexiconSource());
+  resetTranslationWorkspace({
+    note: `Switched to ${getActiveLanguageName()}. Enter fresh text for this language pack.`
+  });
 }
 
 async function loadRulesNotesMarkdown() {

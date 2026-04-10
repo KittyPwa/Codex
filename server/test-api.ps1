@@ -4,15 +4,21 @@ Add-Type -AssemblyName System.Net.Http
 $preferredPorts = @(4173, 4174, 4175, 4176, 4177, 4178, 4179, 4180)
 $baseUrl = $null
 
-foreach ($port in $preferredPorts) {
-  $candidate = "http://localhost:$port"
-  try {
-    $health = Invoke-RestMethod -Uri "$candidate/api/health" -Method Get -TimeoutSec 3
-    if ($health.status -eq "ok") {
-      $baseUrl = $candidate
-      break
+if ($env:TRANSLATOR_API_URL) {
+  $baseUrl = $env:TRANSLATOR_API_URL.TrimEnd("/")
+}
+
+if (-not $baseUrl) {
+  foreach ($port in $preferredPorts) {
+    $candidate = "http://localhost:$port"
+    try {
+      $health = Invoke-RestMethod -Uri "$candidate/api/health" -Method Get -TimeoutSec 3
+      if ($health.status -eq "ok") {
+        $baseUrl = $candidate
+        break
+      }
+    } catch {
     }
-  } catch {
   }
 }
 

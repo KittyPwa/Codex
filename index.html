@@ -21,12 +21,15 @@
           <aside class="control-rail">
             <div class="control-dock control-dock-compact">
               <div class="control-dock-grid control-dock-grid-rail">
-                <div class="mode-toggle mode-toggle-block mode-toggle-compact mode-toggle-stack">
-                  <span>Source</span>
-                  <p id="lexicon-status" class="helper-line rail-status">Loading source...</p>
-                  <label class="ghost-button compact-button" for="lexicon-file">Import JSON</label>
-                  <input id="lexicon-file" type="file" accept=".json,application/json" hidden>
-                </div>
+                <label class="ghost-button compact-button" for="lexicon-file">Import JSON</label>
+                <input id="lexicon-file" type="file" accept=".json,application/json" hidden>
+
+                <label class="control-group compact-control-group" for="language-pack-select">
+                  <span>Language Pack</span>
+                  <select id="language-pack-select" class="control-input compact-control-input">
+                    <option value="">Loading packs...</option>
+                  </select>
+                </label>
 
                 <button id="download-lexicon-md" class="ghost-button compact-button hero-download" type="button">Download .md</button>
               </div>
@@ -73,11 +76,11 @@
               <div class="panel-header">
                 <div>
                   <p class="panel-label">Source</p>
-                  <h2>Loaded Language</h2>
+                  <h2 id="loaded-language-title">Loaded Language</h2>
                 </div>
                 <button id="fill-ancient" class="ghost-button" type="button">Load sample</button>
               </div>
-              <label class="sr-only" for="ancient-input">Loaded language input</label>
+              <label id="loaded-language-input-label" class="sr-only" for="ancient-input">Loaded language input</label>
               <textarea
                 id="ancient-input"
                 class="translator-input"

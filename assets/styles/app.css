@@ -219,7 +219,7 @@ h3 {
 }
 
 .control-dock-grid-rail {
-  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(190px, 240px) auto;
   gap: 6px;
   align-items: center;
 }
@@ -309,6 +309,26 @@ h3 {
 
 .control-rail .control-dock {
   padding: 8px 10px;
+}
+
+.compact-control-group {
+  min-width: 0;
+  gap: 4px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.compact-control-input {
+  width: 100%;
+  min-height: 34px;
+  padding: 7px 10px;
+  border-radius: 12px;
+  background: rgba(7, 10, 17, 0.82);
+}
+
+.hero-download,
+.control-dock-grid-rail > .ghost-button {
+  white-space: nowrap;
 }
 
 .control-rail .mode-toggle-stack {

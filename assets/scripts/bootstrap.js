@@ -74,7 +74,15 @@ fillEnglishButton.addEventListener("click", () => {
     return;
   }
 
-  englishInput.value = "bring ruin, bring ruin\nour lives are yours";
+  const sample = getDefaultEnglishSample();
+  if (!sample) {
+    resetTranslationWorkspace({
+      note: `No built-in English sample is configured for ${getActiveLanguageName()}.`
+    });
+    return;
+  }
+
+  englishInput.value = sample;
   englishInput.dispatchEvent(new Event("input"));
 });
 
@@ -83,7 +91,15 @@ fillAncientButton.addEventListener("click", () => {
     return;
   }
 
-  ancientInput.value = "Tso'koa, Tso'koa\nNeali micht tealeh\nVal rel kesheh";
+  const sample = getDefaultLoadedLanguageSample();
+  if (!sample) {
+    resetTranslationWorkspace({
+      note: `No built-in ${getActiveLanguageName()} sample is configured for this pack.`
+    });
+    return;
+  }
+
+  ancientInput.value = sample;
   ancientInput.dispatchEvent(new Event("input"));
 });
 
@@ -241,6 +257,26 @@ lexiconFileInput?.addEventListener("change", async (event) => {
     setLexiconStatus(`Could not read ${file.name}. Expected JSON with confirmed/inferred arrays.`, true);
   } finally {
     event.target.value = "";
+  }
+});
+
+languagePackSelect?.addEventListener("change", async (event) => {
+  const packId = event.target.value;
+  if (!packId || !appReady) {
+    return;
+  }
+
+  try {
+    languagePackSelect.disabled = true;
+    setLexiconStatus("Switching language pack...");
+    await switchLanguagePack(packId);
+  } catch (error) {
+    console.error(error);
+    setLexiconStatus(error.message || "Could not switch language pack.", true);
+    await loadLanguagePackRegistry().catch(() => {});
+    syncLanguagePackSelect();
+  } finally {
+    languagePackSelect.disabled = window.location.protocol === "file:" || availableLanguagePacks.length <= 1;
   }
 });
 

@@ -6,6 +6,8 @@ let translationApiHealth = null;
 
 const englishInput = document.querySelector("#english-input");
 const ancientInput = document.querySelector("#ancient-input");
+const loadedLanguageTitle = document.querySelector("#loaded-language-title");
+const loadedLanguageInputLabel = document.querySelector("#loaded-language-input-label");
 const fillEnglishButton = document.querySelector("#fill-english");
 const fillAncientButton = document.querySelector("#fill-ancient");
 const analysisList = document.querySelector("#analysis-list");
@@ -15,6 +17,7 @@ const includeInferredToggle = document.querySelector("#include-inferred");
 const outputModeSelect = document.querySelector("#output-mode");
 const lexiconStatus = document.querySelector("#lexicon-status");
 const lexiconFileInput = document.querySelector("#lexicon-file");
+const languagePackSelect = document.querySelector("#language-pack-select");
 const downloadLexiconMarkdownButton = document.querySelector("#download-lexicon-md");
 const tabButtons = Array.from(document.querySelectorAll("[data-tab-target]"));
 const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
@@ -139,6 +142,9 @@ let lexiconSourcePayload = { confirmed: [], inferred: [] };
 let rulesEditorDirty = false;
 let serverTranslationApiAvailable = false;
 let translationRequestSequence = 0;
+let availableLanguagePacks = [];
+let activeLanguagePackId = "default";
+let activeLanguagePackStatus = null;
 
 function supportsFileEditing() {
   return window.location.protocol !== "file:";
@@ -150,6 +156,30 @@ function cloneRulesObject(value) {
 
 function getActiveLanguageName() {
   return languageRulesConfig?.language?.name || translationApiHealth?.language?.name || "Loaded language";
+}
+
+function getDefaultEnglishSample() {
+  if (activeLanguagePackId === "default") {
+    return "bring ruin, bring ruin\nour lives are yours";
+  }
+
+  return "";
+}
+
+function getDefaultLoadedLanguageSample() {
+  if (activeLanguagePackId === "default") {
+    return "Tso'koa, Tso'koa\nNeali micht tealeh\nVal rel kesheh";
+  }
+
+  return "";
+}
+
+function getActiveLexiconPath() {
+  return activeLanguagePackStatus?.activePaths?.lexicon || translationApiHealth?.activePaths?.lexicon || "data/lexicon.json";
+}
+
+function getActiveRulesNotesPath() {
+  return activeLanguagePackStatus?.activePaths?.rulesNotes || translationApiHealth?.activePaths?.rulesNotes || "data/rules-notes.md";
 }
 
 function applyLanguageRulesConfig(config) {

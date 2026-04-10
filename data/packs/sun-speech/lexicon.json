@@ -1,0 +1,81 @@
+{
+  "confirmed": [
+    {
+      "form": "mir",
+      "glosses": ["to rise", "rise", "rose"],
+      "meta": {
+        "status": "confirmed",
+        "register": "source",
+        "notes": ["Core motion verb used for upward movement and sunrise."],
+        "pronunciation": ""
+      },
+      "grammar": {
+        "partOfSpeech": ["verb"],
+        "allowNominalReading": false
+      },
+      "analysis": {
+        "parts": [],
+        "roots": [],
+        "lexicalized": false
+      }
+    },
+    {
+      "form": "lum",
+      "glosses": ["to glow", "glow", "glowed"],
+      "meta": {
+        "status": "confirmed",
+        "register": "source",
+        "notes": ["Core light-emission verb."],
+        "pronunciation": ""
+      },
+      "grammar": {
+        "partOfSpeech": ["verb"],
+        "allowNominalReading": false
+      },
+      "analysis": {
+        "parts": [],
+        "roots": [],
+        "lexicalized": false
+      }
+    },
+    {
+      "form": "ka",
+      "glosses": ["sun"],
+      "meta": {
+        "status": "confirmed",
+        "register": "source",
+        "notes": [],
+        "pronunciation": ""
+      },
+      "grammar": {
+        "partOfSpeech": ["noun"],
+        "allowNominalReading": false
+      },
+      "analysis": {
+        "parts": [],
+        "roots": [],
+        "lexicalized": false
+      }
+    },
+    {
+      "form": "dor",
+      "glosses": ["stone"],
+      "meta": {
+        "status": "confirmed",
+        "register": "source",
+        "notes": [],
+        "pronunciation": ""
+      },
+      "grammar": {
+        "partOfSpeech": ["noun"],
+        "allowNominalReading": false
+      },
+      "analysis": {
+        "parts": [],
+        "roots": [],
+        "lexicalized": false
+      }
+    }
+  ],
+  "inferred": []
+}

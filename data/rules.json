@@ -4,6 +4,62 @@
     "version": "1.0.0",
     "description": "Structured machine-readable rule set for the Ancient Tongue translator."
   },
+  "text": {
+    "tokenPattern": "[A-Za-z']+|\\r\\n|\\r|\\n|[ \\t]+|[^\\sA-Za-z']",
+    "wordCharacterPattern": "[A-Za-z']",
+    "lineSplitPattern": "(\\r\\n|\\r|\\n)",
+    "join": {
+      "space": " ",
+      "noSpaceAfterPattern": "[\\(\\[\\{\\/\\\"'-]$",
+      "noSpaceBeforePattern": "^[\\)\\]\\},.!?:;\\\"']"
+    }
+  },
+  "analysis": {
+    "recoveryOrder": ["direct", "normalization", "segmentation"],
+    "compat": {
+      "allowLegacyProductiveSuffixFallback": false
+    },
+    "directLookup": "lexicalPriorityFirst",
+    "synthesis": {
+      "joiner": " + "
+    },
+    "projections": {
+      "headSource": "headword",
+      "componentSource": "componentsOrHeadword",
+      "normalizedTokenSource": "componentsOrHeadword"
+    },
+    "unknown": {
+      "format": "[{token}]",
+      "note": "No direct, normalized, or affixed recovery succeeded.",
+      "status": "unknown",
+      "register": "unknown",
+      "path": ["unknown"]
+    },
+    "normalization": {
+      "missingPartPolicy": "unknown",
+      "note": "Recovered through normalization.",
+      "status": "inferred",
+      "register": "source"
+    },
+    "segmentation": {
+      "missingPartPolicy": "unknown"
+    }
+  },
+  "lexicon": {
+    "fieldMap": {
+      "headword": "ancient",
+      "meanings": "meanings",
+      "status": "status",
+      "register": "register",
+      "components": "components",
+      "etymology": "etymology",
+      "notes": "notes",
+      "pronunciation": "pronunciation",
+      "lexicalized": "lexicalized",
+      "allowNominalReading": "allowNominalReading",
+      "partOfSpeech": "partOfSpeech"
+    }
+  },
   "workspace": {
     "markdown": {
       "title": "Ancient Tongue",
@@ -145,6 +201,18 @@
   },
   "morphology": {
     "productiveSuffixes": ["'s", "eh", "i", "ar", "en"],
+    "segmenters": [
+      {
+        "type": "affix_split",
+        "side": "suffix",
+        "affixes": ["'s", "eh", "i", "ar", "en"],
+        "requireStemInLexicon": true,
+        "path": "suffix",
+        "note": "Recovered by configured suffix split.",
+        "status": "segmented",
+        "register": "ancient"
+      }
+    ],
     "affixMeanings": {
       "'s": ["direction", "intent toward", "toward"],
       "eh": ["possession", "belonging"],
@@ -173,6 +241,18 @@
     "nali": "nal+i"
   },
   "composition": {
+    "strategyMap": {
+      "phrase": "phrase",
+      "lexical": "lexical",
+      "contextual": "contextual",
+      "joined": "joined",
+      "primary": "primary"
+    },
+    "resolution": {
+      "directOrder": ["phrase", "lexical", "primary"],
+      "normalizedOrder": ["phrase", "lexical", "contextual", "joined"],
+      "segmentedOrder": ["phrase", "lexical", "joined"]
+    },
     "productiveRoots": {
       "val": ["negation", "absence", "loss", "estrangement"],
       "kesh": ["body", "flesh", "kinship", "personhood"],
@@ -269,6 +349,13 @@
     ]
   },
   "translation": {
+    "fallback": {
+      "idiomaticSource": "resolvedWords",
+      "idiomaticJoiner": " ",
+      "idiomaticPunctuation": ".",
+      "capitalizeIdiomatic": true,
+      "literalSource": "resolvedGloss"
+    },
     "articleBlockers": ["before", "after", "always", "never", "once", "here", "there"],
     "articleExceptions": ["sun", "moon", "day", "night", "wind", "sand", "sky"],
     "bareWords": ["our", "your", "we", "mother", "father", "good", "ruin"],
@@ -308,6 +395,10 @@
       {
         "heads": ["sitacht", "valkecht", "licht"],
         "output": "Before, silence remained."
+      },
+      {
+        "heads": ["lan", "tsar", "ouk", "tsal"],
+        "output": "The sun appeared above the sky."
       },
       {
         "heads": ["valkesh", "sal", "nuhkesh", "sal"],
@@ -370,6 +461,86 @@
         "output": "into the sand"
       }
     ],
+    "defaultResolvers": {
+      "subject": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "index",
+        "defaultIndex": 0,
+        "exactMap": {
+          "tribe + agent marker": "our tribe",
+          "we": "we"
+        },
+        "articleMap": {
+          "sun": "the",
+          "moon": "the",
+          "day": "the",
+          "night": "the",
+          "wind": "the",
+          "sand": "the",
+          "sky": "the",
+          "omen": "an",
+          "stranger": "a",
+          "guest": "a"
+        },
+        "articlePrefix": " "
+      },
+      "object": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "range",
+        "defaultStart": 0,
+        "articleMap": {
+          "journey": "the",
+          "path": "the",
+          "breath": "the"
+        },
+        "articlePrefix": " "
+      },
+      "location": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "range",
+        "defaultStart": 0,
+        "sequenceMatchSource": "heads",
+        "sequenceOverrides": [
+          {
+            "includes": ["jino", "tsal", "ji"],
+            "output": "between the skies"
+          },
+          {
+            "includes": ["ouk", "tsal"],
+            "output": "above the sky"
+          },
+          {
+            "includes": ["ji", "sec"],
+            "output": "into the sand"
+          }
+        ]
+      },
+      "continuation": {
+        "type": "branch",
+        "source": "resolvedWords",
+        "threshold": 1,
+        "whenAtMost": "object",
+        "otherwise": "location"
+      }
+    },
+    "segmentResolvers": {
+      "verb": {
+        "type": "head",
+        "source": "heads",
+        "selection": "index",
+        "defaultIndex": 0,
+        "glossMode": "narrative"
+      },
+      "raw": {
+        "type": "phrase",
+        "source": "resolvedWords",
+        "selection": "range",
+        "defaultStart": 0
+      }
+    },
     "continuationRenderings": [
       {
         "components": ["sec", "sec", "raknacht", "socht"],
@@ -410,18 +581,20 @@
           "minHeads": 2,
           "heads": [{ "index": 0, "equals": "lan" }]
         },
-        "subject": { "index": 1, "mode": "subject" },
-        "verb": { "index": 0, "mode": "verb" },
-        "tail": { "start": 2, "mode": "location", "prefix": " " },
-        "template": "{subject} {verb}{tail}."
+        "template": "{actor} {event}{setting}.",
+        "segments": {
+          "actor": { "index": 1, "resolver": "subject" },
+          "event": { "index": 0, "resolver": "verb" },
+          "setting": { "start": 2, "resolver": "location", "prefix": " " }
+        }
       },
       {
         "match": {
           "minHeads": 2,
           "heads": [{ "index": 1, "equals": "licht" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "verb": { "index": 1, "mode": "verb" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "verb": { "index": 1, "resolver": "verb" },
         "template": "{subject} {verb}."
       },
       {
@@ -429,8 +602,8 @@
           "minHeads": 2,
           "heads": [{ "index": 1, "equals": "lin" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "verb": { "index": 1, "mode": "verb" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "verb": { "index": 1, "resolver": "verb" },
         "template": "{subject} {verb}."
       },
       {
@@ -438,9 +611,9 @@
           "minHeads": 2,
           "heads": [{ "index": 1, "equals": "sal" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "verb": { "index": 1, "mode": "verb" },
-        "tail": { "start": 2, "mode": "location", "prefix": " " },
+        "subject": { "index": 0, "resolver": "subject" },
+        "verb": { "index": 1, "resolver": "verb" },
+        "tail": { "start": 2, "resolver": "location", "prefix": " " },
         "template": "{subject} {verb}{tail}."
       },
       {
@@ -448,8 +621,8 @@
           "minHeads": 3,
           "heads": [{ "index": 1, "equals": "sacht" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "tail": { "start": 2, "mode": "continuation", "prefix": " " },
+        "subject": { "index": 0, "resolver": "subject" },
+        "tail": { "start": 2, "resolver": "continuation", "prefix": " " },
         "template": "{subject} continued{tail}."
       },
       {
@@ -457,8 +630,8 @@
           "minHeads": 3,
           "heads": [{ "index": 1, "equals": "ru" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "object": { "start": 2, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "object": { "start": 2, "resolver": "object" },
         "template": "{subject} knew {object}."
       },
       {
@@ -466,8 +639,8 @@
           "minHeads": 3,
           "heads": [{ "index": 1, "equals": "rutacht" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "object": { "start": 2, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "object": { "start": 2, "resolver": "object" },
         "template": "{subject} remembered {object}."
       },
       {
@@ -475,8 +648,8 @@
           "minHeads": 3,
           "heads": [{ "index": 1, "equals": "tsach" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "object": { "start": 2, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "object": { "start": 2, "resolver": "object" },
         "template": "{subject} gave {object}."
       },
       {
@@ -484,8 +657,8 @@
           "minHeads": 3,
           "heads": [{ "index": 1, "equals": "tsocht" }]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "object": { "start": 2, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "object": { "start": 2, "resolver": "object" },
         "template": "{subject} kept {object}."
       },
       {
@@ -496,11 +669,11 @@
             { "index": 3, "equals": "rutacht" }
           ]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "verb": { "index": 1, "mode": "verb" },
-        "firstObject": { "index": 2, "mode": "object" },
-        "secondVerb": { "index": 3, "mode": "verb" },
-        "secondObject": { "start": 4, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "verb": { "index": 1, "resolver": "verb" },
+        "firstObject": { "index": 2, "resolver": "object" },
+        "secondVerb": { "index": 3, "resolver": "verb" },
+        "secondObject": { "start": 4, "resolver": "object" },
         "template": "{subject} {verb} {firstObject} and {secondVerb} {secondObject}."
       },
       {
@@ -511,11 +684,11 @@
             { "index": 3, "equals": "tsocht" }
           ]
         },
-        "subject": { "index": 0, "mode": "subject" },
-        "verb": { "index": 1, "mode": "verb" },
-        "firstObject": { "index": 2, "mode": "object" },
-        "secondVerb": { "index": 3, "mode": "verb" },
-        "secondObject": { "start": 4, "mode": "object" },
+        "subject": { "index": 0, "resolver": "subject" },
+        "verb": { "index": 1, "resolver": "verb" },
+        "firstObject": { "index": 2, "resolver": "object" },
+        "secondVerb": { "index": 3, "resolver": "verb" },
+        "secondObject": { "start": 4, "resolver": "object" },
         "template": "{subject} {verb} {firstObject} and {secondVerb} {secondObject}."
       }
     ],

@@ -1,0 +1,174 @@
+{
+  "schemaVersion": "1.0.0",
+  "kind": "translator-language-pack-schema",
+  "description": "Declarative contract for interchangeable translator language packs.",
+  "lexicon": {
+    "rootType": "object",
+    "collections": {
+      "confirmed": {
+        "required": true,
+        "itemType": "lexicon-entry"
+      },
+      "inferred": {
+        "required": false,
+        "itemType": "lexicon-entry"
+      }
+    },
+    "entry": {
+      "requiredFields": [
+        "headword",
+        "meanings"
+      ],
+      "recommendedFields": [
+        "status",
+        "register",
+        "components",
+        "etymology",
+        "notes",
+        "pronunciation",
+        "lexicalized",
+        "allowNominalReading",
+        "partOfSpeech"
+      ]
+    }
+  },
+  "rules": {
+    "requiredPaths": [
+      "language.name",
+      "english.fillers",
+      "normalization",
+      "morphology.affixMeanings",
+      "composition.lexicalCompounds",
+      "composition.phraseRenderings",
+      "translation.narrativeRenderings"
+    ],
+    "recommendedPaths": [
+      "language.version",
+      "language.description",
+      "lexicon.fieldMap",
+      "text",
+      "analysis",
+      "workspace.markdown",
+      "english.aliases",
+      "morphology.segmenters",
+      "morphology.productiveSuffixes",
+      "composition.resolution",
+      "composition.contextualRenderings",
+      "translation.englishToAncientOverrides",
+      "translation.syntaxPatterns",
+      "translation.segmentResolvers",
+      "translation.nounArticles",
+      "translation.objectArticles"
+    ]
+  },
+  "translation": {
+    "segmentResolverNames": [
+      "subject",
+      "object",
+      "tail",
+      "firstObject",
+      "secondObject",
+      "verb",
+      "secondVerb"
+    ],
+    "resolverTypes": [
+      "phrase",
+      "head",
+      "branch"
+    ],
+    "segmentResolverProperties": {
+      "phrase": [
+        "source",
+        "selection",
+        "defaultIndex",
+        "defaultStart",
+        "exactMap",
+        "articleMap",
+        "articlePrefix",
+        "sequenceOverrides",
+        "sequenceMatchSource",
+        "joiner"
+      ],
+      "head": [
+        "source",
+        "selection",
+        "defaultIndex",
+        "glossMode"
+      ],
+      "branch": [
+        "source",
+        "threshold",
+        "whenAtMost",
+        "otherwise"
+      ]
+    },
+    "syntaxPattern": {
+      "requiredFields": [
+        "match",
+        "template"
+      ],
+      "segmentFields": [
+        "subject",
+        "object",
+        "tail",
+        "firstObject",
+        "secondObject",
+        "verb",
+        "secondVerb"
+      ]
+    }
+  },
+  "text": {
+    "recommendedPaths": [
+      "text.tokenPattern",
+      "text.lineSplitPattern",
+      "text.join.space",
+      "translation.fallback.idiomaticSource",
+      "translation.fallback.literalSource"
+    ]
+  },
+  "analysis": {
+    "recommendedPaths": [
+      "analysis.recoveryOrder",
+      "analysis.directLookup",
+      "analysis.normalization.missingPartPolicy",
+      "analysis.segmentation.missingPartPolicy",
+      "analysis.synthesis.joiner",
+      "analysis.projections.headSource",
+      "analysis.projections.componentSource",
+      "analysis.projections.normalizedTokenSource",
+      "analysis.normalization.note",
+      "analysis.normalization.status",
+      "analysis.normalization.register",
+      "analysis.unknown.format",
+      "analysis.unknown.note",
+      "analysis.unknown.status",
+      "analysis.unknown.register",
+      "analysis.unknown.path"
+    ]
+  },
+  "composition": {
+    "recommendedPaths": [
+      "composition.strategyMap",
+      "composition.resolution.directOrder",
+      "composition.resolution.normalizedOrder",
+      "composition.resolution.segmentedOrder"
+    ]
+  },
+  "morphology": {
+    "segmenterTypes": [
+      "affix_split"
+    ],
+    "segmenterProperties": {
+      "affix_split": [
+        "side",
+        "affixes",
+        "requireStemInLexicon",
+        "path",
+        "note",
+        "status",
+        "register"
+      ]
+    }
+  }
+}

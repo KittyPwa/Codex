@@ -180,7 +180,7 @@ async function saveLexiconEntryFromForm() {
     await saveLexiconPayload(payload);
     selectedLexiconHeadword = entry.ancient;
     closeLexiconEntryModal();
-    setLexiconEditorStatus(`Saved ${entry.ancient} to data/lexicon.json.`);
+    setLexiconEditorStatus(`Saved ${entry.ancient} to ${getActiveLexiconPath()}.`);
   } catch (error) {
     console.error(error);
     lexiconEntryStatus.textContent = error.message || "Could not save the lexicon entry.";
@@ -206,7 +206,7 @@ async function deleteLexiconEntry(ancient, group) {
       selectedLexiconHeadword = activeLexicon[0]?.ancient ?? null;
     }
     closeLexiconEntryModal();
-    setLexiconEditorStatus(`Deleted ${ancient} from data/lexicon.json.`);
+    setLexiconEditorStatus(`Deleted ${ancient} from ${getActiveLexiconPath()}.`);
   } catch (error) {
     console.error(error);
     lexiconEntryStatus.textContent = error.message || "Could not delete the lexicon entry.";
@@ -224,7 +224,7 @@ async function saveLexiconPayload(payload) {
   });
 
   if (!response.ok) {
-    throw new Error(`Could not save data/lexicon.json (HTTP ${response.status}).`);
+    throw new Error(`Could not save ${getActiveLexiconPath()} (HTTP ${response.status}).`);
   }
 
   const savedPayload = await response.json();
@@ -262,19 +262,19 @@ async function saveRulesNotesMarkdown() {
     });
 
     if (!response.ok) {
-      throw new Error(`Could not save data/rules-notes.md (HTTP ${response.status}).`);
+      throw new Error(`Could not save ${getActiveRulesNotesPath()} (HTTP ${response.status}).`);
     }
 
     const savedMarkdown = await response.text();
     applyRulesNotesMarkdown(savedMarkdown);
     closeRulesEditor();
     if (rulesEditorStatus) {
-      rulesEditorStatus.textContent = "Saved data/rules-notes.md.";
+      rulesEditorStatus.textContent = `Saved ${getActiveRulesNotesPath()}.`;
     }
   } catch (error) {
     console.error(error);
     if (rulesEditorStatus) {
-      rulesEditorStatus.textContent = error.message || "Could not save data/rules-notes.md.";
+      rulesEditorStatus.textContent = error.message || `Could not save ${getActiveRulesNotesPath()}.`;
     }
   }
 }

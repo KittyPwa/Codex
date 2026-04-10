@@ -363,14 +363,14 @@ function renderRulesNotes() {
     rulesContent.innerHTML = "<p>No rules or notes are currently loaded.</p>";
   } else {
     const lineCount = rulesNotesMarkdown.split(/\r?\n/).length;
-    rulesSummary.textContent = `Loaded rules and notes from data/rules-notes.md (${lineCount} lines).`;
+    rulesSummary.textContent = `Loaded rules and notes from ${getActiveRulesNotesPath()} (${lineCount} lines).`;
     rulesContent.innerHTML = renderMarkdownDocument(rulesNotesMarkdown);
   }
 
   if (rulesEditorStatus && !editing) {
     rulesEditorStatus.textContent = supportsFileEditing()
-      ? "This tab is rendered directly from data/rules-notes.md and can be edited here."
-      : "Run start-translator.bat to edit the external data/rules-notes.md file from the app.";
+      ? `This tab is rendered directly from ${getActiveRulesNotesPath()} and can be edited here.`
+      : `Run start-translator.bat to edit the external ${getActiveRulesNotesPath()} file from the app.`;
   }
 }
 
