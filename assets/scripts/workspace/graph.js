@@ -63,7 +63,7 @@ function openLexiconGraphModal() {
   }
 
   lexiconGraphModal.hidden = false;
-  document.body.classList.add("modal-open");
+  syncModalOpenState();
 }
 
 function closeLexiconGraphModal() {
@@ -72,9 +72,7 @@ function closeLexiconGraphModal() {
   }
 
   lexiconGraphModal.hidden = true;
-  if (lexiconEntryModal?.hidden !== false) {
-    document.body.classList.remove("modal-open");
-  }
+  syncModalOpenState();
 }
 
 function createGraphTreeNode(headword, visited) {

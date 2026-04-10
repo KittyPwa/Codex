@@ -163,6 +163,7 @@ That gives packs control over fallback sentence shape without needing a dedicate
 The backend also accepts pack-driven token recovery settings:
 
 - `analysis.recoveryOrder`
+- `analysis.strategyMap`
 - `analysis.compat.allowLegacyProductiveSuffixFallback`
 - `analysis.directLookup`
 - `analysis.normalization.missingPartPolicy`
@@ -186,6 +187,12 @@ It can also decide:
 
 without changing backend PowerShell code.
 
+`analysis.strategyMap` now lets a pack alias its own recovery labels onto the engine’s current built-in recovery implementations. So a pack can keep using domain-specific names in `analysis.recoveryOrder` while still targeting the current backend strategies:
+
+- `direct`
+- `normalization`
+- `segmentation`
+
 For backward compatibility, the backend can still synthesize a suffix segmenter from `morphology.productiveSuffixes` when no explicit `morphology.segmenters` are present.
 
 That behavior is now controlled by:
@@ -199,6 +206,7 @@ New packs should prefer explicit `morphology.segmenters`. The compatibility flag
 When multiple composition interpretations are possible, the pack can now choose which one wins:
 
 - `composition.strategyMap`
+- `composition.strategies`
 - `composition.resolution.directOrder`
 - `composition.resolution.normalizedOrder`
 - `composition.resolution.segmentedOrder`
@@ -211,6 +219,28 @@ These orders control precedence between strategies such as:
 - joined fallback text
 
 `composition.strategyMap` also lets a pack alias its own order labels to the engine’s current built-in strategy types, so resolution orders no longer need to use the backend’s literal internal names.
+
+Packs can now also override the actual strategy result shape through `composition.strategies`.
+
+Each strategy definition can declare:
+
+- `requires`
+- `outputs.primary`
+- `outputs.literal`
+- `outputs.narrative`
+- `outputs.resolved`
+
+Those outputs can reference currently available composition values such as:
+
+- `phrase`
+- `lexical`
+- `contextual`
+- `fallbackPrimary`
+- `fallbackLiteral`
+- `fallbackNarrative`
+- `fallbackJoined`
+
+This means packs are no longer restricted to the backend’s built-in meaning of `contextual`, `joined`, or `primary`; they can redefine how a strategy resolves once it is selected.
 
 ## Analysis Projections
 
@@ -227,3 +257,46 @@ This controls which token-analysis fields feed:
 - `normalizedTokens`
 
 used by syntax patterns, overrides, and exported analysis payloads.
+
+These projection sources still support the built-in engine aliases:
+
+- `headword`
+- `components`
+- `componentsOrHeadword`
+- `path`
+
+but they can also now point at concrete analysis fields directly when that is more useful for a pack, for example:
+
+- `resolvedGloss`
+- `literalGloss`
+- `narrativeGloss`
+- `meanings`
+
+This makes the projection layer less engine-specific, because packs are no longer limited to only a few hardcoded projection keywords.
+
+## Gloss Selection
+
+Packs can now describe where entry glosses come from for different translation modes through:
+
+- `translation.glossSelection.primaryPath`
+- `translation.glossSelection.literalPath`
+- `translation.glossSelection.narrativePath`
+- `translation.glossSelection.narrativeNominalPath`
+- `translation.glossSelection.fallbackPath`
+
+These paths are resolved against an internal gloss context containing:
+
+- `ancient`
+- `meanings`
+- `allowNominalReading`
+- `renderings.narrative`
+- `renderings.literal`
+
+That means a pack can choose whether its literal or narrative glosses should come from:
+
+- configured narrative renderings
+- the first lexical meaning
+- an alternate meaning slot
+- the raw headword
+
+instead of relying on one fixed backend rule for every language.

@@ -55,6 +55,7 @@
       "composition.resolution",
       "composition.contextualRenderings",
       "translation.englishToAncientOverrides",
+      "translation.glossSelection",
       "translation.defaultResolvers",
       "translation.syntaxPatterns",
       "translation.segmentResolvers",
@@ -137,6 +138,7 @@
   "analysis": {
     "recommendedPaths": [
       "analysis.recoveryOrder",
+      "analysis.strategyMap",
       "analysis.compat.allowLegacyProductiveSuffixFallback",
       "analysis.directLookup",
       "analysis.normalization.missingPartPolicy",
@@ -158,6 +160,7 @@
   "composition": {
     "recommendedPaths": [
       "composition.strategyMap",
+      "composition.strategies",
       "composition.resolution.directOrder",
       "composition.resolution.normalizedOrder",
       "composition.resolution.segmentedOrder"

@@ -216,6 +216,11 @@ document.addEventListener("keydown", (event) => {
     return;
   }
 
+  if (event.key === "Escape" && !languagePackModal?.hidden) {
+    closeLanguagePackModal();
+    return;
+  }
+
   if (event.key === "Escape" && !lexiconEntryModal?.hidden) {
     closeLexiconEntryModal();
   }
@@ -280,6 +285,10 @@ languagePackSelect?.addEventListener("change", async (event) => {
   }
 });
 
+languagePackNewButton?.addEventListener("click", () => {
+  openLanguagePackModal();
+});
+
 lexiconNewEntryButton?.addEventListener("click", () => {
   openLexiconEntryModal();
 });
@@ -307,6 +316,13 @@ lexiconEntryForm?.addEventListener("submit", async (event) => {
   await saveLexiconEntryFromForm();
 });
 
+languagePackCancelButton?.addEventListener("click", closeLanguagePackModal);
+languagePackBackdrop?.addEventListener("click", closeLanguagePackModal);
+languagePackForm?.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  await saveLanguagePackFromForm();
+});
+
 rulesEditButton?.addEventListener("click", () => {
   if (!rulesEditor) {
     return;
@@ -330,6 +346,128 @@ rulesSaveButton?.addEventListener("click", async () => {
 });
 rulesEditor?.addEventListener("input", () => {
   rulesEditorDirty = true;
+});
+
+rulesConfigEditButton?.addEventListener("click", () => {
+  if (!rulesConfigEditor) {
+    return;
+  }
+
+  rulesConfigEditor.value = JSON.stringify(rulesConfigDocument ?? {}, null, 2);
+  rulesConfigEditor.hidden = false;
+  rulesConfigContent.hidden = true;
+  rulesConfigEditButton.hidden = true;
+  rulesConfigSaveButton.hidden = false;
+  rulesConfigCancelButton.hidden = false;
+  rulesConfigEditorStatus.textContent = supportsFileEditing()
+    ? "Editing rules.json directly. Save writes back to the file."
+    : "File editing requires the local server launcher.";
+  rulesConfigEditorDirty = false;
+});
+
+rulesConfigCancelButton?.addEventListener("click", closeRulesConfigEditor);
+rulesConfigSaveButton?.addEventListener("click", async () => {
+  await saveRulesConfigDocument();
+});
+rulesConfigEditor?.addEventListener("input", () => {
+  rulesConfigEditorDirty = true;
+});
+rulesConfigTokenPatternInput?.addEventListener("input", renderTokenPatternPreview);
+rulesConfigTokenSampleInput?.addEventListener("input", renderTokenPatternPreview);
+rulesConfigTokenPresetSimpleButton?.addEventListener("click", () => {
+  setTokenPatternSample("Lan tsar ouk tsal.");
+});
+rulesConfigTokenPresetApostropheButton?.addEventListener("click", () => {
+  setTokenPatternSample("kesh'skehsiar sacht raknacht");
+});
+rulesConfigTokenPresetMultilineButton?.addEventListener("click", () => {
+  setTokenPatternSample("Lan tsar ouk tsal.\nRuvalnacht lan jino tsal ji.\nmah-ar tsach kesheh, tah-ar tsocht rek");
+});
+rulesConfigTokenPresetSaveCustomButton?.addEventListener("click", () => {
+  saveCurrentTokenPatternSample();
+});
+rulesConfigTokenPresetLoadCustomButton?.addEventListener("click", () => {
+  loadSavedTokenPatternSample();
+});
+rulesConfigApplyGuidedButton?.addEventListener("click", async () => {
+  try {
+    applyRulesConfigGuidedFields();
+    await saveRulesConfigDocument();
+  } catch (error) {
+    console.error(error);
+    rulesConfigEditorStatus.textContent = error.message || "Could not apply guided rules fields.";
+  }
+});
+rulesConfigEnglishFillersAddButton?.addEventListener("click", () => {
+  rulesConfigEnglishFillersBuilder?.append(createBuilderTextRow("", "the"));
+});
+rulesConfigEnglishAliasesAddButton?.addEventListener("click", () => {
+  rulesConfigEnglishAliasesBuilder?.append(createBuilderAliasRow("", ""));
+});
+rulesConfigFormatButton?.addEventListener("click", () => {
+  try {
+    formatRulesConfigEditor();
+  } catch (error) {
+    console.error(error);
+    rulesConfigEditorStatus.textContent = error.message || "Could not format rules JSON.";
+  }
+});
+
+schemaEditButton?.addEventListener("click", () => {
+  if (!schemaEditor) {
+    return;
+  }
+
+  schemaEditor.value = JSON.stringify(languagePackSchemaDocument ?? {}, null, 2);
+  schemaEditor.hidden = false;
+  schemaContent.hidden = true;
+  schemaEditButton.hidden = true;
+  schemaSaveButton.hidden = false;
+  schemaCancelButton.hidden = false;
+  schemaEditorStatus.textContent = supportsFileEditing()
+    ? "Editing language-pack.schema.json directly. Save writes back to the file."
+    : "File editing requires the local server launcher.";
+  schemaEditorDirty = false;
+});
+
+schemaCancelButton?.addEventListener("click", closeSchemaEditor);
+schemaSaveButton?.addEventListener("click", async () => {
+  await saveLanguagePackSchemaDocument();
+});
+schemaEditor?.addEventListener("input", () => {
+  schemaEditorDirty = true;
+});
+schemaApplyGuidedButton?.addEventListener("click", async () => {
+  try {
+    applySchemaGuidedFields();
+    await saveLanguagePackSchemaDocument();
+  } catch (error) {
+    console.error(error);
+    schemaEditorStatus.textContent = error.message || "Could not apply guided schema fields.";
+  }
+});
+schemaRequiredPathsAddButton?.addEventListener("click", () => {
+  schemaRequiredPathsBuilder?.append(createBuilderTextRow("", "language.name"));
+});
+schemaRecommendedPathsAddButton?.addEventListener("click", () => {
+  schemaRecommendedPathsBuilder?.append(createBuilderTextRow("", "translation.syntaxPatterns"));
+});
+schemaResolverNamesAddButton?.addEventListener("click", () => {
+  schemaResolverNamesBuilder?.append(createBuilderTextRow("", "subject"));
+});
+schemaResolverTypesAddButton?.addEventListener("click", () => {
+  schemaResolverTypesBuilder?.append(createBuilderTextRow("", "phrase"));
+});
+schemaSegmenterTypesAddButton?.addEventListener("click", () => {
+  schemaSegmenterTypesBuilder?.append(createBuilderTextRow("", "affix_split"));
+});
+schemaFormatButton?.addEventListener("click", () => {
+  try {
+    formatSchemaEditor();
+  } catch (error) {
+    console.error(error);
+    schemaEditorStatus.textContent = error.message || "Could not format schema JSON.";
+  }
 });
 
 initializeApp();

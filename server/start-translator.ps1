@@ -186,6 +186,343 @@ function Get-AvailableLanguagePackDescriptors() {
   return $packs
 }
 
+function Get-CanonicalLanguagePackSchemaSourcePath() {
+  $preferred = Join-Path $root "data\language-pack.schema.json"
+  if (Test-Path -LiteralPath $preferred -PathType Leaf) {
+    return [System.IO.Path]::GetFullPath($preferred)
+  }
+
+  if (Test-Path -LiteralPath $languagePackSchemaPath -PathType Leaf) {
+    return [System.IO.Path]::GetFullPath($languagePackSchemaPath)
+  }
+
+  throw "Could not locate a source language-pack.schema.json file."
+}
+
+function ConvertTo-PackSlug($value) {
+  $candidate = [string]$value
+  $candidate = $candidate.ToLowerInvariant()
+  $candidate = [System.Text.RegularExpressions.Regex]::Replace($candidate, "[^a-z0-9]+", "-")
+  $candidate = $candidate.Trim("-")
+  return $candidate
+}
+
+function New-StarterLanguagePackLexicon() {
+  return [ordered]@{
+    confirmed = @()
+    inferred = @()
+  }
+}
+
+function New-StarterLanguagePackRules($packId, $languageName, $version, $description) {
+  $safeLanguageName = if ([string]::IsNullOrWhiteSpace($languageName)) { $packId } else { [string]$languageName }
+  $safeVersion = if ([string]::IsNullOrWhiteSpace($version)) { "0.1.0" } else { [string]$version }
+  $safeDescription = [string]$description
+
+  return [ordered]@{
+    language = [ordered]@{
+      name = $safeLanguageName
+      version = $safeVersion
+      description = $safeDescription
+    }
+    text = [ordered]@{
+      tokenPattern = "[A-Za-z']+|\r\n|\r|\n|[ \t]+|[^\sA-Za-z']"
+      wordCharacterPattern = "[A-Za-z']"
+      lineSplitPattern = "(\r\n|\r|\n)"
+      join = [ordered]@{
+        space = " "
+        noSpaceAfterPattern = '[\(\[\{\/"''-]$'
+        noSpaceBeforePattern = '^[\)\]\},.!?:;"'']'
+      }
+    }
+    analysis = [ordered]@{
+      recoveryOrder = @("direct", "normalization", "segmentation")
+      compat = [ordered]@{
+        allowLegacyProductiveSuffixFallback = $false
+      }
+      directLookup = "simple"
+      synthesis = [ordered]@{
+        joiner = " + "
+      }
+      projections = [ordered]@{
+        headSource = "headword"
+        componentSource = "componentsOrHeadword"
+        normalizedTokenSource = "componentsOrHeadword"
+      }
+      unknown = [ordered]@{
+        format = "[{token}]"
+        note = "No direct or configured recovery succeeded."
+        status = "unknown"
+        register = "source"
+        path = @("unknown")
+      }
+      normalization = [ordered]@{
+        missingPartPolicy = "unknown"
+        note = "Recovered through configured normalization."
+        status = "inferred"
+        register = "source"
+      }
+      segmentation = [ordered]@{
+        missingPartPolicy = "unknown"
+      }
+    }
+    lexicon = [ordered]@{
+      fieldMap = [ordered]@{
+        headword = "ancient"
+        meanings = "meanings"
+        status = "status"
+        register = "register"
+        components = "components"
+        etymology = "etymology"
+        notes = "notes"
+        pronunciation = "pronunciation"
+        lexicalized = "lexicalized"
+        allowNominalReading = "allowNominalReading"
+        partOfSpeech = "partOfSpeech"
+      }
+    }
+    workspace = [ordered]@{
+      markdown = [ordered]@{
+        title = $safeLanguageName
+        overview = "This lexicon document was generated from the active $safeLanguageName language pack."
+        sectionOrder = @("Core Vocabulary", "Additional Entries")
+        sections = [ordered]@{
+          "Core Vocabulary" = @()
+        }
+        inferredSection = "Inferred Entries"
+        compoundSection = "Compounds"
+        additionalSection = "Additional Entries"
+      }
+    }
+    english = [ordered]@{
+      fillers = @("the", "a", "an")
+      aliases = [ordered]@{}
+    }
+    normalization = [ordered]@{}
+    morphology = [ordered]@{
+      segmenters = @()
+      productiveSuffixes = @()
+      affixMeanings = [ordered]@{}
+      hiddenTranslationMarkers = @()
+    }
+    composition = [ordered]@{
+      strategyMap = [ordered]@{
+        phrase = "phrase"
+        lexical = "lexical"
+        contextual = "contextual"
+        joined = "joined"
+        primary = "primary"
+      }
+      strategies = [ordered]@{}
+      resolution = [ordered]@{
+        directOrder = @("phrase", "lexical", "primary")
+        normalizedOrder = @("phrase", "lexical", "contextual", "joined")
+        segmentedOrder = @("phrase", "lexical", "joined")
+      }
+      lexicalCompounds = [ordered]@{}
+      phraseRenderings = [ordered]@{}
+      contextualRenderings = [ordered]@{}
+    }
+    translation = [ordered]@{
+      fallback = [ordered]@{
+        idiomaticSource = "resolvedWords"
+        idiomaticTemplate = "{words}"
+        idiomaticJoiner = " "
+        idiomaticPunctuation = "."
+        capitalizeIdiomatic = $true
+        literalSource = "resolvedGloss"
+      }
+      glossSelection = [ordered]@{
+        primaryPath = "meanings.0"
+        literalPath = "renderings.literal"
+        narrativePath = "renderings.narrative"
+        narrativeNominalPath = "meanings.1"
+        fallbackPath = "ancient"
+      }
+      englishToAncientOverrides = [ordered]@{}
+      narrativeRenderings = [ordered]@{}
+      defaultResolvers = [ordered]@{
+        subject = [ordered]@{
+          type = "phrase"
+          source = "resolvedWords"
+          selection = "index"
+          defaultIndex = 0
+          articleMap = [ordered]@{}
+          articlePrefix = " "
+        }
+      }
+      segmentResolvers = [ordered]@{
+        verb = [ordered]@{
+          type = "head"
+          source = "heads"
+          selection = "index"
+          defaultIndex = 0
+          glossMode = "narrative"
+        }
+        raw = [ordered]@{
+          type = "phrase"
+          source = "resolvedWords"
+          selection = "range"
+          defaultStart = 0
+        }
+      }
+      syntaxPatterns = @(
+        [ordered]@{
+          match = [ordered]@{
+            minHeads = 2
+          }
+          template = "{actor} {action}."
+          segments = [ordered]@{
+            actor = [ordered]@{
+              index = 0
+              resolver = "subject"
+            }
+            action = [ordered]@{
+              index = 1
+              resolver = "verb"
+            }
+          }
+        }
+      )
+      nounArticles = [ordered]@{}
+      objectArticles = [ordered]@{}
+      subjectRenderings = [ordered]@{}
+      articleBlockers = @()
+      articleExceptions = @()
+      bareWords = @()
+      poeticOverrides = [ordered]@{}
+      headSequenceOverrides = @()
+      componentSequenceOverrides = @()
+      tailRenderings = @()
+      continuationRenderings = @()
+      locationReorderings = @()
+    }
+    phonology = [ordered]@{
+      preferredClusters = @()
+    }
+  }
+}
+
+function New-StarterLanguagePackRulesNotes($packId, $languageName) {
+  $safeLanguageName = if ([string]::IsNullOrWhiteSpace($languageName)) { $packId } else { [string]$languageName }
+  return @"
+# $safeLanguageName Rules & Notes
+
+## Language Snapshot
+
+- Pack id: `$packId`
+- Language name: $safeLanguageName
+- Purpose: Replace these starter notes with the actual grammar of your language.
+
+## Sound And Writing
+
+- Alphabet / script:
+- Pronunciation notes:
+- Capitalization:
+- Apostrophes, hyphens, or separators:
+
+## Word Classes
+
+- Nouns:
+- Verbs:
+- Adjectives:
+- Particles:
+- Pronouns:
+
+## Morphology
+
+- Productive affixes:
+- How compounds are formed:
+- When a form is lexicalized:
+- Irregular forms:
+
+## Syntax
+
+- Basic clause order:
+- Noun phrase order:
+- Where modifiers go:
+- How possession works:
+- How location works:
+
+## Translation Guidance
+
+- Default idiomatic sentence style:
+- Narrative tense handling:
+- Articles or article-like behavior:
+- Poetic / ritual exceptions:
+
+## Open Questions
+
+- Add unresolved grammar questions here.
+"@
+}
+
+function New-LanguagePackScaffold($request) {
+  $requestedId = [string](Get-ConfigValue $request "packId" "")
+  $languageName = [string](Get-ConfigValue $request "languageName" "")
+  $version = [string](Get-ConfigValue $request "version" "0.1.0")
+  $description = [string](Get-ConfigValue $request "description" "")
+  $makeActive = [bool](Get-ConfigValue $request "makeActive" $true)
+
+  $packId = ConvertTo-PackSlug $(if ($requestedId) { $requestedId } else { $languageName })
+  if ([string]::IsNullOrWhiteSpace($packId)) {
+    throw "Pack id must include at least one letter or number."
+  }
+
+  if ($packId -eq "default") {
+    throw "The pack id 'default' is reserved."
+  }
+
+  if ([string]::IsNullOrWhiteSpace($languageName)) {
+    throw "Language name is required."
+  }
+
+  $targetRoot = Join-Path $languagePacksRoot $packId
+  $descriptor = New-LanguagePackDescriptor $packId $targetRoot $languageName
+  if (Test-Path -LiteralPath $descriptor.root) {
+    throw "A language pack named '$packId' already exists."
+  }
+
+  [System.IO.Directory]::CreateDirectory($descriptor.root) | Out-Null
+
+  try {
+    $schemaSourcePath = Get-CanonicalLanguagePackSchemaSourcePath
+    [System.IO.File]::Copy($schemaSourcePath, $descriptor.schema, $false)
+
+    $lexiconJson = (New-StarterLanguagePackLexicon) | ConvertTo-Json -Depth 16
+    [System.IO.File]::WriteAllText($descriptor.lexicon, $lexiconJson, [System.Text.UTF8Encoding]::new($false))
+
+    $rulesJson = (New-StarterLanguagePackRules $packId $languageName $version $description) | ConvertTo-Json -Depth 32
+    [System.IO.File]::WriteAllText($descriptor.rulesConfig, $rulesJson, [System.Text.UTF8Encoding]::new($false))
+
+    $rulesNotes = New-StarterLanguagePackRulesNotes $packId $languageName
+    [System.IO.File]::WriteAllText($descriptor.rulesNotes, $rulesNotes, [System.Text.UTF8Encoding]::new($false))
+  } catch {
+    if (Test-Path -LiteralPath $descriptor.root -PathType Container) {
+      Remove-Item -LiteralPath $descriptor.root -Recurse -Force
+    }
+    throw
+  }
+
+  $script:availableLanguagePacks = Get-AvailableLanguagePackDescriptors
+  if ($makeActive) {
+    return Set-ActiveLanguagePackById $packId
+  }
+
+  return [ordered]@{
+    created = $true
+    packId = $packId
+    language = Read-LanguagePackMetadataFromDescriptor $descriptor
+    active = $false
+    activePaths = [ordered]@{
+      lexicon = $descriptor.lexicon
+      rulesConfig = $descriptor.rulesConfig
+      rulesNotes = $descriptor.rulesNotes
+      schema = $descriptor.schema
+    }
+  }
+}
+
 function Set-ActiveLanguagePackDescriptor($descriptor) {
   $script:activeLanguagePackId = [string]$descriptor.id
   $script:languagePackRoot = [string]$descriptor.root
@@ -435,6 +772,13 @@ function Read-RulesConfig() {
   return $raw | ConvertFrom-Json
 }
 
+function Get-RulesConfigReport() {
+  return [ordered]@{
+    config = Read-RulesConfig
+    path = $rulesConfigPath
+  }
+}
+
 function Read-LanguagePackSchema() {
   if (-not (Test-Path -LiteralPath $languagePackSchemaPath -PathType Leaf)) {
     return [pscustomobject]@{}
@@ -448,11 +792,41 @@ function Read-LanguagePackSchema() {
   return $raw | ConvertFrom-Json
 }
 
+function Write-JsonDocument($path, $body) {
+  $parsed = if ([string]::IsNullOrWhiteSpace($body)) {
+    throw "JSON document body cannot be empty."
+  } else {
+    $body | ConvertFrom-Json
+  }
+
+  [System.IO.File]::WriteAllText($path, $body, [System.Text.UTF8Encoding]::new($false))
+  return $parsed
+}
+
 function Get-ConfigValue($Object, $Path, $Default = $null) {
   $current = $Object
   foreach ($segment in ($Path -split "\.")) {
     if ($null -eq $current) {
       return $Default
+    }
+
+    if (
+      $current -is [System.Collections.IEnumerable] -and
+      $current -isnot [string] -and
+      $current -isnot [System.Collections.IDictionary]
+    ) {
+      $items = @($current)
+      $index = 0
+      if (-not [int]::TryParse([string]$segment, [ref]$index)) {
+        return $Default
+      }
+
+      if ($index -lt 0 -or $index -ge $items.Count) {
+        return $Default
+      }
+
+      $current = $items[$index]
+      continue
     }
 
     if ($current -is [System.Collections.IDictionary]) {
@@ -539,8 +913,27 @@ function Get-AnalysisConfig($rulesConfig) {
     @($configuredUnknownPath)
   }
 
+  $defaultStrategyMap = [ordered]@{
+    direct = "direct"
+    normalization = "normalization"
+    segmentation = "segmentation"
+  }
+  $configuredStrategyMap = Get-ConfigValue $rulesConfig "analysis.strategyMap" ([pscustomobject]@{})
+  $strategyMap = [ordered]@{}
+  foreach ($key in @($defaultStrategyMap.Keys)) {
+    $strategyMap[$key] = $defaultStrategyMap[$key]
+  }
+  foreach ($property in $configuredStrategyMap.PSObject.Properties) {
+    $alias = [string]$property.Name
+    $target = [string]$property.Value
+    if (-not [string]::IsNullOrWhiteSpace($alias) -and -not [string]::IsNullOrWhiteSpace($target)) {
+      $strategyMap[$alias] = $target
+    }
+  }
+
   return [ordered]@{
     recoveryOrder = @($recoveryOrder)
+    strategyMap = [pscustomobject]$strategyMap
     directLookup = [string](Get-ConfigValue $rulesConfig "analysis.directLookup" "lexicalPriorityFirst")
     normalizationMissingPartPolicy = [string](Get-ConfigValue $rulesConfig "analysis.normalization.missingPartPolicy" "unknown")
     segmentationMissingPartPolicy = [string](Get-ConfigValue $rulesConfig "analysis.segmentation.missingPartPolicy" "unknown")
@@ -581,8 +974,64 @@ function Get-CompositionConfig($rulesConfig) {
     }
   }
 
+  $defaultStrategyDefinitions = [ordered]@{
+    phrase = [ordered]@{
+      requires = "phrase"
+      outputs = [ordered]@{
+        primary = "phrase"
+        literal = "phrase"
+        narrative = "phrase"
+        resolved = "phrase"
+      }
+    }
+    lexical = [ordered]@{
+      requires = "lexical"
+      outputs = [ordered]@{
+        primary = "lexical"
+        literal = "lexical"
+        narrative = "lexical"
+        resolved = "lexical"
+      }
+    }
+    contextual = [ordered]@{
+      requires = "contextual"
+      outputs = [ordered]@{
+        primary = "contextual"
+        literal = "fallbackLiteral"
+        narrative = "fallbackNarrative"
+        resolved = "contextual"
+      }
+    }
+    joined = [ordered]@{
+      outputs = [ordered]@{
+        primary = "fallbackPrimary"
+        literal = "fallbackLiteral"
+        narrative = "fallbackNarrative"
+        resolved = "fallbackJoined"
+      }
+    }
+    primary = [ordered]@{
+      outputs = [ordered]@{
+        primary = "fallbackPrimary"
+        literal = "fallbackLiteral"
+        narrative = "fallbackNarrative"
+        resolved = "fallbackPrimary"
+      }
+    }
+  }
+
+  $configuredStrategyDefinitions = Get-ConfigValue $rulesConfig "composition.strategies" ([pscustomobject]@{})
+  $strategyDefinitions = [ordered]@{}
+  foreach ($key in @($defaultStrategyDefinitions.Keys)) {
+    $strategyDefinitions[$key] = $defaultStrategyDefinitions[$key]
+  }
+  foreach ($property in $configuredStrategyDefinitions.PSObject.Properties) {
+    $strategyDefinitions[[string]$property.Name] = $property.Value
+  }
+
   return [ordered]@{
     strategyMap = [pscustomobject]$strategyMap
+    strategyDefinitions = [pscustomobject]$strategyDefinitions
     directResolutionOrder = @(ConvertTo-ArrayValue (Get-ConfigValue $rulesConfig "composition.resolution.directOrder" @("phrase", "lexical", "primary")))
     normalizedResolutionOrder = @(ConvertTo-ArrayValue (Get-ConfigValue $rulesConfig "composition.resolution.normalizedOrder" @("phrase", "lexical", "contextual", "joined")))
     segmentedResolutionOrder = @(ConvertTo-ArrayValue (Get-ConfigValue $rulesConfig "composition.resolution.segmentedOrder" @("phrase", "lexical", "joined")))
@@ -590,7 +1039,32 @@ function Get-CompositionConfig($rulesConfig) {
 }
 
 function Get-AnalysisProjectionValues($analysis, $sourceName) {
-  switch ($sourceName) {
+  $resolvedSource = if ([string]::IsNullOrWhiteSpace([string]$sourceName)) { "componentsOrHeadword" } else { [string]$sourceName }
+
+  $convertProjectionValue = {
+    param($value)
+
+    if ($null -eq $value) {
+      return @()
+    }
+
+    if ($value -is [string]) {
+      if ([string]::IsNullOrWhiteSpace($value)) {
+        return @()
+      }
+
+      return @([string]$value)
+    }
+
+    if ($value -is [System.Collections.IEnumerable] -and $value -isnot [System.Collections.IDictionary]) {
+      $items = @($value | Where-Object { $null -ne $_ -and -not [string]::IsNullOrWhiteSpace([string]$_) })
+      return @($items | ForEach-Object { [string]$_ })
+    }
+
+    return @([string]$value)
+  }
+
+  switch ($resolvedSource) {
     "headword" {
       return @((Normalize-AncientKey $analysis.headword))
     }
@@ -607,6 +1081,11 @@ function Get-AnalysisProjectionValues($analysis, $sourceName) {
       return @($analysis.path)
     }
     default {
+      $configured = Get-ConfigValue $analysis $resolvedSource $null
+      if ($null -ne $configured) {
+        return @(& $convertProjectionValue $configured)
+      }
+
       if ($analysis.components.Count) {
         return @($analysis.components)
       }
@@ -666,7 +1145,7 @@ function Get-LanguagePackValidation($lexiconPayload, $rulesConfig) {
   $language = Get-LanguageMetadata $rulesConfig
 
   if (-not $confirmed.Count) {
-    $issues = Add-ValidationIssue $issues "error" "The language pack must contain at least one confirmed lexicon entry."
+    $issues = Add-ValidationIssue $issues "warning" "The language pack does not yet contain any confirmed lexicon entries."
   }
 
   $requiredLexiconFields = Get-SchemaArray $schema "lexicon.entry.requiredFields" @("headword", "meanings")
@@ -1425,29 +1904,78 @@ function Get-NarrativeRendering($context, $headword, $mode = "narrative") {
   return $null
 }
 
+function Get-GlossSelectionConfig($rulesConfig) {
+  return [ordered]@{
+    primaryPath = [string](Get-ConfigValue $rulesConfig "translation.glossSelection.primaryPath" "meanings.0")
+    literalPath = [string](Get-ConfigValue $rulesConfig "translation.glossSelection.literalPath" "renderings.literal")
+    narrativePath = [string](Get-ConfigValue $rulesConfig "translation.glossSelection.narrativePath" "renderings.narrative")
+    narrativeNominalPath = [string](Get-ConfigValue $rulesConfig "translation.glossSelection.narrativeNominalPath" "meanings.1")
+    fallbackPath = [string](Get-ConfigValue $rulesConfig "translation.glossSelection.fallbackPath" "ancient")
+  }
+}
+
+function Resolve-GlossPathValue($glossContext, $path, $fallback = "") {
+  if ([string]::IsNullOrWhiteSpace([string]$path)) {
+    return [string]$fallback
+  }
+
+  $value = Get-ConfigValue $glossContext ([string]$path) $null
+  if ($null -eq $value) {
+    return [string]$fallback
+  }
+
+  if ($value -is [System.Collections.IEnumerable] -and $value -isnot [string] -and $value -isnot [System.Collections.IDictionary]) {
+    $items = @($value | Where-Object { $null -ne $_ -and -not [string]::IsNullOrWhiteSpace([string]$_) })
+    if ($items.Count) {
+      return [string]$items[0]
+    }
+    return [string]$fallback
+  }
+
+  $text = [string]$value
+  if ([string]::IsNullOrWhiteSpace($text)) {
+    return [string]$fallback
+  }
+
+  return $text
+}
+
 function Get-EntryGloss($context, $entry, $mode = "narrative") {
   $meanings = ConvertTo-ArrayValue $entry.meanings
-  $primary = if ($meanings.Count) { [string]$meanings[0] } else { [string]$entry.ancient }
-
-  if ($mode -eq "narrative") {
-    $render = Get-NarrativeRendering $context $entry.ancient "narrative"
-    if ($render) {
-      return $render
-    }
+  $glossConfig = Get-GlossSelectionConfig $context.Rules
+  $renderings = [ordered]@{
+    narrative = (Get-NarrativeRendering $context $entry.ancient "narrative")
+    literal = (Get-NarrativeRendering $context $entry.ancient "literal")
   }
+  $glossContext = [ordered]@{
+    ancient = [string]$entry.ancient
+    meanings = @($meanings)
+    allowNominalReading = [bool]$entry.allowNominalReading
+    renderings = $renderings
+  }
+
+  $primary = Resolve-GlossPathValue $glossContext $glossConfig.primaryPath ([string]$entry.ancient)
+  $fallback = Resolve-GlossPathValue $glossContext $glossConfig.fallbackPath $primary
 
   if ($mode -eq "literal") {
-    $render = Get-NarrativeRendering $context $entry.ancient "literal"
-    if ($render) {
-      return $render
+    return Resolve-GlossPathValue $glossContext $glossConfig.literalPath $primary
+  }
+
+  if ($mode -eq "narrative") {
+    $narrative = Resolve-GlossPathValue $glossContext $glossConfig.narrativePath ""
+    if (-not [string]::IsNullOrWhiteSpace($narrative)) {
+      return $narrative
+    }
+
+    if ($entry.allowNominalReading) {
+      $nominal = Resolve-GlossPathValue $glossContext $glossConfig.narrativeNominalPath ""
+      if (-not [string]::IsNullOrWhiteSpace($nominal)) {
+        return $nominal
+      }
     }
   }
 
-  if ($mode -eq "narrative" -and $entry.allowNominalReading -and $meanings.Count -gt 1) {
-    return [string]$meanings[1]
-  }
-
-  return $primary
+  return $(if ($primary) { $primary } else { $fallback })
 }
 
 function Build-MorphemeGloss($context, $parts, $fallback) {
@@ -1653,60 +2181,73 @@ function Resolve-SegmentedAnalysis($context, $token, $normalized) {
 function Resolve-CompositionOutput($context, $parts, $resolvedEntries, $strategies, $fallbackPrimary, $fallbackLiteral, $fallbackNarrative, $fallbackJoined) {
   $compositionConfig = Get-CompositionConfig $context.Rules
   $strategyMap = ConvertTo-StringMap $compositionConfig.strategyMap
+  $strategyDefinitions = Get-MapFromConfig $compositionConfig "strategyDefinitions"
   $phrase = Get-PhraseRendering $context $parts
   $lexical = Get-LexicalCollapse $context $parts
   $contextual = Get-ContextualRendering $context $parts
+  $availableValues = [ordered]@{
+    phrase = $phrase
+    lexical = $lexical
+    contextual = $contextual
+    fallbackPrimary = $fallbackPrimary
+    fallbackLiteral = $fallbackLiteral
+    fallbackNarrative = $fallbackNarrative
+    fallbackJoined = $fallbackJoined
+  }
 
   foreach ($strategy in @($strategies)) {
     $strategyName = [string]$strategy
     $resolvedStrategy = if ($strategyMap.ContainsKey($strategyName)) { [string]$strategyMap[$strategyName] } else { $strategyName }
-    switch ($resolvedStrategy) {
-      "phrase" {
-        if ($phrase) {
-          return [ordered]@{
-            primary = $phrase
-            literal = $phrase
-            narrative = $phrase
-            resolved = $phrase
-          }
-        }
+    if (-not $strategyDefinitions.ContainsKey($resolvedStrategy)) {
+      continue
+    }
+
+    $definition = $strategyDefinitions[$resolvedStrategy]
+    $requiredSource = [string](Get-ConfigValue $definition "requires" "")
+    if ($requiredSource) {
+      $requiredValue = [string](Get-ConfigValue $availableValues $requiredSource "")
+      if ([string]::IsNullOrWhiteSpace($requiredValue)) {
+        continue
       }
-      "lexical" {
-        if ($lexical) {
+    }
+
+    $outputs = Get-ConfigValue $definition "outputs" $null
+    if ($null -eq $outputs) {
+      switch ($resolvedStrategy) {
+        "joined" {
           return [ordered]@{
-            primary = $lexical
-            literal = $lexical
-            narrative = $lexical
-            resolved = $lexical
-          }
-        }
-      }
-      "contextual" {
-        if ($contextual) {
-          return [ordered]@{
-            primary = $contextual
+            primary = $fallbackPrimary
             literal = $fallbackLiteral
             narrative = $fallbackNarrative
-            resolved = $contextual
+            resolved = $fallbackJoined
+          }
+        }
+        "primary" {
+          return [ordered]@{
+            primary = $fallbackPrimary
+            literal = $fallbackLiteral
+            narrative = $fallbackNarrative
+            resolved = $fallbackPrimary
           }
         }
       }
-      "joined" {
-        return [ordered]@{
-          primary = $fallbackPrimary
-          literal = $fallbackLiteral
-          narrative = $fallbackNarrative
-          resolved = $fallbackJoined
-        }
-      }
-      "primary" {
-        return [ordered]@{
-          primary = $fallbackPrimary
-          literal = $fallbackLiteral
-          narrative = $fallbackNarrative
-          resolved = $fallbackPrimary
-        }
-      }
+      continue
+    }
+
+    $resolvedOutput = [ordered]@{}
+    foreach ($field in @("primary", "literal", "narrative", "resolved")) {
+      $sourceName = [string](Get-ConfigValue $outputs $field "")
+      $sourceValue = if ($sourceName) { [string](Get-ConfigValue $availableValues $sourceName "") } else { "" }
+      $resolvedOutput[$field] = $sourceValue
+    }
+
+    if (
+      -not [string]::IsNullOrWhiteSpace([string]$resolvedOutput.primary) -or
+      -not [string]::IsNullOrWhiteSpace([string]$resolvedOutput.literal) -or
+      -not [string]::IsNullOrWhiteSpace([string]$resolvedOutput.narrative) -or
+      -not [string]::IsNullOrWhiteSpace([string]$resolvedOutput.resolved)
+    ) {
+      return $resolvedOutput
     }
   }
 
@@ -1721,9 +2262,12 @@ function Resolve-CompositionOutput($context, $parts, $resolvedEntries, $strategi
 function Analyze-AncientTokenApi($context, $token) {
   $normalized = Normalize-AncientKey $token
   $analysisConfig = Get-AnalysisConfig $context.Rules
+  $strategyMap = ConvertTo-StringMap $analysisConfig.strategyMap
 
   foreach ($strategy in @($analysisConfig.recoveryOrder)) {
-    $analysis = switch ([string]$strategy) {
+    $strategyName = [string]$strategy
+    $resolvedStrategy = if ($strategyMap.ContainsKey($strategyName)) { [string]$strategyMap[$strategyName] } else { $strategyName }
+    $analysis = switch ($resolvedStrategy) {
       "direct" { Resolve-DirectAnalysis $context $token $normalized }
       "normalization" { Resolve-NormalizedAnalysis $context $token $normalized }
       "segmentation" { Resolve-SegmentedAnalysis $context $token $normalized }
@@ -2584,6 +3128,13 @@ function Handle-LanguagePackSelectionRequest($context) {
   Write-JsonResponse $context 200 $status
 }
 
+function Handle-LanguagePackCreateRequest($context) {
+  $body = Read-RequestBody $context.Request
+  $request = if ([string]::IsNullOrWhiteSpace($body)) { [pscustomobject]@{} } else { $body | ConvertFrom-Json }
+  $status = New-LanguagePackScaffold $request
+  Write-JsonResponse $context 201 $status
+}
+
 function Handle-ApiRequest($context) {
   $path = $context.Request.Url.AbsolutePath.TrimEnd("/")
   if ([string]::IsNullOrWhiteSpace($path)) {
@@ -2629,6 +3180,11 @@ function Handle-ApiRequest($context) {
       return $true
     }
 
+    if ($context.Request.HttpMethod -eq "POST") {
+      Handle-LanguagePackCreateRequest $context
+      return $true
+    }
+
     Write-Response $context 405 "Method Not Allowed"
     return $true
   }
@@ -2636,6 +3192,16 @@ function Handle-ApiRequest($context) {
   if ($path -eq "/api/language-pack-schema") {
     if ($context.Request.HttpMethod -eq "GET") {
       Write-JsonResponse $context 200 (Get-LanguagePackSchemaReport)
+      return $true
+    }
+
+    if ($context.Request.HttpMethod -eq "PUT") {
+      $body = Read-RequestBody $context.Request
+      $schema = Write-JsonDocument $languagePackSchemaPath $body
+      Write-JsonResponse $context 200 ([ordered]@{
+        schema = $schema
+        path = $languagePackSchemaPath
+      })
       return $true
     }
 
@@ -2683,7 +3249,17 @@ function Handle-ApiRequest($context) {
 
   if ($path -eq "/api/rules-config") {
     if ($context.Request.HttpMethod -eq "GET") {
-      Write-JsonResponse $context 200 (Read-RulesConfig)
+      Write-JsonResponse $context 200 (Get-RulesConfigReport)
+      return $true
+    }
+
+    if ($context.Request.HttpMethod -eq "PUT") {
+      $body = Read-RequestBody $context.Request
+      $config = Write-JsonDocument $rulesConfigPath $body
+      Write-JsonResponse $context 200 ([ordered]@{
+        config = $config
+        path = $rulesConfigPath
+      })
       return $true
     }
 

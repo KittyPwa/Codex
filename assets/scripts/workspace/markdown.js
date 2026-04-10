@@ -119,6 +119,34 @@ function renderRulesNotes() {
   rulesContent.innerHTML = renderMarkdownDocument(rulesNotesMarkdown);
 }
 
+function renderJsonDocument(value) {
+  return `<pre><code>${escapeHtml(JSON.stringify(value ?? {}, null, 2))}</code></pre>`;
+}
+
+function renderRulesConfigDocument() {
+  if (!rulesConfigContent || !rulesConfigSummary) {
+    return;
+  }
+
+  const jsonText = JSON.stringify(rulesConfigDocument ?? {}, null, 2);
+  const lineCount = jsonText.split(/\r?\n/).length;
+  rulesConfigSummary.textContent = `Loaded ${getActiveRulesConfigPath()} (${lineCount} lines).`;
+  rulesConfigContent.innerHTML = renderJsonDocument(rulesConfigDocument);
+  syncRulesConfigGuidedFields();
+}
+
+function renderLanguagePackSchemaDocument() {
+  if (!schemaContent || !schemaSummary) {
+    return;
+  }
+
+  const jsonText = JSON.stringify(languagePackSchemaDocument ?? {}, null, 2);
+  const lineCount = jsonText.split(/\r?\n/).length;
+  schemaSummary.textContent = `Loaded ${getActiveSchemaPath()} (${lineCount} lines).`;
+  schemaContent.innerHTML = renderJsonDocument(languagePackSchemaDocument);
+  syncSchemaGuidedFields();
+}
+
 function renderMarkdownDocument(markdown) {
   const lines = markdown.replace(/\r\n/g, "\n").split("\n");
   const html = [];

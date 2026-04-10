@@ -45,13 +45,19 @@ async function initializeApp() {
 async function reloadWorkspaceData() {
   let rulesConfig = {};
   try {
-    rulesConfig = await loadRulesConfig();
+    const rulesConfigReport = await loadRulesConfigReport();
+    rulesConfig = rulesConfigReport?.config ?? {};
+    rulesConfigDocument = rulesConfig;
+    rulesConfigPath = rulesConfigReport?.path || getActiveRulesConfigPath();
     applyLanguageRulesConfig(rulesConfig);
     rulesConfigSource = "backend rules config";
+    renderRulesConfigDocument();
   } catch (rulesConfigError) {
     console.warn("Rules JSON could not be loaded. Falling back to generic empty defaults.", rulesConfigError);
     applyLanguageRulesConfig({});
     rulesConfigSource = "generic empty defaults";
+    rulesConfigDocument = {};
+    renderRulesConfigDocument();
   }
 
   const payload = await loadLexiconPayload();
@@ -65,10 +71,33 @@ async function reloadWorkspaceData() {
     applyRulesNotesMarkdown("");
   }
 
+  try {
+    const schemaReport = await loadLanguagePackSchemaReport();
+    languagePackSchemaDocument = schemaReport?.schema ?? {};
+    languagePackSchemaDocumentPath = schemaReport?.path || getActiveSchemaPath();
+    renderLanguagePackSchemaDocument();
+  } catch (schemaError) {
+    console.warn("Language pack schema could not be loaded.", schemaError);
+    languagePackSchemaDocument = {};
+    renderLanguagePackSchemaDocument();
+  }
+
   if (window.location.protocol !== "file:") {
     activeLanguagePackStatus = await loadLanguagePackStatus();
     activeLanguagePackId = activeLanguagePackStatus?.packId || activeLanguagePackId;
     syncLanguagePackSelect();
+  }
+
+  if (rulesEditor?.hidden === false) {
+    closeRulesEditor();
+  }
+
+  if (rulesConfigEditor?.hidden === false) {
+    closeRulesConfigEditor();
+  }
+
+  if (schemaEditor?.hidden === false) {
+    closeSchemaEditor();
   }
 
   syncActiveLanguageWorkspace();
@@ -85,13 +114,12 @@ function applyLexiconPayload(payload) {
     inferredLexicon = normalizeLexiconEntries(payload?.inferred);
   }
 
-  if (!confirmedLexicon.length) {
-    throw new Error("The lexicon JSON must include at least one confirmed entry.");
-  }
-
   refreshLexiconState();
-  if (!selectedLexiconHeadword || !lookupEntry(selectedLexiconHeadword)) {
-    selectedLexiconHeadword = activeLexicon[0]?.ancient ?? null;
+  const preferredHeadword = confirmedLexicon[0]?.ancient ?? inferredLexicon[0]?.ancient ?? null;
+  if (preferredHeadword && (!selectedLexiconHeadword || !lookupEntry(selectedLexiconHeadword))) {
+    selectedLexiconHeadword = preferredHeadword;
+  } else if (!preferredHeadword) {
+    selectedLexiconHeadword = null;
   }
   populateLexiconFilters();
   renderLexiconTable();
@@ -474,6 +502,30 @@ function syncLanguagePackSelect() {
 
   languagePackSelect.value = activeLanguagePackId;
   languagePackSelect.disabled = window.location.protocol === "file:" || availableLanguagePacks.length <= 1;
+  if (languagePackNewButton) {
+    languagePackNewButton.disabled = window.location.protocol === "file:";
+  }
+}
+
+function getTokenizerSampleStorageKey() {
+  return `translatorTokenizerSample:${activeLanguagePackId || "default"}`;
+}
+
+function persistTokenizerSample(sampleText) {
+  try {
+    window.localStorage.setItem(getTokenizerSampleStorageKey(), String(sampleText ?? ""));
+  } catch (error) {
+    console.warn("Could not persist tokenizer sample text.", error);
+  }
+}
+
+function readPersistedTokenizerSample() {
+  try {
+    return window.localStorage.getItem(getTokenizerSampleStorageKey());
+  } catch (error) {
+    console.warn("Could not read persisted tokenizer sample text.", error);
+    return null;
+  }
 }
 
 async function switchLanguagePack(packId) {
@@ -505,6 +557,47 @@ async function switchLanguagePack(packId) {
   });
 }
 
+async function createLanguagePack(request) {
+  if (window.location.protocol === "file:") {
+    throw new Error("Language-pack creation requires the local server launcher.");
+  }
+
+  const response = await fetch("./api/language-packs", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(request)
+  });
+
+  if (!response.ok) {
+    const errorText = await response.text().catch(() => "");
+    throw new Error(errorText || `Language pack creation failed with HTTP ${response.status}.`);
+  }
+
+  const payload = await response.json();
+  const createdPackId = payload?.packId || request.packId || "";
+  const createdPackName = payload?.language?.name || request.languageName || createdPackId || "the new language pack";
+  const makeActive = request?.makeActive !== false;
+
+  if (makeActive) {
+    activeLanguagePackStatus = payload;
+    activeLanguagePackId = payload?.packId || activeLanguagePackId;
+  }
+  await loadLanguagePackRegistry();
+  if (makeActive) {
+    await reloadWorkspaceData();
+    serverTranslationApiAvailable = await probeTranslationApi();
+    setLexiconStatus(describeActiveLexiconSource());
+    resetTranslationWorkspace({
+      note: `Created ${getActiveLanguageName()}. Fill in the starter rules, notes, and lexicon to teach the backend this language.`
+    });
+  } else {
+    setLexiconStatus(`Created starter pack ${createdPackName}. Switch to it from the language pack selector when you want to edit it.`);
+  }
+  return payload;
+}
+
 async function loadRulesNotesMarkdown() {
   if (window.location.protocol === "file:") {
     return "";
@@ -522,14 +615,33 @@ async function loadRulesNotesMarkdown() {
   throw new Error("Rules & notes API failed to load.");
 }
 
-async function loadRulesConfig() {
+async function loadRulesConfigReport() {
   if (window.location.protocol === "file:") {
-    return {};
+    return {
+      config: {},
+      path: "data/rules.json"
+    };
   }
 
   const response = await fetch("./api/rules-config", { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`Rules config API failed to load with HTTP ${response.status}.`);
+  }
+
+  return response.json();
+}
+
+async function loadLanguagePackSchemaReport() {
+  if (window.location.protocol === "file:") {
+    return {
+      schema: {},
+      path: "data/language-pack.schema.json"
+    };
+  }
+
+  const response = await fetch("./api/language-pack-schema", { cache: "no-store" });
+  if (!response.ok) {
+    throw new Error(`Language pack schema API failed to load with HTTP ${response.status}.`);
   }
 
   return response.json();

@@ -118,6 +118,13 @@
       "capitalizeIdiomatic": true,
       "literalSource": "resolvedGloss"
     },
+    "glossSelection": {
+      "primaryPath": "meanings.0",
+      "literalPath": "renderings.literal",
+      "narrativePath": "renderings.narrative",
+      "narrativeNominalPath": "meanings.1",
+      "fallbackPath": "ancient"
+    },
     "englishToAncientOverrides": {
       "the sun rose": "Mir ka",
       "the stone glowed": "Lum dor"

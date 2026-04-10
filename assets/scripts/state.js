@@ -18,6 +18,7 @@ const outputModeSelect = document.querySelector("#output-mode");
 const lexiconStatus = document.querySelector("#lexicon-status");
 const lexiconFileInput = document.querySelector("#lexicon-file");
 const languagePackSelect = document.querySelector("#language-pack-select");
+const languagePackNewButton = document.querySelector("#language-pack-new");
 const downloadLexiconMarkdownButton = document.querySelector("#download-lexicon-md");
 const tabButtons = Array.from(document.querySelectorAll("[data-tab-target]"));
 const tabPanels = Array.from(document.querySelectorAll(".tab-panel"));
@@ -59,6 +60,16 @@ const entryLexicalizedInput = document.querySelector("#entry-lexicalized");
 const entryCanDecomposeInput = document.querySelector("#entry-can-decompose");
 const entryAllowNominalReadingInput = document.querySelector("#entry-allow-nominal-reading");
 const entryOptionalInput = document.querySelector("#entry-optional");
+const languagePackModal = document.querySelector("#language-pack-modal");
+const languagePackBackdrop = document.querySelector("#language-pack-backdrop");
+const languagePackForm = document.querySelector("#language-pack-form");
+const languagePackCancelButton = document.querySelector("#language-pack-cancel");
+const languagePackStatus = document.querySelector("#language-pack-status");
+const languagePackNameInput = document.querySelector("#language-pack-name");
+const languagePackIdInput = document.querySelector("#language-pack-id");
+const languagePackVersionInput = document.querySelector("#language-pack-version");
+const languagePackDescriptionInput = document.querySelector("#language-pack-description");
+const languagePackActivateInput = document.querySelector("#language-pack-activate");
 const rulesSummary = document.querySelector("#rules-summary");
 const rulesContent = document.querySelector("#rules-content");
 const rulesEditButton = document.querySelector("#rules-edit-button");
@@ -66,6 +77,58 @@ const rulesSaveButton = document.querySelector("#rules-save-button");
 const rulesCancelButton = document.querySelector("#rules-cancel-button");
 const rulesEditorStatus = document.querySelector("#rules-editor-status");
 const rulesEditor = document.querySelector("#rules-editor");
+const rulesConfigSummary = document.querySelector("#rules-config-summary");
+const rulesConfigContent = document.querySelector("#rules-config-content");
+const rulesConfigEditButton = document.querySelector("#rules-config-edit-button");
+const rulesConfigSaveButton = document.querySelector("#rules-config-save-button");
+const rulesConfigCancelButton = document.querySelector("#rules-config-cancel-button");
+const rulesConfigEditorStatus = document.querySelector("#rules-config-editor-status");
+const rulesConfigEditor = document.querySelector("#rules-config-editor");
+const rulesConfigApplyGuidedButton = document.querySelector("#rules-config-apply-guided");
+const rulesConfigFormatButton = document.querySelector("#rules-config-format-button");
+const rulesConfigLanguageNameInput = document.querySelector("#rules-config-language-name");
+const rulesConfigLanguageVersionInput = document.querySelector("#rules-config-language-version");
+const rulesConfigLanguageDescriptionInput = document.querySelector("#rules-config-language-description");
+const rulesConfigEnglishFillersBuilder = document.querySelector("#rules-config-english-fillers-builder");
+const rulesConfigEnglishFillersAddButton = document.querySelector("#rules-config-english-fillers-add");
+const rulesConfigEnglishAliasesBuilder = document.querySelector("#rules-config-english-aliases-builder");
+const rulesConfigEnglishAliasesAddButton = document.querySelector("#rules-config-english-aliases-add");
+const rulesConfigTokenPatternInput = document.querySelector("#rules-config-token-pattern");
+const rulesConfigTokenSampleInput = document.querySelector("#rules-config-token-sample");
+const rulesConfigTokenPresetSimpleButton = document.querySelector("#rules-config-token-preset-simple");
+const rulesConfigTokenPresetApostropheButton = document.querySelector("#rules-config-token-preset-apostrophe");
+const rulesConfigTokenPresetMultilineButton = document.querySelector("#rules-config-token-preset-multiline");
+const rulesConfigTokenPresetSaveCustomButton = document.querySelector("#rules-config-token-preset-save-custom");
+const rulesConfigTokenPresetLoadCustomButton = document.querySelector("#rules-config-token-preset-load-custom");
+const rulesConfigTokenPreview = document.querySelector("#rules-config-token-preview");
+const rulesConfigTokenPreviewStatus = document.querySelector("#rules-config-token-preview-status");
+const rulesConfigTokenMatchList = document.querySelector("#rules-config-token-match-list");
+const rulesConfigFallbackTemplateInput = document.querySelector("#rules-config-fallback-template");
+const rulesConfigFieldHeadwordInput = document.querySelector("#rules-config-field-headword");
+const rulesConfigFieldMeaningsInput = document.querySelector("#rules-config-field-meanings");
+const rulesConfigGlossPrimaryInput = document.querySelector("#rules-config-gloss-primary");
+const schemaSummary = document.querySelector("#schema-summary");
+const schemaContent = document.querySelector("#schema-content");
+const schemaEditButton = document.querySelector("#schema-edit-button");
+const schemaSaveButton = document.querySelector("#schema-save-button");
+const schemaCancelButton = document.querySelector("#schema-cancel-button");
+const schemaEditorStatus = document.querySelector("#schema-editor-status");
+const schemaEditor = document.querySelector("#schema-editor");
+const schemaApplyGuidedButton = document.querySelector("#schema-apply-guided");
+const schemaFormatButton = document.querySelector("#schema-format-button");
+const schemaVersionInput = document.querySelector("#schema-version-input");
+const schemaKindInput = document.querySelector("#schema-kind-input");
+const schemaDescriptionInput = document.querySelector("#schema-description-input");
+const schemaRequiredPathsBuilder = document.querySelector("#schema-required-paths-builder");
+const schemaRequiredPathsAddButton = document.querySelector("#schema-required-paths-add");
+const schemaRecommendedPathsBuilder = document.querySelector("#schema-recommended-paths-builder");
+const schemaRecommendedPathsAddButton = document.querySelector("#schema-recommended-paths-add");
+const schemaResolverNamesBuilder = document.querySelector("#schema-resolver-names-builder");
+const schemaResolverNamesAddButton = document.querySelector("#schema-resolver-names-add");
+const schemaResolverTypesBuilder = document.querySelector("#schema-resolver-types-builder");
+const schemaResolverTypesAddButton = document.querySelector("#schema-resolver-types-add");
+const schemaSegmenterTypesBuilder = document.querySelector("#schema-segmenter-types-builder");
+const schemaSegmenterTypesAddButton = document.querySelector("#schema-segmenter-types-add");
 const morphemeOutput = document.querySelector("#morpheme-output");
 const literalOutput = document.querySelector("#literal-output");
 const idiomaticOutput = document.querySelector("#idiomatic-output");
@@ -137,9 +200,15 @@ let lexiconSortState = { field: "ancient", direction: "asc" };
 let lexiconPaginationState = { page: 1, pageSize: 25 };
 let selectedLexiconHeadword = null;
 let rulesNotesMarkdown = "";
+let rulesConfigDocument = {};
+let rulesConfigPath = "data/rules.json";
+let languagePackSchemaDocument = {};
+let languagePackSchemaDocumentPath = "data/language-pack.schema.json";
 let rulesConfigSource = null;
 let lexiconSourcePayload = { confirmed: [], inferred: [] };
 let rulesEditorDirty = false;
+let rulesConfigEditorDirty = false;
+let schemaEditorDirty = false;
 let serverTranslationApiAvailable = false;
 let translationRequestSequence = 0;
 let availableLanguagePacks = [];
@@ -180,6 +249,14 @@ function getActiveLexiconPath() {
 
 function getActiveRulesNotesPath() {
   return activeLanguagePackStatus?.activePaths?.rulesNotes || translationApiHealth?.activePaths?.rulesNotes || "data/rules-notes.md";
+}
+
+function getActiveRulesConfigPath() {
+  return activeLanguagePackStatus?.activePaths?.rulesConfig || translationApiHealth?.activePaths?.rulesConfig || rulesConfigPath || "data/rules.json";
+}
+
+function getActiveSchemaPath() {
+  return activeLanguagePackStatus?.activePaths?.schema || translationApiHealth?.activePaths?.schema || languagePackSchemaDocumentPath || "data/language-pack.schema.json";
 }
 
 function applyLanguageRulesConfig(config) {

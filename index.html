@@ -16,6 +16,8 @@
             <button class="tab-button is-active" type="button" data-tab-target="translator-tab">Translator</button>
             <button class="tab-button" type="button" data-tab-target="lexicon-tab">Lexicon Table</button>
             <button class="tab-button" type="button" data-tab-target="rules-tab">Rules & Notes</button>
+            <button class="tab-button" type="button" data-tab-target="rules-config-tab">Rules JSON</button>
+            <button class="tab-button" type="button" data-tab-target="schema-tab">Pack Schema</button>
           </nav>
 
           <aside class="control-rail">
@@ -31,6 +33,7 @@
                   </select>
                 </label>
 
+                <button id="language-pack-new" class="ghost-button compact-button" type="button">New Pack</button>
                 <button id="download-lexicon-md" class="ghost-button compact-button hero-download" type="button">Download .md</button>
               </div>
             </div>
@@ -221,6 +224,327 @@
           </section>
         </section>
 
+        <section id="rules-config-tab" class="tab-panel">
+          <section class="analysis-grid">
+            <article class="panel analysis-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Rules JSON</p>
+                  <h2>Machine-Readable Pack Rules</h2>
+                </div>
+                <div class="panel-actions">
+                  <button id="rules-config-edit-button" class="ghost-button" type="button">Edit</button>
+                  <button id="rules-config-save-button" class="ghost-button" type="button" hidden>Save</button>
+                  <button id="rules-config-cancel-button" class="ghost-button" type="button" hidden>Cancel</button>
+                </div>
+              </div>
+              <div class="analysis-meta">
+                <p id="rules-config-summary" class="summary-line">Loading rules.json...</p>
+                <p id="rules-config-editor-status" class="helper-line">This is the active machine-readable language rules file used by the backend.</p>
+              </div>
+              <section class="document-intro-grid">
+                <article class="document-intro-card">
+                  <p class="panel-label">What This Changes</p>
+                  <h3>How the backend interprets your language</h3>
+                  <p>Use this tab to define naming, tokenization, field mapping, fallback phrasing, and other behavior the translator engine depends on.</p>
+                </article>
+                <article class="document-intro-card">
+                  <p class="panel-label">Suggested Workflow</p>
+                  <h3>Fill guided fields first, raw JSON second</h3>
+                  <p>Start with the guided controls below. If you need something more advanced, open the full JSON editor and refine the pack directly.</p>
+                </article>
+              </section>
+              <section class="document-helper-panel">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="panel-label">Guided Fields</p>
+                    <h3>Common Rules Controls</h3>
+                  </div>
+                  <div class="panel-actions">
+                    <button id="rules-config-apply-guided" class="ghost-button compact-button" type="button">Apply + Save</button>
+                    <button id="rules-config-format-button" class="ghost-button compact-button" type="button">Format JSON</button>
+                  </div>
+                </div>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">1. Identity</p>
+                    <h4>Basic Pack Metadata</h4>
+                    <p class="guided-section-copy">These values describe the language pack itself and appear throughout the workspace.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Language Name <span class="field-help" tabindex="0" role="note" aria-label="The display name of the language used across the workspace and translator." data-tooltip="Display name shown across the app. Expected type: text. Example: Moon Speech.">?</span></span>
+                    <span class="field-caption">Human-readable name shown in the translator and language-pack selector.</span>
+                    <input id="rules-config-language-name" class="control-input" type="text">
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Version <span class="field-help" tabindex="0" role="note" aria-label="The version string for the active pack." data-tooltip="Version string for the pack. Expected type: text. Example: 0.1.0.">?</span></span>
+                    <span class="field-caption">Useful when you are iterating on a pack and want to track revisions.</span>
+                    <input id="rules-config-language-version" class="control-input" type="text">
+                  </label>
+                  <label class="control-group control-group-wide">
+                    <span class="field-label-row">Description <span class="field-help" tabindex="0" role="note" aria-label="A short summary of what this language pack is for." data-tooltip="Short summary of the language pack. Expected type: text. Example: Ritual language used for celestial narration.">?</span></span>
+                    <span class="field-caption">Short explanation of the language or this pack’s purpose.</span>
+                    <textarea id="rules-config-language-description" class="control-input control-textarea" rows="3"></textarea>
+                  </label>
+                  </div>
+                </section>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">2. English Side</p>
+                    <h4>How English inputs are normalized</h4>
+                    <p class="guided-section-copy">These fields shape the English-facing side of the translator before it tries to generate or resolve forms.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">English Fillers <span class="field-help" tabindex="0" role="note" aria-label="Words ignored or down-weighted during English-side handling." data-tooltip="Common English filler words. Expected type: one entry per line. Example: the, a, an.">?</span></span>
+                    <span class="field-caption">Common helper words that usually should not carry lexical meaning.</span>
+                    <div class="builder-card">
+                      <div id="rules-config-english-fillers-builder" class="builder-list"></div>
+                      <button id="rules-config-english-fillers-add" class="ghost-button compact-button" type="button">Add Filler</button>
+                    </div>
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">English Aliases <span class="field-help" tabindex="0" role="note" aria-label="Maps English words to source-language forms." data-tooltip="Alias map from English words to source forms. Expected format: one `english = source-form` pair per line. Example: sun = ka.">?</span></span>
+                    <span class="field-caption">Quick remapping for common English words or alternate spellings.</span>
+                    <div class="builder-card">
+                      <div id="rules-config-english-aliases-builder" class="builder-list"></div>
+                      <button id="rules-config-english-aliases-add" class="ghost-button compact-button" type="button">Add Alias</button>
+                    </div>
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Token Pattern <span class="field-help" tabindex="0" role="note" aria-label="Regex used by the backend to split text into tokens." data-tooltip="Regular expression used to tokenize text. Expected type: regex string. Example: [A-Za-z']+|\\r\\n|\\r|\\n|[ \\t]+|[^\\sA-Za-z'].">?</span></span>
+                    <span class="field-caption">Advanced regex used by the backend to break text into words, spaces, and punctuation.</span>
+                    <textarea id="rules-config-token-pattern" class="control-input control-textarea" rows="4"></textarea>
+                  </label>
+                  </div>
+                </section>
+                <section class="guided-section guided-section-emphasis">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">2A. Tokenizer Sandbox</p>
+                    <h4>Test What The Regex Actually Matches</h4>
+                    <p class="guided-section-copy">Use the sample text and preview below to see exactly what the token pattern is catching. Highlighted segments are regex matches.</p>
+                  </div>
+                  <div class="token-tester token-tester-grid">
+                    <label class="control-group control-group-wide">
+                      <span class="field-label-row">Tokenizer Test Text <span class="field-help" tabindex="0" role="note" aria-label="Sample text used to preview what the token regex matches." data-tooltip="Edit this sample text to test the token pattern. Matches below are highlighted in sequence.">?</span></span>
+                      <span class="field-caption">Change this text freely to test whether the token pattern behaves the way you expect.</span>
+                      <div class="token-sample-presets">
+                        <button id="rules-config-token-preset-simple" class="ghost-button compact-button" type="button">Simple</button>
+                        <button id="rules-config-token-preset-apostrophe" class="ghost-button compact-button" type="button">Apostrophe</button>
+                        <button id="rules-config-token-preset-multiline" class="ghost-button compact-button" type="button">Multiline</button>
+                        <button id="rules-config-token-preset-save-custom" class="ghost-button compact-button" type="button">Save Custom</button>
+                        <button id="rules-config-token-preset-load-custom" class="ghost-button compact-button" type="button">Load Custom</button>
+                      </div>
+                      <textarea id="rules-config-token-sample" class="control-input control-textarea token-sample-input" rows="5">Lan tsar ouk tsal.
+kesh'skehsiar sacht raknacht</textarea>
+                    </label>
+                    <div class="token-preview-panel">
+                      <div class="token-preview-header">
+                        <p class="panel-label">Live Preview</p>
+                        <p id="rules-config-token-preview-status" class="helper-line">Waiting for a token pattern.</p>
+                      </div>
+                      <div class="token-preview-legend">
+                        <span class="token-legend-item"><span class="token-legend-swatch token-legend-swatch-match"></span> highlighted = matched by the regex</span>
+                        <span class="token-legend-item"><span class="token-legend-swatch token-legend-swatch-rest"></span> plain text = not matched</span>
+                      </div>
+                      <div id="rules-config-token-preview" class="token-preview-output">Matches will appear here.</div>
+                      <div class="token-match-list-wrap">
+                        <p class="panel-label">Matched Tokens</p>
+                        <div id="rules-config-token-match-list" class="token-match-list">
+                          <span class="token-match-chip token-match-chip-empty">No matches yet.</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">2B. Fallback Output</p>
+                    <h4>Default Sentence Shape</h4>
+                    <p class="guided-section-copy">This is separate from tokenization. It controls how the translator phrases an idiomatic sentence when no stronger syntax rule matches.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Fallback Idiomatic Template <span class="field-help" tabindex="0" role="note" aria-label="Template used when no stronger syntax rule matches." data-tooltip="Template for fallback idiomatic output. Expected type: text template. Example: {words}. Common placeholders include {words}, {first}, and {rest}.">?</span></span>
+                    <span class="field-caption">Sentence shape used when no custom syntax pattern matches a line.</span>
+                    <input id="rules-config-fallback-template" class="control-input" type="text" placeholder="{words}">
+                  </label>
+                  </div>
+                </section>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">3. Lexicon Mapping</p>
+                    <h4>Tell the backend where to look</h4>
+                    <p class="guided-section-copy">Use these paths when your lexicon does not use the default field names such as <code>ancient</code> and <code>meanings</code>.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Headword Field Path <span class="field-help" tabindex="0" role="note" aria-label="Path to the source-form field inside each lexicon entry." data-tooltip="Field path for the source headword in each lexicon entry. Expected type: dotted path. Example: ancient or form.">?</span></span>
+                    <span class="field-caption">Path to the main source-language form in each entry.</span>
+                    <input id="rules-config-field-headword" class="control-input" type="text" placeholder="ancient">
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Meanings Field Path <span class="field-help" tabindex="0" role="note" aria-label="Path to the gloss or meanings list inside each lexicon entry." data-tooltip="Field path for the meanings array in each lexicon entry. Expected type: dotted path. Example: meanings or glosses.">?</span></span>
+                    <span class="field-caption">Path to the entry’s gloss list or meaning array.</span>
+                    <input id="rules-config-field-meanings" class="control-input" type="text" placeholder="meanings">
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Primary Gloss Path <span class="field-help" tabindex="0" role="note" aria-label="Path used to pick the default gloss for a lexicon entry." data-tooltip="Path used to choose the default gloss. Expected type: dotted path. Example: meanings.0.">?</span></span>
+                    <span class="field-caption">Which value the translator should treat as the default gloss when it renders a word.</span>
+                    <input id="rules-config-gloss-primary" class="control-input" type="text" placeholder="meanings.0">
+                  </label>
+                  </div>
+                </section>
+              </section>
+              <div class="document-mode-note">
+                <p class="helper-line">`Edit` opens the full JSON file for advanced work. The guided controls above cover the most common pack-authoring tasks.</p>
+              </div>
+              <article id="rules-config-content" class="json-doc">
+                <pre>Loading rules.json...</pre>
+              </article>
+              <label class="sr-only" for="rules-config-editor">Rules JSON editor</label>
+              <textarea id="rules-config-editor" class="document-editor" hidden spellcheck="false"></textarea>
+            </article>
+          </section>
+        </section>
+
+        <section id="schema-tab" class="tab-panel">
+          <section class="analysis-grid">
+            <article class="panel analysis-panel">
+              <div class="panel-header">
+                <div>
+                  <p class="panel-label">Pack Schema</p>
+                  <h2>Language Pack Contract</h2>
+                </div>
+                <div class="panel-actions">
+                  <button id="schema-edit-button" class="ghost-button" type="button">Edit</button>
+                  <button id="schema-save-button" class="ghost-button" type="button" hidden>Save</button>
+                  <button id="schema-cancel-button" class="ghost-button" type="button" hidden>Cancel</button>
+                </div>
+              </div>
+              <div class="analysis-meta">
+                <p id="schema-summary" class="summary-line">Loading language-pack.schema.json...</p>
+                <p id="schema-editor-status" class="helper-line">This schema defines the contract the backend validates against for the active language pack.</p>
+              </div>
+              <section class="document-intro-grid">
+                <article class="document-intro-card">
+                  <p class="panel-label">What This Changes</p>
+                  <h3>What the backend considers valid</h3>
+                  <p>This tab defines the contract for language packs: which sections are required, which names are allowed, and how strict validation should be.</p>
+                </article>
+                <article class="document-intro-card">
+                  <p class="panel-label">Suggested Workflow</p>
+                  <h3>Adjust contract carefully</h3>
+                  <p>Only edit the schema when you want to broaden or tighten what a language pack is allowed to contain. Most language design work belongs in `Rules JSON`, not here.</p>
+                </article>
+              </section>
+              <section class="document-helper-panel">
+                <div class="panel-header panel-header-compact">
+                  <div>
+                    <p class="panel-label">Guided Fields</p>
+                    <h3>Schema Controls</h3>
+                  </div>
+                  <div class="panel-actions">
+                    <button id="schema-apply-guided" class="ghost-button compact-button" type="button">Apply + Save</button>
+                    <button id="schema-format-button" class="ghost-button compact-button" type="button">Format JSON</button>
+                  </div>
+                </div>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">1. Identity</p>
+                    <h4>Schema Metadata</h4>
+                    <p class="guided-section-copy">These fields describe the schema file itself.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Schema Version <span class="field-help" tabindex="0" role="note" aria-label="Version of the schema contract itself." data-tooltip="Version of the schema contract. Expected type: text. Example: 1.0.0.">?</span></span>
+                    <span class="field-caption">Version of the validation contract, not the language pack.</span>
+                    <input id="schema-version-input" class="control-input" type="text">
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Kind <span class="field-help" tabindex="0" role="note" aria-label="Identifier describing the type of schema document." data-tooltip="Document kind identifier. Expected type: text. Example: translator-language-pack-schema.">?</span></span>
+                    <span class="field-caption">Short identifier telling the backend what kind of document this is.</span>
+                    <input id="schema-kind-input" class="control-input" type="text">
+                  </label>
+                  <label class="control-group control-group-wide">
+                    <span class="field-label-row">Description <span class="field-help" tabindex="0" role="note" aria-label="Human-readable explanation of what the schema covers." data-tooltip="Human-readable summary of the schema. Expected type: text. Example: Declarative contract for interchangeable translator language packs.">?</span></span>
+                    <span class="field-caption">Human-readable explanation of the validation model.</span>
+                    <textarea id="schema-description-input" class="control-input control-textarea" rows="3"></textarea>
+                  </label>
+                  </div>
+                </section>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">2. Validation</p>
+                    <h4>Which rules.json sections matter</h4>
+                    <p class="guided-section-copy">Required paths must exist for validation to pass. Recommended paths are optional, but the backend will warn if they are missing.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Required Rule Paths <span class="field-help" tabindex="0" role="note" aria-label="Rules.json paths that must exist for a pack to validate." data-tooltip="Required paths inside rules.json. Expected type: one dotted path per line. Example: language.name.">?</span></span>
+                    <span class="field-caption">One required dotted path per line.</span>
+                    <div class="builder-card">
+                      <div id="schema-required-paths-builder" class="builder-list"></div>
+                      <button id="schema-required-paths-add" class="ghost-button compact-button" type="button">Add Required Path</button>
+                    </div>
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Recommended Rule Paths <span class="field-help" tabindex="0" role="note" aria-label="Rules.json paths that are recommended even if the backend can fall back without them." data-tooltip="Recommended paths inside rules.json. Expected type: one dotted path per line. Example: translation.syntaxPatterns.">?</span></span>
+                    <span class="field-caption">One recommended dotted path per line.</span>
+                    <div class="builder-card">
+                      <div id="schema-recommended-paths-builder" class="builder-list"></div>
+                      <button id="schema-recommended-paths-add" class="ghost-button compact-button" type="button">Add Recommended Path</button>
+                    </div>
+                  </label>
+                  </div>
+                </section>
+                <section class="guided-section">
+                  <div class="guided-section-heading">
+                    <p class="panel-label">3. Allowed Names</p>
+                    <h4>Backend-recognized types</h4>
+                    <p class="guided-section-copy">These lists define which resolver and segmenter names the backend should recognize as valid.</p>
+                  </div>
+                  <div class="entry-editor-grid">
+                  <label class="control-group">
+                    <span class="field-label-row">Resolver Names <span class="field-help" tabindex="0" role="note" aria-label="Named segment resolvers that packs are allowed to reference." data-tooltip="Allowed resolver names for syntax segments. Expected type: one name per line. Example: subject or verb.">?</span></span>
+                    <span class="field-caption">Logical names packs can reference inside syntax patterns.</span>
+                    <div class="builder-card">
+                      <div id="schema-resolver-names-builder" class="builder-list"></div>
+                      <button id="schema-resolver-names-add" class="ghost-button compact-button" type="button">Add Resolver Name</button>
+                    </div>
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Resolver Types <span class="field-help" tabindex="0" role="note" aria-label="Resolver implementation types understood by the backend." data-tooltip="Allowed resolver implementation types. Expected type: one type per line. Example: phrase, head, branch.">?</span></span>
+                    <span class="field-caption">Implementation categories supported by the backend.</span>
+                    <div class="builder-card">
+                      <div id="schema-resolver-types-builder" class="builder-list"></div>
+                      <button id="schema-resolver-types-add" class="ghost-button compact-button" type="button">Add Resolver Type</button>
+                    </div>
+                  </label>
+                  <label class="control-group">
+                    <span class="field-label-row">Segmenter Types <span class="field-help" tabindex="0" role="note" aria-label="Morphology segmenter types supported by the backend." data-tooltip="Allowed morphology segmenter types. Expected type: one type per line. Example: affix_split.">?</span></span>
+                    <span class="field-caption">Morphology segmenter types available to packs.</span>
+                    <div class="builder-card">
+                      <div id="schema-segmenter-types-builder" class="builder-list"></div>
+                      <button id="schema-segmenter-types-add" class="ghost-button compact-button" type="button">Add Segmenter Type</button>
+                    </div>
+                  </label>
+                  </div>
+                </section>
+              </section>
+              <div class="document-mode-note">
+                <p class="helper-line">This is an advanced contract file. If you only want to change how one language behaves, `Rules JSON` is usually the better place.</p>
+              </div>
+              <article id="schema-content" class="json-doc">
+                <pre>Loading language-pack.schema.json...</pre>
+              </article>
+              <label class="sr-only" for="schema-editor">Schema editor</label>
+              <textarea id="schema-editor" class="document-editor" hidden spellcheck="false"></textarea>
+            </article>
+          </section>
+        </section>
+
         <section class="notes">
           <div class="note-card">
             <h3>How it behaves</h3>
@@ -329,6 +653,50 @@
             <label class="checkbox-row"><input id="entry-allow-nominal-reading" type="checkbox"> Allow nominal reading</label>
             <label class="checkbox-row"><input id="entry-optional" type="checkbox"> Optional</label>
           </div>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div id="language-pack-modal" class="modal-shell" hidden>
+    <div id="language-pack-backdrop" class="modal-backdrop"></div>
+    <section class="modal-panel modal-panel-narrow" role="dialog" aria-modal="true" aria-labelledby="language-pack-title">
+      <form id="language-pack-form" class="entry-editor-form">
+        <div class="panel-header">
+          <div>
+            <p class="panel-label">Language Pack</p>
+            <h2 id="language-pack-title">Create Starter Pack</h2>
+          </div>
+          <div class="panel-actions">
+            <button id="language-pack-cancel" class="ghost-button" type="button">Cancel</button>
+            <button id="language-pack-save" class="ghost-button" type="submit">Create</button>
+          </div>
+        </div>
+        <p id="language-pack-status" class="helper-line">This creates a starter `lexicon.json`, `rules.json`, `rules-notes.md`, and `language-pack.schema.json`.</p>
+        <div class="entry-editor-grid">
+          <label class="control-group">
+            <span>Language Name</span>
+            <input id="language-pack-name" class="control-input" type="text" placeholder="Moon Speech" required>
+          </label>
+          <label class="control-group">
+            <span>Pack Id</span>
+            <input id="language-pack-id" class="control-input" type="text" placeholder="moon-speech">
+          </label>
+          <label class="control-group">
+            <span>Version</span>
+            <input id="language-pack-version" class="control-input" type="text" value="0.1.0">
+          </label>
+          <label class="control-group">
+            <span>Activate After Create</span>
+            <select id="language-pack-activate" class="control-input">
+              <option value="yes">Yes</option>
+              <option value="no">No</option>
+            </select>
+          </label>
+          <label class="control-group control-group-wide">
+            <span>Description</span>
+            <textarea id="language-pack-description" class="control-input control-textarea" rows="4" placeholder="Short description of this language pack."></textarea>
+          </label>
         </div>
       </form>
     </section>
